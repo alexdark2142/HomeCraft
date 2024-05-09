@@ -8,7 +8,7 @@
                             <div class="footer-brand">
                                 <a href="/">
                                     <img
-                                        src="{{asset('images/logo-inverse-196x42.png')}}"
+                                        src="{{asset('images/logo/logo-inverse-196x42.png')}}"
                                         alt="logo"
                                         width="196"
                                         height="42"/>

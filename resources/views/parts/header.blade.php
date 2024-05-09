@@ -32,7 +32,7 @@
                         <!-- RD Navbar Brand-->
                         <div class="rd-navbar-brand">
                             <a class="brand" href="/">
-                                <img src="{{asset('images/logo-default-196x47.png')}}" alt="logo" width="196" height="47"/>
+                                <img src="{{asset('images/logo/logo-default-196x47.png')}}" alt="logo" width="196" height="47"/>
                             </a>
                         </div>
                     </div>
