@@ -14,6 +14,7 @@ return new class extends Migration
         if (!Schema::hasTable('categories')) {
             Schema::create('categories', function (Blueprint $table) {
                 $table->id();
+                $table->integer('parent_id')->unsigned()->nullable();
                 $table->char('name');
                 $table->char('filter_name');
                 $table->timestamps();

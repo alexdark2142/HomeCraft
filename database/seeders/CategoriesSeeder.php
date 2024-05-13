@@ -14,10 +14,10 @@ class CategoriesSeeder extends Seeder
     public function run(): void
     {
         $namesCategories = [
-            'icon' => 'Icons',
-            'gift-box' => 'Gift boxes',
-            'planters' => 'Planters',
-            'pet-feeders' => 'Pet feeders',
+            'gift-box' => 'Liquor Gift Box',
+            'icon' => 'Icon',
+            'flower-pots' => 'Flower pots',
+            'pet-feeders' => 'Cat and Dog food bowl stand',
         ];
 
         foreach ($namesCategories as $filterName => $name) {

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\Subcategory;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -25,13 +24,11 @@ class ProductController extends Controller
 //            ->filter($filters)
             ->paginate(9);
 
-        $categories = Category::all();
-        $subcategories = Subcategory::all();
+        $categories = Category::with('subcategories')->whereNull('parent_id')->get();
 
         return response()->view('home', compact([
             'products',
             'categories',
-            'subcategories',
         ]));
     }
 

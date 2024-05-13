@@ -16,8 +16,8 @@ return new class extends Migration
                 $table->id();
                 $table->string('name');
                 $table->string('img');
-                $table->foreignId('category_id')->constrained('categories');
-                $table->foreignId('subcategory_id')->constrained('subcategories')->nullable();
+                $table->unsignedTinyInteger('category_id');
+                $table->unsignedTinyInteger('subcategory_id');
                 $table->decimal('price', 8, 2);
                 $table->timestamps();
             });

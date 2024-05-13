@@ -16,6 +16,7 @@
 		isNoviBuilder = false,
 		loaderTimeoutId,
 
+
 		plugins = {
 			bootstrapTooltip: $("[data-toggle='tooltip']"),
 			bootstrapTabs: $(".tabs-custom"),
@@ -1163,3 +1164,4 @@
 		}
 	});
 }());
+
