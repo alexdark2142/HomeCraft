@@ -112,36 +112,36 @@
             });
         });
 
-        document.addEventListener('DOMContentLoaded', function() {
-            let header = document.querySelector('.page-header');
-            let categories = document.querySelector('.categories');
-            let swiper = document.querySelector('.swiper-slide');
-            let sectionProducts = document.querySelector('.section-products');
-
-            // Get the height of the header
-            let headerHeight = header.offsetHeight;
-            let swiperHeight = swiper.offsetHeight;
-            let categoriesHeight = categories.offsetHeight;
-
-            // Function to adjust the position of categories
-            function adjustCategoriesPosition() {
-                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-                if (scrollTop > headerHeight + swiperHeight) {
-                    categories.classList.add('fixed');
-                    sectionProducts.style.paddingTop = categoriesHeight + 'px'
-                } else {
-                    categories.classList.remove('fixed');
-                    sectionProducts.removeAttribute('style')
-                }
-            }
-
-            // Attach scroll event listener
-            window.addEventListener('scroll', adjustCategoriesPosition);
-
-            // Initial adjustment
-            adjustCategoriesPosition();
-        });
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     let header = document.querySelector('.page-header');
+        //     let categories = document.querySelector('.categories');
+        //     let swiper = document.querySelector('.swiper-slide');
+        //     let sectionProducts = document.querySelector('.section-products');
+        //
+        //     // Get the height of the header
+        //     let headerHeight = header.offsetHeight;
+        //     let swiperHeight = swiper.offsetHeight;
+        //     let categoriesHeight = categories.offsetHeight;
+        //
+        //     // Function to adjust the position of categories
+        //     function adjustCategoriesPosition() {
+        //         let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        //
+        //         if (scrollTop > headerHeight + swiperHeight) {
+        //             categories.classList.add('fixed');
+        //             sectionProducts.style.paddingTop = categoriesHeight + 'px'
+        //         } else {
+        //             categories.classList.remove('fixed');
+        //             sectionProducts.removeAttribute('style')
+        //         }
+        //     }
+        //
+        //     // Attach scroll event listener
+        //     window.addEventListener('scroll', adjustCategoriesPosition);
+        //
+        //     // Initial adjustment
+        //     adjustCategoriesPosition();
+        // });
 
     </script>
 </body>

@@ -1,6 +1,6 @@
 <header class="section page-header">
     <!-- RD Navbar-->
-    <div class="rd-navbar-wrap rd-navbar-modern-wrap" style="max-height: 70px">
+    <div class="rd-navbar-wrap rd-navbar-modern-wrap">
         <nav
             class="rd-navbar rd-navbar-modern"
             data-layout="rd-navbar-fixed"
@@ -135,7 +135,7 @@
 
                     <div class="rd-navbar-project rd-navbar-modern-project">
                         <div class="rd-navbar-project-modern-header">
-                            <h4 class="rd-navbar-project-modern-title">Get in Touch</h4>
+                            <h4 class="rd-navbar-project-modern-title">Shopping cat</h4>
                             <div
                                 class="rd-navbar-project-hamburger"
                                 data-multitoggle=".rd-navbar-main"

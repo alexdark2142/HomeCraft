@@ -4,23 +4,7 @@
     <!-- Swiper-->
     @include('parts.swiper')
 
-    <div class="categories">
-        @foreach ($categories as $category)
-            <div class="category">
-                <a href="/{{ $category->name }}">{{ $category->name }}</a>
-                <ul class="subcategories">
-                    @if($category->subcategories)
-                        @foreach ($category->subcategories as $subcategory)
-                            <li>
-                                <a href="/{{ $category->name . '/' . $subcategory->name }}">{{ $subcategory->name }}</a>
-                            </li>
-                        @endforeach
-                    @endif
-                </ul>
-            </div>
-        @endforeach
-    </div>
-
+    @include('parts.category')
     <!-- Products-->
     <section class="section-products">
         <div class="container">
