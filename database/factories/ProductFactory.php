@@ -15,7 +15,12 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
-        $imageNames = ['icon', 'vine', 'box', 'bench'];
+        $imageNames = [
+            'icon',
+            'vine',
+            'box',
+            'bench'
+        ];
         $imageName = $this->faker->randomElement($imageNames);
 
         $extension = 'png'; // Assuming all images are PNG

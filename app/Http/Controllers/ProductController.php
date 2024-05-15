@@ -17,18 +17,21 @@ class ProductController extends Controller
 //            $filters->setParams($subcategory);
 //        }
 
-        $products = Product::query()
-//            ->whereHas('category', function ($query) use ($category) {
-//                $query->whereFilterName($category);
-//            })
-//            ->filter($filters)
-            ->paginate(9);
+        $productsQuery = Product::query();
+        if ($category) {
+            $productsQuery->whereHas('category', function ($query) use ($category) {
+                $query->whereFilterName($category);
+            });
+        }
+        $products = $productsQuery->paginate(9);
 
         $categories = Category::with('subcategories')->whereNull('parent_id')->get();
+        $activeCategory = $category;
 
         return response()->view('home', compact([
             'products',
             'categories',
+            'activeCategory'
         ]));
     }
 

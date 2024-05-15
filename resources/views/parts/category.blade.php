@@ -4,7 +4,7 @@
             <div class="row row-30 justify-content-center">
                 @foreach ($categories as $category)
                     <div class="col-sm-6 col-lg-3 wow fadeInRight" data-wow-delay="0s">
-                        <article class="box-icon-ruby">
+                        <article class="box-icon-ruby {{ $category->filter_name == $activeCategory ? 'active' : '' }}">
                             <div
                                 class="unit
                                 box-icon-ruby-body
@@ -19,7 +19,11 @@
                             >
                                 <div class="unit-body">
                                     <h4 class="box-icon-ruby-title">
-                                        <a href="/{{ $category->filter_name }}">{{ $category->name }}</a>
+                                        @if($category->filter_name == $activeCategory)
+                                            <a href="/">{{ $category->name }}</a>
+                                        @else
+                                            <a href="/{{ $category->filter_name }}">{{ $category->name }}</a>
+                                        @endif
                                     </h4>
 {{--                                    @if($category->subcategories)--}}
 {{--                                        <ul class="subcategories">--}}
