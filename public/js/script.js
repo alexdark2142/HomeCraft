@@ -20,7 +20,7 @@
 		plugins = {
 			bootstrapTooltip: $("[data-toggle='tooltip']"),
 			bootstrapTabs: $(".tabs-custom"),
-			rdNavbar: $(".rd-navbar"),
+			rdNavbar: $(".navbar"),
 			materialParallax: $(".parallax-container"),
 			maps: $(".google-map-container"),
 			rdMailForm: $(".rd-mailform"),

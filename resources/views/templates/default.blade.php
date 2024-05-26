@@ -50,98 +50,142 @@
     <script src="{{asset('js/core.min.js')}}"></script>
     <script src="{{asset('js/script.js')}}"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            let cartButton = document.getElementById('cartButton');
-            let cartClose = document.getElementById('cartClose');
-            let cartCloseMob = document.getElementById('cartCloseMob');
 
-            if (cartButton) {
-                cartButton.addEventListener('click', function() {
-                    this.style.display = 'none';
+        //cart
+        document.addEventListener('DOMContentLoaded', function () {
+            let cart = [];
+
+            // Перевірка, чи є дані в localStorage
+            const savedCart = localStorage.getItem('cart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                updateCart();
+            }
+
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                button.addEventListener('click', function () {
+                    const id = this.getAttribute('data-id');
+                    const name = this.getAttribute('data-name');
+                    const price = parseFloat(this.getAttribute('data-price'));
+                    const img = this.getAttribute('data-img');
+                    addToCart(id, name, price, img);
+                });
+            });
+
+            function addToCart(id, name, price, img) {
+                const existingProductIndex = cart.findIndex(product => product.id === id);
+
+                if (existingProductIndex !== -1) {
+                    cart[existingProductIndex].quantity += 1;
+                } else {
+                    cart.push({ id, name, price, img, quantity: 1 });
+                }
+
+                // Зберігання кошика в localStorage
+                localStorage.setItem('cart', JSON.stringify(cart));
+
+                updateCart();
+            }
+
+            function updateCart() {
+                const cartItemsContainer = document.getElementById('cart-items');
+                cartItemsContainer.innerHTML = '';
+
+                let totalQuantity = 0;
+                let totalPrice = 0;
+
+                cart.forEach(product => {
+                    const productElement = document.createElement('div');
+                    productElement.innerHTML = `
+                        <div class="unit align-items-center cart-row-item">
+                            <div class="unit-left">
+                                <a class="cart-row-figure" href="#">
+                                    <img class="cart-img" src="${product.img}" alt="${product.name}" width="100" height="100" />
+                                </a>
+                            </div>
+                            <div class="unit-body">
+                                <div class="cart-item-header">
+                                    <h6 class="cart-row-name">${product.name}</h6>
+                                    <button class="btn-remove-item" data-id="${product.id}">
+                                        <i class="fa fa-trash-o"></i>
+                                    </button>
+                                </div>
+                                <div class="cart-item-body">
+                                    <h6 class="cart-row-price">$${(product.price * product.quantity).toFixed(2)}</h6>
+                                    <div class="cart-quantity-control">
+                                        <button class="quantity-control-btn minus" data-id="${product.id}">-</button>
+                                        <input type="number" class="cart-row-quantity" value="${product.quantity}" min="1" max="100" readonly>
+                                        <button class="quantity-control-btn plus" data-id="${product.id}">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    cartItemsContainer.appendChild(productElement);
+                    totalQuantity += product.quantity;
+                    totalPrice += product.price * product.quantity;
+                });
+
+                document.getElementById('cart-count').innerText = totalQuantity;
+                document.getElementById('cart-count-header').innerText = ` ${totalQuantity}`;
+                document.getElementById('cart-total-price').innerText = ` $${totalPrice.toFixed(2)}`;
+
+                // Додаємо обробники подій для кнопок + і -
+                document.querySelectorAll('.quantity-control-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const productId = this.closest('.cart-row-item').querySelector('.btn-remove-item').getAttribute('data-id');
+                        const operation = this.classList.contains('plus') ? 'increment' : 'decrement';
+                        updateCartItemQuantity(productId, operation);
+                    });
                 });
             }
 
-            if (cartClose) {
-                cartClose.addEventListener('click', function() {
-                    cartButton.style.display = 'block';
-                });
+            function updateCartItemQuantity(productId, operation) {
+                const productIndex = cart.findIndex(product => product.id === productId);
+                if (productIndex !== -1) {
+                    if (operation === 'increment') {
+                        cart[productIndex].quantity += 1;
+                    } else if (operation === 'decrement' && cart[productIndex].quantity > 1) {
+                        cart[productIndex].quantity -= 1;
+                    }
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    updateCart();
+                }
             }
 
-            if (cartCloseMob) {
-                cartCloseMob.addEventListener('click', function() {
-                    setTimeout(function() {
-                        cartButton.style.display = 'block';
-                    }, 300);
-                });
+            function clearCart() {
+                cart = []; // Очищаємо кошик
+                localStorage.removeItem('cart'); // Видаляємо дані з localStorage
+                updateCart();
             }
-        });
 
-        // Hide the cart initially
-        document.querySelector('.cart-inline').style.display = 'none';
+            document.getElementById('cart-items').addEventListener('click', function (event) {
+                if (event.target.closest('.btn-remove-item')) {
+                    const id = event.target.closest('.btn-remove-item').getAttribute('data-id');
+                    const productIndex = cart.findIndex(product => product.id === id);
+                    if (productIndex !== -1) {
+                        cart.splice(productIndex, 1);
+                        localStorage.setItem('cart', JSON.stringify(cart)); // Оновлюємо дані в localStorage
+                        updateCart();
+                    }
+                }
+            });
 
-        // Function to update visibility of the cart based on item count
-        function updateCartVisibility() {
-            let itemCount = parseInt(document.querySelector('.cart-inline-header span').textContent);
-            if (itemCount > 0) {
-                document.querySelector('.cart-inline').style.display = 'block';
-            } else {
-                document.querySelector('.cart-inline').style.display = 'none';
-            }
-        }
+            document.getElementById('clear-cart').addEventListener('click', clearCart);
 
-        // Add event listener to "Add to cart" buttons
-        let addToCartButtons = document.querySelectorAll('.product-button .button');
-        addToCartButtons.forEach(function(button) {
-            button.addEventListener('click', function() {
-                console.log(1)
-                let itemName = this.closest('.unit').querySelector('.product-title a').textContent;
-                let itemPrice = parseFloat(this.closest('.unit').querySelector('.product-price').textContent.replace('$', ''));
-                let itemCountElement = document.querySelector('.cart-inline-header span');
-                let itemCount = parseInt(itemCountElement.textContent);
-                console.log(itemCount)
-                itemCount++;
-                itemCountElement.textContent = itemCount;
+            // Відкриття кошика
+            document.getElementById('cartButton').addEventListener('click', function () {
+                document.querySelector('.shopping-cart.navbar-modern-project').classList.add('open');
+                document.querySelector('.shopping-cart-btn').classList.add('active');
+            });
 
-                let totalPriceElement = document.querySelector('.cart-inline-header .cart-inline-title span');
-                let totalPrice = parseFloat(totalPriceElement.textContent.replace('$', ''));
-                totalPrice += itemPrice;
-                totalPriceElement.textContent = '$' + totalPrice.toFixed(2);
-
-                // Update cart visibility
-                updateCartVisibility();
+            // Закриття кошика
+            document.querySelector('.shopping-cart-close').addEventListener('click', function () {
+                document.querySelector('.shopping-cart.navbar-modern-project').classList.remove('open');
+                document.querySelector('.shopping-cart-btn').classList.remove('active');
             });
         });
-
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     let header = document.querySelector('.page-header');
-        //     let categories = document.querySelector('.categories');
-        //     let swiper = document.querySelector('.swiper-slide');
-        //     let sectionProducts = document.querySelector('.section-products');
-        //
-        //     // Get the height of the header
-        //     let headerHeight = header.offsetHeight;
-        //     let swiperHeight = swiper.offsetHeight;
-        //     let categoriesHeight = categories.offsetHeight;
-        //
-        //     // Function to adjust the position of categories
-        //     function adjustCategoriesPosition() {
-        //         let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        //
-        //         if (scrollTop > headerHeight + swiperHeight) {
-        //             categories.classList.add('fixed');
-        //             sectionProducts.style.paddingTop = categoriesHeight + 'px'
-        //         } else {
-        //             categories.classList.remove('fixed');
-        //             sectionProducts.removeAttribute('style')
-        //         }
-        //     }
-        //
-        //     // Attach scroll event listener
-        //     window.addEventListener('scroll', adjustCategoriesPosition);
-        //
-        //     // Initial adjustment
-        //     adjustCategoriesPosition();
-        // });
 
     </script>
 </body>

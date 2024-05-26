@@ -35,7 +35,9 @@
                                         </div>
 
                                         <div class="unit-body">
-                                            <a class="link-phone" href="">homecraft1sbdt@gmail.com</a>
+                                            <a class="link-email" href="mailto:homecraft1sbdt@gmail.com">
+                                                homecraft1sbdt@gmail.com
+                                            </a>
                                         </div>
                                     </div>
                                 </li>

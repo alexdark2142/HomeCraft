@@ -15,39 +15,41 @@
                             <div class="col-md-6 col-lg-4">
                                 <div class="oh-desktop">
                                     <!-- Product-->
-                                    <article class="product product-2 box-ordered-item wow slideInRight"
-                                             data-wow-delay="0s"
-                                    >
+                                    <article class="product product-2 box-ordered-item wow slideInRight" data-wow-delay="0s">
                                         <div class="unit flex-row flex-lg-column">
                                             <div class="unit-left">
                                                 <div class="product-figure">
-                                                    <img src="{{ asset('images/' . $product->img) }}"
-                                                         alt="{{ $product->name }}"
-                                                         width="270"
-                                                         height="280"
-                                                    />
-
-
+                                                    <img src="{{ asset('images/' . $product->img) }}" alt="{{ $product->name }}" width="270" height="280" />
                                                     <div class="product-button">
-                                                        <a class="button button-md button-white button-ujarak" href="#">
+                                                        <button class="button button-md button-white button-ujarak add-to-cart" data-id="{{ $product->id }}" data-name="{{ $product->name }}" data-price="{{ $product->price }}" data-img="{{ asset('images/' . $product->img) }}">
                                                             Add to cart
-                                                        </a>
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="unit-body">
                                                 <h6 class="product-title">
                                                     <a href="#">{{ $product->name }}</a>
                                                 </h6>
 
                                                 <div class="product-price-wrap">
-                                                    {{--                                                <div class="product-price product-price-old">$59.00</div>--}}
                                                     <div class="product-price">${{ $product->price }}</div>
                                                 </div>
-                                                <a class="button button-sm button-secondary button-ujarak" href="#">
+
+                                                <button
+                                                    class="button
+                                                        button-sm
+                                                        button-secondary
+                                                        button-ujarak
+                                                        add-to-cart
+                                                    "
+                                                    data-id="{{ $product->id }}"
+                                                    data-name="{{ $product->name }}"
+                                                    data-price="{{ $product->price }}"
+                                                    data-img="{{ asset('images/' . $product->img) }}"
+                                                >
                                                     Add to cart
-                                                </a>
+                                                </button>
                                             </div>
                                         </div>
                                     </article>

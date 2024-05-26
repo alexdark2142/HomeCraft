@@ -28,22 +28,22 @@
       <!-- Page Header-->
       <header class="section page-header">
         <!-- RD Navbar-->
-        <div class="rd-navbar-wrap rd-navbar-modern-wrap">
-          <nav class="rd-navbar rd-navbar-modern" data-layout="rd-navbar-fixed" data-sm-layout="rd-navbar-fixed" data-md-layout="rd-navbar-fixed" data-md-device-layout="rd-navbar-fixed" data-lg-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-fixed" data-xl-layout="rd-navbar-static" data-xl-device-layout="rd-navbar-static" data-xxl-layout="rd-navbar-static" data-xxl-device-layout="rd-navbar-static" data-lg-stick-up-offset="46px" data-xl-stick-up-offset="46px" data-xxl-stick-up-offset="70px" data-lg-stick-up="true" data-xl-stick-up="true" data-xxl-stick-up="true">
-            <div class="rd-navbar-main-outer">
-              <div class="rd-navbar-main">
+        <div class="navbar-wrap navbar-modern-wrap">
+          <nav class="navbar navbar-modern" data-layout="navbar-fixed" data-sm-layout="navbar-fixed" data-md-layout="navbar-fixed" data-md-device-layout="navbar-fixed" data-lg-layout="navbar-static" data-lg-device-layout="navbar-fixed" data-xl-layout="navbar-static" data-xl-device-layout="navbar-static" data-xxl-layout="navbar-static" data-xxl-device-layout="navbar-static" data-lg-stick-up-offset="46px" data-xl-stick-up-offset="46px" data-xxl-stick-up-offset="70px" data-lg-stick-up="true" data-xl-stick-up="true" data-xxl-stick-up="true">
+            <div class="navbar-main-outer">
+              <div class="navbar-main">
                 <!-- RD Navbar Panel-->
-                <div class="rd-navbar-panel">
+                <div class="navbar-panel">
                   <!-- RD Navbar Toggle-->
-                  <button class="rd-navbar-toggle" data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button>
+                  <button class="navbar-toggle" data-navbar-toggle=".navbar-nav-wrap"><span></span></button>
                   <!-- RD Navbar Brand-->
-                  <div class="rd-navbar-brand"><a class="brand" href="index.html"><img src="images/logo-default-196x47.png" alt="" width="196" height="47"/></a></div>
+                  <div class="navbar-brand"><a class="brand" href="index.html"><img src="images/logo-default-196x47.png" alt="" width="196" height="47"/></a></div>
                 </div>
-                <div class="rd-navbar-main-element">
-                  <div class="rd-navbar-nav-wrap">
+                <div class="navbar-main-element">
+                  <div class="navbar-nav-wrap">
                     <!-- RD Navbar Basket-->
-                    <div class="rd-navbar-basket-wrap">
-                      <button class="rd-navbar-basket fl-bigmug-line-shopping198" data-rd-navbar-toggle=".cart-inline"><span>2</span></button>
+                    <div class="navbar-basket-wrap">
+                      <button class="navbar-basket fl-bigmug-line-shopping198" data-navbar-toggle=".cart-inline"><span>2</span></button>
                       <div class="cart-inline">
                         <div class="cart-inline-header">
                           <h5 class="cart-inline-title">In cart:<span> 2</span> Products</h5>
@@ -87,20 +87,20 @@
                           <div class="group-sm"><a class="button button-md button-default-outline-2 button-wapasha" href="#">Go to cart</a><a class="button button-md button-primary button-pipaluk" href="#">Checkout</a></div>
                         </div>
                       </div>
-                    </div><a class="rd-navbar-basket rd-navbar-basket-mobile fl-bigmug-line-shopping198" href="#"><span>2</span></a>
+                    </div><a class="navbar-basket navbar-basket-mobile fl-bigmug-line-shopping198" href="#"><span>2</span></a>
                     <!-- RD Navbar Search-->
-                    <div class="rd-navbar-search">
-                      <button class="rd-navbar-search-toggle" data-rd-navbar-toggle=".rd-navbar-search"><span></span></button>
+                    <div class="navbar-search">
+                      <button class="navbar-search-toggle" data-navbar-toggle=".navbar-search"><span></span></button>
                       <form class="rd-search" action="#">
                         <div class="form-wrap">
-                          <label class="form-label" for="rd-navbar-search-form-input">Search...</label>
-                          <input class="rd-navbar-search-form-input form-input" id="rd-navbar-search-form-input" type="text" name="search">
+                          <label class="form-label" for="navbar-search-form-input">Search...</label>
+                          <input class="navbar-search-form-input form-input" id="navbar-search-form-input" type="text" name="search">
                           <button class="rd-search-form-submit fl-bigmug-line-search74" type="submit"></button>
                         </div>
                       </form>
                     </div>
                     <!-- RD Navbar Nav-->
-                    <ul class="rd-navbar-nav">
+                    <ul class="navbar-nav">
                       <li class="rd-nav-item"><a class="rd-nav-link" href="index.html">Home</a>
                       </li>
                       <li class="rd-nav-item active"><a class="rd-nav-link" href="about-us.html">About Us</a>
@@ -111,21 +111,21 @@
                       </li>
                     </ul>
                   </div>
-                  <div class="rd-navbar-project-hamburger" data-multitoggle=".rd-navbar-main" data-multitoggle-blur=".rd-navbar-wrap" data-multitoggle-isolate>
+                  <div class="navbar-shopping-cart" data-multitoggle=".navbar-main" data-multitoggle-blur=".navbar-wrap" data-multitoggle-isolate>
                     <div class="project-hamburger"><span class="project-hamburger-arrow-top"></span><span class="project-hamburger-arrow-center"></span><span class="project-hamburger-arrow-bottom"></span></div>
                     <div class="project-hamburger-2"><span class="project-hamburger-arrow"></span><span class="project-hamburger-arrow"></span><span class="project-hamburger-arrow"></span>
                     </div>
-                    <div class="project-close"><span></span><span></span></div>
+                    <div class="shopping-cart-close"><span></span><span></span></div>
                   </div>
                 </div>
-                <div class="rd-navbar-project rd-navbar-modern-project">
-                  <div class="rd-navbar-project-modern-header">
-                    <h4 class="rd-navbar-project-modern-title">Get in Touch</h4>
-                    <div class="rd-navbar-project-hamburger" data-multitoggle=".rd-navbar-main" data-multitoggle-blur=".rd-navbar-wrap" data-multitoggle-isolate>
-                      <div class="project-close"><span></span><span></span></div>
+                <div class="navbar-project navbar-modern-project">
+                  <div class="navbar-project-modern-header">
+                    <h4 class="navbar-project-modern-title">Get in Touch</h4>
+                    <div class="navbar-shopping-cart" data-multitoggle=".navbar-main" data-multitoggle-blur=".navbar-wrap" data-multitoggle-isolate>
+                      <div class="shopping-cart-close"><span></span><span></span></div>
                     </div>
                   </div>
-                  <div class="rd-navbar-project-content rd-navbar-modern-project-content">
+                  <div class="navbar-project-content navbar-modern-project-content">
                     <div>
                       <p>We are always ready to provide you with fresh organic products for your home or office. Contact us to find out how we can help you.</p>
                       <div class="heading-6 subtitle">Our Contacts</div>
@@ -133,7 +133,7 @@
                         <div class="col-12"><img src="images/home-sidebar-394x255.jpg" alt="" width="394" height="255"/>
                         </div>
                       </div>
-                      <ul class="rd-navbar-modern-contacts">
+                      <ul class="navbar-modern-contacts">
                         <li>
                           <div class="unit unit-spacing-sm">
                             <div class="unit-left"><span class="icon fa fa-phone"></span></div>
@@ -153,7 +153,7 @@
                           </div>
                         </li>
                       </ul>
-                      <ul class="list-inline rd-navbar-modern-list-social">
+                      <ul class="list-inline navbar-modern-list-social">
                         <li><a class="icon fa fa-facebook" href="#"></a></li>
                         <li><a class="icon fa fa-twitter" href="#"></a></li>
                         <li><a class="icon fa fa-google-plus" href="#"></a></li>
