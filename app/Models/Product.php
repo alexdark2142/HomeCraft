@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * @method static findOrFail(mixed $get)
+ * @method static find(mixed $get)
+ */
 class Product extends Model
 {
     use HasFactory;
@@ -18,6 +22,7 @@ class Product extends Model
     protected $fillable = [
         'name',
         'img',
+        'count',
         'category_id',
         'subcategory_id',
         'price',

@@ -16,6 +16,7 @@ return new class extends Migration
                 $table->id();
                 $table->string('name');
                 $table->string('img');
+                $table->unsignedTinyInteger('count');
                 $table->unsignedTinyInteger('category_id');
                 $table->unsignedTinyInteger('subcategory_id');
                 $table->decimal('price', 8, 2);

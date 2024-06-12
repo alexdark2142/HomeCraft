@@ -2,23 +2,7 @@
     <!-- RD Navbar-->
     <div class="navbar-wrap navbar-modern-wrap">
         <nav
-            class="navbar navbar-modern"
-            data-layout="navbar-fixed"
-            data-sm-layout="navbar-fixed"
-            data-md-layout="navbar-fixed"
-            data-md-device-layout="navbar-fixed"
-            data-lg-layout="navbar-static"
-            data-lg-device-layout="navbar-fixed"
-            data-xl-layout="navbar-static"
-            data-xl-device-layout="navbar-static"
-            data-xxl-layout="navbar-static"
-            data-xxl-device-layout="navbar-static"
-            data-lg-stick-up-offset="46px"
-            data-xl-stick-up-offset="46px"
-            data-xxl-stick-up-offset="70px"
-            data-lg-stick-up="true"
-            data-xl-stick-up="true"
-            data-xxl-stick-up="true"
+            id="navbar" class="navbar navbar-modern navbar-original navbar-static "
         >
             <div class="navbar-main-outer">
                 <div class="navbar-main">
@@ -43,9 +27,27 @@
                                 <li class="rd-nav-item active">
                                     <a class="rd-nav-link" href="/">Home</a>
                                 </li>
-
-{{--                                <li class="rd-nav-item">--}}
-{{--                                    <a class="rd-nav-link" href="/contact-us">Contact Us</a>--}}
+{{--                                <li class="rd-nav-item rd-nav-dropdown">--}}
+{{--                                    <a class="rd-nav-link" href="#">Categories</a>--}}
+{{--                                    <ul class="rd-menu rd-navbar-dropdown">--}}
+{{--                                        <li class="rd-dropdown-item">--}}
+{{--                                            <a class="rd-dropdown-link" href="#">Ікони</a>--}}
+{{--                                        </li>--}}
+{{--                                        <li class="rd-dropdown-item">--}}
+{{--                                            <a class="rd-dropdown-link" href="#">Миски</a>--}}
+{{--                                            <ul class="rd-menu rd-navbar-dropdown">--}}
+{{--                                                <li class="rd-dropdown-item">--}}
+{{--                                                    <a class="rd-dropdown-link" href="#">Маленькі</a>--}}
+{{--                                                </li>--}}
+{{--                                                <li class="rd-dropdown-item">--}}
+{{--                                                    <a class="rd-dropdown-link" href="#">Великі</a>--}}
+{{--                                                </li>--}}
+{{--                                            </ul>--}}
+{{--                                        </li>--}}
+{{--                                        <li class="rd-dropdown-item">--}}
+{{--                                            <a class="rd-dropdown-link" href="#">Вазони</a>--}}
+{{--                                        </li>--}}
+{{--                                    </ul>--}}
 {{--                                </li>--}}
                             </ul>
                         </div>

@@ -1,4 +1,3 @@
-@if($products->isNotEmpty())
     <section class="section section-md bg-default section-top-image">
         <div class="container">
             <div class="row row-30 justify-content-center">
@@ -22,7 +21,7 @@
                                         @if($category->filter_name == $activeCategory)
                                             <a href="/">{{ $category->name }}</a>
                                         @else
-                                            <a href="/{{ $category->filter_name }}">{{ $category->name }}</a>
+                                            <a href="/products/{{ $category->filter_name }}">{{ $category->name }}</a>
                                         @endif
                                     </h4>
 {{--                                    @if($category->subcategories)--}}
@@ -42,4 +41,3 @@
             </div>
         </div>
     </section>
-@endif

@@ -16,11 +16,12 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         $imageNames = [
-            'icon',
             'vine',
+            'icon',
             'box',
             'bench'
         ];
+
         $imageName = $this->faker->randomElement($imageNames);
 
         $extension = 'png'; // Assuming all images are PNG
@@ -28,8 +29,9 @@ class ProductFactory extends Factory
         return [
             'name' => $this->faker->sentence(),
             'img' => $imageName . '.' . $extension,
-            'category_id' => $this->faker->randomFloat(1, 1, 5),
-            'subcategory_id' => $this->faker->randomFloat(1, 1, 3),
+            'count' => $this->faker->randomFloat(1, 1, 10),
+            'category_id' => $this->faker->randomFloat(1, 1, 4),
+            'subcategory_id' => $this->faker->randomFloat(1, 5, 9),
             'price' => $this->faker->randomFloat(2, 10, 100),
         ];
     }
