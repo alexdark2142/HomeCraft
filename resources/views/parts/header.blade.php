@@ -9,7 +9,7 @@
                     <!-- RD Navbar Panel-->
                     <div class="navbar-panel">
                         <!-- RD Navbar Toggle-->
-                        <button class="navbar-toggle" data-navbar-toggle=".navbar-nav-wrap">
+                        <button class="navbar-toggle" id="navbar-nav-btn">
                             <span></span>
                         </button>
                         <!-- RD Navbar Brand-->
@@ -21,7 +21,7 @@
                     </div>
 
                     <div class="navbar-main-element">
-                        <div class="navbar-nav-wrap">
+                        <div class="navbar-nav-wrap" id="navbar-nav-wrap">
                             <!-- RD Navbar Nav-->
                             <ul class="navbar-nav">
                                 <li class="rd-nav-item active">

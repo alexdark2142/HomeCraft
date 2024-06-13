@@ -17,6 +17,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    document.getElementById('navbar-nav-btn').onclick = function () {
+        document.getElementById("navbar-nav-btn").classList.toggle("active");
+        document.getElementById("navbar-nav-wrap").classList.toggle("active");
+    }
+
 // Виклик функції при завантаженні сторінки та зміні розміру вікна
     window.addEventListener('load', updateHeaderClass);
     window.addEventListener('resize', updateHeaderClass);
