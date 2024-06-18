@@ -50,6 +50,12 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('category').addEventListener('change', function() {
             const categoryId = this.value;
             const subcategoryContainer = document.getElementById('subcategory-container');
+
+            // Заблокувати кнопку
+            const addButton = document.getElementById('btn');
+            addButton.disabled = true;
+            addButton.classList.add('opacity-50', 'cursor-not-allowed');
+
             if (categoryId) {
                 axios.get(`/api/subcategories/${categoryId}`).then(response => {
                     const subcategories = response.data;
@@ -63,11 +69,21 @@ document.addEventListener('DOMContentLoaded', function() {
                             option.textContent = subcategory.name;
                             subcategorySelect.appendChild(option);
                         });
+
+                        // Розблокувати кнопку після отримання відповіді
+                        addButton.disabled = false;
+                        addButton.classList.remove('opacity-50', 'cursor-not-allowed');
                     } else {
+                        // Розблокувати кнопку після отримання відповіді
+                        addButton.disabled = false;
+                        addButton.classList.remove('opacity-50', 'cursor-not-allowed');
                         subcategoryContainer.style.display = 'none';
                     }
                 });
             } else {
+                // Розблокувати кнопку після отримання відповіді
+                addButton.disabled = false;
+                addButton.classList.remove('opacity-50', 'cursor-not-allowed');
                 subcategoryContainer.style.display = 'none';
             }
         });
