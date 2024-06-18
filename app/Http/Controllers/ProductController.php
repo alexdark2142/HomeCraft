@@ -59,7 +59,7 @@ class ProductController extends Controller
         ]);
 
         $imageName = time().'.'.$request->img->extension();
-        $request->img->move(public_path('images'), $imageName);
+        $request->img->move(public_path('images/products'), $imageName);
 
         Product::create([
             'img' => $imageName,
@@ -107,6 +107,14 @@ class ProductController extends Controller
     {
         try {
             $product = Product::findOrFail($id);
+            $img = $product->img;
+
+            // Видалення зображення з папки
+            if ($img && file_exists(public_path('images/products/' . $img))) {
+                unlink(public_path('images/products/' . $img));
+            }
+
+            // Видалення продукту з бази даних
             $product->delete();
 
             return response()->json([
@@ -117,7 +125,8 @@ class ProductController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to delete product: ' . $e->getMessage(),
-            ], 50);
+            ], 500);
         }
     }
+
 }

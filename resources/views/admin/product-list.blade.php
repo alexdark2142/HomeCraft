@@ -27,7 +27,7 @@
                         <tr class="border-b border-r border-l h-full product-row" data-product-id="{{ $product->id }}">
                             <td class="text-center p-2 border-r border-l h-full flex justify-center items-center align-middle">
                                 <div class="flex flex-col justify-center items-center h-full">
-                                    <img src="{{ asset('/images/' . ($product->img)) }}" alt="Img product" class="u-embed__obj">
+                                    <img src="{{ asset('/images/products/' . ($product->img)) }}" alt="Img product" class="u-embed__obj">
                                 </div>
                             </td>
                             <td class="text-center border-r border-l h-full flex justify-center items-center align-middle">

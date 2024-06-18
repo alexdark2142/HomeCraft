@@ -19,9 +19,9 @@
                                         <div class="unit flex-row flex-lg-column">
                                             <div class="unit-left">
                                                 <div class="product-figure">
-                                                    <img src="{{ asset('images/' . $product->img) }}" alt="{{ $product->name }}" width="270" height="280" />
+                                                    <img src="{{ asset('images/products/' . $product->img) }}" alt="{{ $product->name }}" width="270" height="280" />
                                                     <div class="product-button">
-                                                        <button class="button button-md button-white button-ujarak add-to-cart" data-id="{{ $product->id }}" data-name="{{ $product->name }}" data-price="{{ $product->price }}" data-img="{{ asset('images/' . $product->img) }}">
+                                                        <button class="button button-md button-white button-ujarak add-to-cart" data-id="{{ $product->id }}" data-name="{{ $product->name }}" data-price="{{ $product->price }}" data-img="{{ asset('images/products/' . $product->img) }}">
                                                             Add to cart
                                                         </button>
                                                     </div>
@@ -46,7 +46,7 @@
                                                     data-id="{{ $product->id }}"
                                                     data-name="{{ $product->name }}"
                                                     data-price="{{ $product->price }}"
-                                                    data-img="{{ asset('images/' . $product->img) }}"
+                                                    data-img="{{ asset('images/products/' . $product->img) }}"
                                                 >
                                                     Add to cart
                                                 </button>
