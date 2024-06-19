@@ -91,12 +91,16 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('product-form').addEventListener('submit', function(event) {
             event.preventDefault();
 
-            // Заблокувати кнопку
             const addButton = document.getElementById('btn');
             addButton.disabled = true;
             addButton.classList.add('opacity-50', 'cursor-not-allowed');
 
             const formData = new FormData(this);
+
+            // Очистити попередні повідомлення про помилки
+            document.querySelectorAll('.error-msg').forEach(function(span) {
+                span.textContent = '';
+            });
 
             axios.post('/admin/create-product', formData, {
                 headers: {
@@ -104,20 +108,36 @@ document.addEventListener('DOMContentLoaded', function() {
                     'Content-Type': 'multipart/form-data'
                 }
             }).then(response => {
-                // Розблокувати кнопку після отримання відповіді
                 addButton.disabled = false;
                 addButton.classList.remove('opacity-50', 'cursor-not-allowed');
 
                 alert('Product added successfully!');
                 this.reset();
             }).catch(error => {
-                // Розблокувати кнопку у випадку помилки
                 addButton.disabled = false;
                 addButton.classList.remove('opacity-50', 'cursor-not-allowed');
 
-                alert('Error occurred while adding the product.');
-                console.error('Error:', error);
+                if (error.response && error.response.status === 422) {
+                    const errors = error.response.data.errors;
+                    displayValidationErrors(errors);
+                } else {
+                    alert('Error occurred while adding the product.');
+                    console.error('Error:', error);
+                }
             });
         });
+
+        function displayValidationErrors(errors) {
+            for (const key in errors) {
+                if (errors.hasOwnProperty(key)) {
+                    const errorMessages = errors[key];
+                    const inputElement = document.querySelector(`[name="${key}"]`);
+                    if (inputElement) {
+                        const errorMsgElement = inputElement.parentElement.querySelector('.error-msg');
+                        errorMsgElement.textContent = errorMessages.join(', ');
+                    }
+                }
+            }
+        }
     }
 });

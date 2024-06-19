@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class ProductController extends Controller
 {
@@ -50,7 +52,7 @@ class ProductController extends Controller
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([
-            'img' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'img' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             'name' => 'required|string|max:255',
             'count' => 'required|integer',
             'category' => 'required|integer|exists:categories,id',
@@ -58,8 +60,18 @@ class ProductController extends Controller
             'price' => 'required|numeric',
         ]);
 
-        $imageName = time().'.'.$request->img->extension();
-        $request->img->move(public_path('images/products'), $imageName);
+        // Обробка зображення
+        $image = $request->file('img');
+        $imageName = time() . '.' . $image->getClientOriginalExtension();
+
+        $manager = new ImageManager(new Driver());
+        $image = $manager->read($image->getRealPath())->scale(height: 1200);
+
+        // Зменшити розмір зображення
+        $image->toWebp(60);
+
+        // Зберегти зображення у форматі WebP з оптимізованою якістю
+        $image->save(public_path('images/products') . '/' . $imageName, 90, 'webp');
 
         Product::create([
             'img' => $imageName,
