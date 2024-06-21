@@ -35,6 +35,26 @@ document.addEventListener('DOMContentLoaded', function () {
         updateCart();
     }
 
+    document.querySelectorAll('.view-img').forEach(button => {
+        button.addEventListener('click', function () {
+            const img = this.getAttribute('data-img');
+            const body = document.body;
+
+            // Показати попап і заблокувати прокрутку сторінки
+            document.querySelector('.popup-img').style.display = 'block';
+            document.querySelector('.popup-img img').src = img;
+            body.style.overflow = 'hidden'; // Блокування прокрутки сторінки
+        });
+    });
+
+    document.querySelector('.popup-img span').onclick = () => {
+        const body = document.body;
+
+        // Сховати попап і розблокувати прокрутку сторінки
+        document.querySelector('.popup-img').style.display = 'none';
+        body.style.overflow = 'auto'; // Розблокування прокрутки сторінки
+    };
+
     document.querySelectorAll('.add-to-cart').forEach(button => {
         button.addEventListener('click', function () {
             const id = this.getAttribute('data-id');
