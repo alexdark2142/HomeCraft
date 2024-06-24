@@ -24,15 +24,15 @@
                                             <a href="/products/{{ $category->filter_name }}">{{ $category->name }}</a>
                                         @endif
                                     </h4>
-{{--                                    @if($category->subcategories)--}}
-{{--                                        <ul class="subcategories">--}}
-{{--                                            @foreach ($category->subcategories as $subcategory)--}}
-{{--                                                <li class="subcategory">--}}
-{{--                                                    <a href="/{{ $category->name . '/' . $subcategory->name }}">{{ $subcategory->name }}</a>--}}
-{{--                                                </li>--}}
-{{--                                            @endforeach--}}
-{{--                                        </ul>--}}
-{{--                                    @endif--}}
+                                    @if($category->subcategories)
+                                        <ul class="subcategories">
+                                            @foreach ($category->subcategories as $subcategory)
+                                                <li class="subcategory">
+                                                    <a href="/{{ $category->name . '/' . $subcategory->name }}">{{ $subcategory->name }}</a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
                                 </div>
                             </div>
                         </article>

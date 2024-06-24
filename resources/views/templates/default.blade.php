@@ -9,10 +9,13 @@
     <meta charset="utf-8">
     <link rel="icon" href="{{asset('images/favicon.ico')}}" type="image/x-icon">
     <!-- Stylesheets-->
+    <!--=============== REMIXICONS ===============-->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Poppins:300,400,500">
     <link rel="stylesheet" href="{{asset('css/bootstrap.css')}}">
     <link rel="stylesheet" href="{{asset('css/fonts.css')}}">
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
+    <link rel="stylesheet" href="{{asset('css/header.css')}}">
     @php
         $isIElt10 = str_contains($_SERVER['HTTP_USER_AGENT'], 'MSIE')
         && !str_contains($_SERVER['HTTP_USER_AGENT'], 'Trident/7.0')
@@ -41,7 +44,7 @@
             </div>
         </div>
     </div>
-        @include('parts.header')
+        @include('parts.header-new')
         <div class="page">
             @yield('content')
         </div>

@@ -4,8 +4,6 @@
     <!-- Swiper-->
     @include('parts.swiper')
 
-    @include('parts.category')
-
     <!-- Products-->
     @include('parts.products')
     <!-- About us-->

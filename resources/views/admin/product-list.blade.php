@@ -60,4 +60,9 @@
             </div>
         @endif
 	</div>
+
+    @if($products->isNotEmpty())
+        @include('parts.paginate')
+    @endif
+
 @endsection

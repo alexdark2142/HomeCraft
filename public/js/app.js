@@ -1,30 +1,53 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Функція для перевірки розміру екрана і встановлення класу
-    function updateHeaderClass() {
-        const header = document.getElementById('navbar');
-        const screenWidth = window.innerWidth;
+    /*=============== SHOW MENU ===============*/
+    const showMenu = (toggleId, navId) =>{
+        const toggle = document.getElementById(toggleId),
+            nav = document.getElementById(navId)
 
-        if (screenWidth > 991) {
-            header.classList.add('navbar-static');
-            header.classList.add('navbar--is-stuck');
-            header.classList.remove('navbar--is-touch');
-            header.classList.remove('navbar-fixed');
-        } else {
-            header.classList.add('navbar--is-touch');
-            header.classList.add('navbar-fixed');
-            header.classList.remove('navbar-static');
-            header.classList.remove('navbar--is-stuck');
+        toggle.addEventListener('click', () =>{
+            // Add show-menu class to nav menu
+            nav.classList.toggle('show-menu')
+
+            // Add show-icon to show and hide the menu icon
+            toggle.classList.toggle('show-icon')
+        })
+    }
+
+    showMenu('nav-toggle','nav-menu')
+
+    const categoryToggle = document.getElementById('categories-toggle');
+    const dropdownItems = document.querySelectorAll('.dropdown__item');
+    const subitemToggles = document.querySelectorAll('.subitem-toggle');
+
+    // Function to close all dropdowns
+    const closeAllDropdowns = () => {
+        dropdownItems.forEach(item => item.classList.remove('active'));
+    };
+
+    // Toggle main categories on mobile
+    categoryToggle.addEventListener('click', () => {
+        const isActive = categoryToggle.parentElement.classList.contains('active');
+        closeAllDropdowns();
+        if (!isActive) {
+            categoryToggle.parentElement.classList.add('active');
         }
-    }
+    });
 
-    document.getElementById('navbar-nav-btn').onclick = function () {
-        document.getElementById("navbar-nav-btn").classList.toggle("active");
-        document.getElementById("navbar-nav-wrap").classList.toggle("active");
-    }
+    // Toggle subcategories on mobile
+    subitemToggles.forEach(toggle => {
+        toggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            const subitem = toggle.closest('.dropdown__subitem');
+            subitem.classList.toggle('active');
+        });
+    });
 
-// Виклик функції при завантаженні сторінки та зміні розміру вікна
-    window.addEventListener('load', updateHeaderClass);
-    window.addEventListener('resize', updateHeaderClass);
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.dropdown__item')) {
+            closeAllDropdowns();
+        }
+    });
 
     let cart = [];
 
@@ -178,5 +201,8 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('.shopping-cart.navbar-modern-project').classList.remove('open');
         document.querySelector('.shopping-cart-btn').classList.remove('active');
     });
+
+
+
 
 });

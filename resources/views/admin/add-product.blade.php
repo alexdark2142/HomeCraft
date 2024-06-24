@@ -1,7 +1,7 @@
 @extends('admin.templates.base')
 
 @section('main')
-	<div class="w-full">
+	<div class="w-form">
 		<h1 class="text-3xl font-medium mb-5">Add Product:</h1>
 		<div class="overflow-x-auto">
             <form id="product-form" class="space-y-4" enctype="multipart/form-data">

@@ -1,9 +1,6 @@
 @extends('templates.default')
 
 @section('content')
-    <!-- Swiper-->
-    @include('parts.category')
-
     <!-- Products-->
     @include('parts.products')
 

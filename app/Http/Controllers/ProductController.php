@@ -27,6 +27,12 @@ class ProductController extends Controller
             });
         }
 
+        if ($subcategory) {
+            $productsQuery->whereHas('subcategory', function ($query) use ($subcategory) {
+                $query->whereFilterName($subcategory);
+            });
+        }
+
         $products = $productsQuery->paginate(9);
         $categories = Category::with('subcategories')->whereNull('parent_id')->get();
         $activeCategory = $category;

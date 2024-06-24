@@ -12,7 +12,7 @@
 
 <body class="bg-gray-100 pt-10">
 <main class="flex flex-col container text-black mx-auto p-2">
-    <div class="w-full md:w-1/2 mx-auto bg-white border rounded-lg shadow-xl p-5">
+    <div class="w-form mx-auto bg-white border rounded-lg shadow-xl p-5">
         <h1 class="text-3xl font-medium mb-5">Hi Admin</h1>
 
         <div id="error-messages" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 hidden" role="alert">
