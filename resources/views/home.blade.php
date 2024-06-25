@@ -4,8 +4,8 @@
     <!-- Swiper-->
     @include('parts.swiper')
 
-    <!-- Products-->
-    @include('parts.products')
+    <!--Categories-->
+    @include('parts.categories')
     <!-- About us-->
     {{--     <section class="section">
          <div class="parallax-container" data-parallax-img="images/bg-parallax-2.jpg">

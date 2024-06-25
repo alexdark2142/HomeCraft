@@ -35,12 +35,14 @@ class ProductController extends Controller
 
         $products = $productsQuery->paginate(9);
         $categories = Category::with('subcategories')->whereNull('parent_id')->get();
-        $activeCategory = $category;
+        $selectedCategory = ucwords(str_replace('-', ' ', $category));
+        $selectedSubcategory = ucwords(str_replace('-', ' ', $subcategory));
 
         return response()->view($category ? 'products' : 'home', compact([
             'products',
             'categories',
-            'activeCategory'
+            'selectedCategory',
+            'selectedSubcategory'
         ]));
     }
 

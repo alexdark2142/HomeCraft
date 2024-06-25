@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
             CategoriesSeeder::class,
             SubcategoriesSeeder::class,
 //            ProductSeeder::class,
-            AdminSeeder::class
+//            AdminSeeder::class
         ]);
 
 //        User::factory()->create([

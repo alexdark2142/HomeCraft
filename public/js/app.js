@@ -1,51 +1,72 @@
 document.addEventListener('DOMContentLoaded', function () {
     /*=============== SHOW MENU ===============*/
-    const showMenu = (toggleId, navId) =>{
+    const showMenu = (toggleId, navId) => {
         const toggle = document.getElementById(toggleId),
-            nav = document.getElementById(navId)
+            nav = document.getElementById(navId);
 
-        toggle.addEventListener('click', () =>{
+        toggle.addEventListener('click', () => {
             // Add show-menu class to nav menu
-            nav.classList.toggle('show-menu')
+            nav.classList.toggle('show-menu');
 
             // Add show-icon to show and hide the menu icon
-            toggle.classList.toggle('show-icon')
-        })
-    }
+            toggle.classList.toggle('show-icon');
 
-    showMenu('nav-toggle','nav-menu')
+            // Toggle body scroll
+            document.body.classList.toggle('no-scroll', nav.classList.contains('show-menu'));
+        });
+    };
+
+    showMenu('nav-toggle', 'nav-menu');
 
     const categoryToggle = document.getElementById('categories-toggle');
     const dropdownItems = document.querySelectorAll('.dropdown__item');
     const subitemToggles = document.querySelectorAll('.subitem-toggle');
 
-    // Function to close all dropdowns
+// Function to close all dropdowns
     const closeAllDropdowns = () => {
-        dropdownItems.forEach(item => item.classList.remove('active'));
+        dropdownItems.forEach(item => {
+            item.classList.remove('active');
+            const menu = item.querySelector('.dropdown__menu');
+            if (menu) {
+                menu.classList.remove('active');
+            }
+            const subitems = item.querySelectorAll('.dropdown__subitem');
+            subitems.forEach(subitem => subitem.classList.remove('active'));
+        });
     };
 
-    // Toggle main categories on mobile
-    categoryToggle.addEventListener('click', () => {
+// Toggle main categories on mobile
+    categoryToggle.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent event bubbling
         const isActive = categoryToggle.parentElement.classList.contains('active');
         closeAllDropdowns();
         if (!isActive) {
             categoryToggle.parentElement.classList.add('active');
+            const menu = categoryToggle.nextElementSibling;
+            if (menu) {
+                menu.classList.add('active');
+            }
         }
+        // Toggle body scroll
+        document.body.classList.toggle('no-scroll', !isActive);
     });
 
-    // Toggle subcategories on mobile
+// Toggle subcategories on mobile
     subitemToggles.forEach(toggle => {
         toggle.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent event bubbling
             e.preventDefault();
             const subitem = toggle.closest('.dropdown__subitem');
             subitem.classList.toggle('active');
         });
     });
 
-    // Close dropdowns when clicking outside
+// Close dropdowns when clicking outside
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.dropdown__item')) {
             closeAllDropdowns();
+            // Enable body scroll
+            document.body.classList.remove('no-scroll');
         }
     });
 
@@ -70,13 +91,16 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    document.querySelector('.popup-img span').onclick = () => {
-        const body = document.body;
+    let popupImg = document.querySelector('.popup-img span')
+    if (popupImg) {
+        popupImg.onclick = () => {
+            const body = document.body;
 
-        // Сховати попап і розблокувати прокрутку сторінки
-        document.querySelector('.popup-img').style.display = 'none';
-        body.style.overflow = 'auto'; // Розблокування прокрутки сторінки
-    };
+            // Сховати попап і розблокувати прокрутку сторінки
+            document.querySelector('.popup-img').style.display = 'none';
+            body.style.overflow = 'auto'; // Розблокування прокрутки сторінки
+        };
+    }
 
     document.querySelectorAll('.add-to-cart').forEach(button => {
         button.addEventListener('click', function () {
