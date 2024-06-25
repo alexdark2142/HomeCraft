@@ -25,7 +25,7 @@ class SubcategoriesSeeder extends Seeder
         ];
 
         $flower_pots_id = Category::where('filter_name', 'flower-pots')->first();
-        $pet_feeders_id = Category::where('filter_name', 'pet-feeders')->first();
+        $pet_feeders_id = Category::where('filter_name', 'cat-and-dog-food-bowl-stand')->first();
 
         foreach ($planterSubCategories as $filterName => $name) {
             DB::table('categories')->insert([
