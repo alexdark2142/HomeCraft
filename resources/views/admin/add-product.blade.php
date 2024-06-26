@@ -1,82 +1,82 @@
 @extends('admin.templates.base')
 
 @section('main')
-	<div class="w-form">
-		<h1 class="text-3xl font-medium mb-5">Add Product:</h1>
-		<div class="overflow-x-auto">
-            <form id="product-form" class="space-y-4" enctype="multipart/form-data">
+    <div class="form-container">
+        <h1 class="form-title">Add Product:</h1>
+        <div class="form-wrapper">
+            <form id="product-form" class="form-space" enctype="multipart/form-data">
                 @csrf
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Picture</label>
+                <div class="form-group">
+                    <label class="form-label">Picture</label>
                     <input
                         required
                         type="file"
                         name="img"
                         id="img"
                         accept=".jpg, .jpeg, .png, .webp"
-                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+                        class="form-input"
                     >
-                    <span class="error-msg text-red-500 text-sm"></span>
+                    <span class="error-message"></span>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Name</label>
+                <div class="form-group">
+                    <label class="form-label">Name</label>
                     <input
                         required
                         type="text"
                         name="name"
                         id="name"
-                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+                        class="form-input"
                     >
-                    <span class="error-msg text-red-500 text-sm"></span>
+                    <span class="error-message"></span>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Count</label>
+                <div class="form-group">
+                    <label class="form-label">Count</label>
                     <input
                         required
                         type="number"
                         name="count"
                         id="count"
-                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+                        class="form-input"
                     >
-                    <span class="error-msg text-red-500 text-sm"></span>
+                    <span class="error-message"></span>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Price</label>
+                <div class="form-group">
+                    <label class="form-label">Price</label>
                     <input
                         required
                         type="number"
                         step="0.01"
                         name="price"
                         id="price"
-                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+                        class="form-input"
                     >
-                    <span class="error-msg text-red-500 text-sm"></span>
+                    <span class="error-message"></span>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Category</label>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
                     <select
                         required
                         name="category"
                         id="category"
-                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+                        class="form-input"
                     >
                         <option value="">Choose category</option>
                         @foreach($categories as $category)
                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                         @endforeach
                     </select>
-                    <span class="error-msg text-red-500 text-sm"></span>
+                    <span class="error-message"></span>
                 </div>
-                <div id="subcategory-container" style="display: none;">
-                    <label class="block text-sm font-medium text-gray-700">Subcategory</label>
-                    <select name="subcategory" id="subcategory" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm">
+                <div id="subcategory-container" class="form-group" style="display: none;">
+                    <label class="form-label">Subcategory</label>
+                    <select name="subcategory" id="subcategory" class="form-input">
                         <option value="">Choose subcategory</option>
                         <!-- Subcategory options will be loaded dynamically -->
                     </select>
-                    <span class="error-msg text-red-500 text-sm"></span>
+                    <span class="error-message"></span>
                 </div>
-                <button id="btn" type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md shadow-sm">Add item</button>
+                <button id="btn" type="submit" class="form-button">Add item</button>
             </form>
         </div>
-	</div>
+    </div>
 @endsection

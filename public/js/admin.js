@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const subcategorySelect = document.getElementById('subcategory');
                     subcategorySelect.innerHTML = '<option value="">Choose subcategory</option>';
                     if (subcategories.length > 0) {
-                        subcategoryContainer.style.display = 'block';
+                        subcategoryContainer.style.display = 'flex';
                         subcategories.forEach(subcategory => {
                             const option = document.createElement('option');
                             option.value = subcategory.id;
@@ -128,16 +128,31 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         function displayValidationErrors(errors) {
+            // Очистити попередні повідомлення про помилки
+            document.querySelectorAll('.error-msg').forEach(function(span) {
+                span.textContent = '';
+            });
+
             for (const key in errors) {
                 if (errors.hasOwnProperty(key)) {
                     const errorMessages = errors[key];
                     const inputElement = document.querySelector(`[name="${key}"]`);
                     if (inputElement) {
                         const errorMsgElement = inputElement.parentElement.querySelector('.error-msg');
-                        errorMsgElement.textContent = errorMessages.join(', ');
+                        if (errorMsgElement) {
+                            errorMsgElement.textContent = errorMessages.join(', ');
+                        } else {
+                            const newErrorMsgElement = document.createElement('span');
+                            newErrorMsgElement.className = 'error-msg text-red-500 text-sm';
+                            newErrorMsgElement.textContent = errorMessages.join(', ');
+                            inputElement.parentElement.appendChild(newErrorMsgElement);
+                        }
+                    } else {
+                        console.error(`Input element not found for ${key}`);
                     }
                 }
             }
         }
+
     }
 });

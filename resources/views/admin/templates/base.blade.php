@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,12 +11,12 @@
 </head>
 
 <body class="bg-gray-100 pt-20">
-    @include('admin.common.header')
-    <main class="flex flex-col container text-black mx-auto p-2">
-        @yield('main')
-    </main>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
-    <script src={{ asset('js/admin.js') }}></script>
+@include('admin.common.header')
+<main class="main-content flex flex-col text-black mx-auto p-2">
+    @yield('main')
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<script src={{ asset('js/admin.js') }}></script>
 </body>
 
 </html>
