@@ -4,7 +4,12 @@
     <div class="form-container">
         <h1 class="form-title">Edit Product:</h1>
         <div class="form-wrapper">
-            <form id="product-form" class="form-space" enctype="multipart/form-data" method="POST" data-url="{{ route('admin.update-product', $product->id) }}">
+            <form
+                id="product-form"
+                class="form-space"
+                enctype="multipart/form-data"
+                data-url="{{ route('admin.update-product', $product->id) }}"
+            >
                 @csrf
                 @method('PUT')
                 <div class="form-group">
@@ -91,7 +96,7 @@
                     <select
                         required
                         name="category_id"
-                        id="category"
+                        id="category_id"
                         class="form-input"
                     >
                         <option value="">Choose category</option>
@@ -106,15 +111,16 @@
                     <label class="form-label">Subcategory</label>
                     <select
                         name="subcategory_id"
-                        id="subcategory"
+                        id="subcategory_id"
                         class="form-input"
                     >
                         @foreach($subcategories as $subcategory)
-                            <option value="{{ $subcategory->id }}" {{ $product->category_id == $subcategory->id ? 'selected' : '' }}>{{ $subcategory->name }}</option>
+                            <option value="{{ $subcategory->id }}" {{ $product->subcategory_id == $subcategory->id ? 'selected' : '' }}>{{ $subcategory->name }}</option>
                         @endforeach
                     </select>
                     <span class="error-message"></span>
                 </div>
+
                 <button id="btn" type="submit" class="form-button">Update item</button>
             </form>
         </div>

@@ -4,7 +4,12 @@
     <div class="form-container">
         <h1 class="form-title">Add Product:</h1>
         <div class="form-wrapper">
-            <form id="product-form" class="form-space" enctype="multipart/form-data" data-url="{{ route('admin.create-product') }}">
+            <form
+                id="product-form"
+                class="form-space"
+                enctype="multipart/form-data"
+                data-url="{{ route('admin.create-product') }}"
+            >
                 @csrf
                 <div class="form-group">
                     <label class="form-label">Pictures</label>
@@ -83,8 +88,8 @@
                     <label class="form-label">Category</label>
                     <select
                         required
-                        name="category"
-                        id="category"
+                        name="category_id"
+                        id="category_id"
                         class="form-input"
                     >
                         <option value="">Choose category</option>
@@ -97,7 +102,7 @@
 
                 <div id="subcategory-container" class="form-group" style="display: none;">
                     <label class="form-label">Subcategory</label>
-                    <select name="subcategory" id="subcategory" class="form-input">
+                    <select name="subcategory_id" id="subcategory_id" class="form-input">
                         <option value="">Choose subcategory</option>
                         <!-- Subcategory options will be loaded dynamically -->
                     </select>

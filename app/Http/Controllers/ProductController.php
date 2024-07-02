@@ -106,24 +106,24 @@ class ProductController extends Controller
      */
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
-        $request->validate([
-            'photos.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+        $validatedData = $request->validate([
             'name' => 'required|string|max:40',
             'count' => 'required|integer',
             'size' => 'nullable|string|max:40',
             'material' => 'nullable|string|max:100',
             'category_id' => 'required|integer|exists:categories,id',
-            'subcategory_id' => 'nullable|integer|exists:subcategories,id',
+            'subcategory_id' => 'nullable|integer|exists:categories,id',
             'price' => 'required|numeric',
         ]);
+
 
         $product = Product::create([
             'name' => $request->name,
             'count' => $request->count,
             'size' => $request->size,
             'material' => $request->material,
-            'category_id' => $request->category,
-            'subcategory_id' => $request->subcategory == '' ? 0 : $request->subcategory,
+            'category_id' => $request->category_id,
+            'subcategory_id' => $request->subcategory_id == '' ? 0 : $request->subcategory_id,
             'price' => $request->price,
         ]);
 
@@ -198,7 +198,7 @@ class ProductController extends Controller
             'size' => 'nullable|string|max:40',
             'material' => 'nullable|string|max:100',
             'category_id' => 'required|integer|exists:categories,id',
-            'subcategory_id' => 'nullable|integer|exists:subcategories,id',
+            'subcategory_id' => 'nullable|integer|exists:categories,id',
             'price' => 'required|numeric',
         ]);
 

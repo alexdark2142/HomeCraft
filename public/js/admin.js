@@ -44,10 +44,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    let category = document.getElementById('category')
+    let category = document.getElementById('category_id')
 
     if (category) {
-        document.getElementById('category').addEventListener('change', function() {
+        document.getElementById('category_id').addEventListener('change', function() {
             const categoryId = this.value;
             const subcategoryContainer = document.getElementById('subcategory-container');
 
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (categoryId) {
                 axios.get(`/api/subcategories/${categoryId}`).then(response => {
                     const subcategories = response.data;
-                    const subcategorySelect = document.getElementById('subcategory');
+                    const subcategorySelect = document.getElementById('subcategory_id');
                     subcategorySelect.innerHTML = '<option value="">Choose subcategory</option>';
                     if (subcategories.length > 0) {
                         subcategoryContainer.style.display = 'flex';
@@ -97,7 +97,6 @@ document.addEventListener('DOMContentLoaded', function() {
             addButton.classList.add('opacity-50', 'cursor-not-allowed');
 
             const formData = new FormData(this);
-
             // Очистити попередні повідомлення про помилки
             document.querySelectorAll('.error-msg').forEach(function(span) {
                 span.textContent = '';
