@@ -506,3 +506,16 @@ body, html {
         margin: 2rem;
     }
 }
+
+
+/* Стилі для Dropzone */
+.dropzone {
+    border: 2px dashed #ccc;
+    padding: 20px;
+    margin-top: 10px;
+    min-height: 150px;
+}
+
+.dropzone .dz-main-image {
+    border: 2px solid #1a202c; /* Колір підкреслення для головного зображення */
+}

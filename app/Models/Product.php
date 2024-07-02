@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
@@ -21,8 +22,9 @@ class Product extends Model
      */
     protected $fillable = [
         'name',
-        'img',
         'count',
+        'size',
+        'material',
         'category_id',
         'subcategory_id',
         'price',
@@ -42,5 +44,10 @@ class Product extends Model
     public function subcategory(): HasOne
     {
         return $this->hasOne(Category::class, 'id', 'subcategory_id');
+    }
+
+    public function gallery(): HasMany
+    {
+        return $this->hasMany(Gallery::class, 'product_id', 'id');
     }
 }

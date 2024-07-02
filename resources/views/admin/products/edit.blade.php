@@ -2,20 +2,22 @@
 
 @section('main')
     <div class="form-container">
-        <h1 class="form-title">Add Product:</h1>
+        <h1 class="form-title">Edit Product:</h1>
         <div class="form-wrapper">
-            <form id="product-form" class="form-space" enctype="multipart/form-data" data-url="{{ route('admin.create-product') }}">
+            <form id="product-form" class="form-space" enctype="multipart/form-data" method="POST" data-url="{{ route('admin.update-product', $product->id) }}">
                 @csrf
+                @method('PUT')
                 <div class="form-group">
-                    <label class="form-label">Pictures</label>
+                    <label class="form-label">Pictures
+                        <span style="color: red">(This field does not work in edit mode. Will be provided later)</span>
+                    </label>
                     <input
-                        required
                         type="file"
-                        name="photos[]"
+                        name="img"
                         id="img"
                         accept=".jpg, .jpeg, .png, .webp"
                         class="form-input"
-                        multiple
+                        disabled
                     >
                     <span class="error-message"></span>
                 </div>
@@ -28,6 +30,7 @@
                         name="name"
                         id="name"
                         class="form-input"
+                        value="{{ $product->name }}"
                     >
                     <span class="error-message"></span>
                 </div>
@@ -40,6 +43,7 @@
                         name="count"
                         id="count"
                         class="form-input"
+                        value="{{ $product->count }}"
                     >
                     <span class="error-message"></span>
                 </div>
@@ -51,6 +55,7 @@
                         name="size"
                         id="size"
                         class="form-input"
+                        value="{{ $product->size }}"
                     >
                     <span class="error-message"></span>
                 </div>
@@ -62,6 +67,7 @@
                         name="material"
                         id="material"
                         class="form-input"
+                        value="{{ $product->material }}"
                     >
                     <span class="error-message"></span>
                 </div>
@@ -75,6 +81,7 @@
                         name="price"
                         id="price"
                         class="form-input"
+                        value="{{ $product->price }}"
                     >
                     <span class="error-message"></span>
                 </div>
@@ -83,29 +90,34 @@
                     <label class="form-label">Category</label>
                     <select
                         required
-                        name="category"
+                        name="category_id"
                         id="category"
                         class="form-input"
                     >
                         <option value="">Choose category</option>
                         @foreach($categories as $category)
-                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                         @endforeach
                     </select>
                     <span class="error-message"></span>
                 </div>
 
-                <div id="subcategory-container" class="form-group" style="display: none;">
+                <div id="subcategory-container" class="form-group" style="{{ $product->subcategory_id ? 'display: flex;' : 'display: none;' }}">
                     <label class="form-label">Subcategory</label>
-                    <select name="subcategory" id="subcategory" class="form-input">
-                        <option value="">Choose subcategory</option>
-                        <!-- Subcategory options will be loaded dynamically -->
+                    <select
+                        name="subcategory_id"
+                        id="subcategory"
+                        class="form-input"
+                    >
+                        @foreach($subcategories as $subcategory)
+                            <option value="{{ $subcategory->id }}" {{ $product->category_id == $subcategory->id ? 'selected' : '' }}>{{ $subcategory->name }}</option>
+                        @endforeach
                     </select>
                     <span class="error-message"></span>
                 </div>
-
-                <button id="btn" type="submit" class="form-button">Add item</button>
+                <button id="btn" type="submit" class="form-button">Update item</button>
             </form>
         </div>
     </div>
+
 @endsection

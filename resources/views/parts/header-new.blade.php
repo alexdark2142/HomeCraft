@@ -83,10 +83,12 @@
                 <div>
                     <div class="cart-inline">
                         <div class="cart-row-body" id="cart-items"></div>
+
                         <div class="cart-inline-header">
                             <h5 class="cart-inline-title">In cart:<span id="cart-count-header"> 0</span> Products</h5>
                             <h6 class="cart-inline-title">Total price:<span id="cart-total-price"> $0</span></h6>
                         </div>
+
                         <div class="cart-footer">
                             <div class="cart-footer_btn group-sm">
                                 <a class="button button-md button-default-outline-2 button-wapasha" href="#" id="clear-cart">Clear cart</a>
@@ -106,22 +108,24 @@
                                 </div>
                             </div>
                         </li>
-                        <li>
-                            <div class="unit unit-spacing-sm">
-                                <div class="unit-left">
-                                    <span class="icon fa fa-location-arrow"></span>
-                                </div>
-                                <div class="unit-body">
-                                    <a
-                                        class="link-location"
-                                        href="https://maps.google.com/maps?q=4649+62+St+%233+Red+Deer,+AB+T4N+2R4"
-                                        target="_blank"
-                                    >
-                                        4649 62 St #3 Red Deer, AB T4N 2R4
-                                    </a>
-                                </div>
-                            </div>
-                        </li>
+
+{{--                        <li>--}}
+{{--                            <div class="unit unit-spacing-sm">--}}
+{{--                                <div class="unit-left">--}}
+{{--                                    <span class="icon fa fa-location-arrow"></span>--}}
+{{--                                </div>--}}
+{{--                                <div class="unit-body">--}}
+{{--                                    <a--}}
+{{--                                        class="link-location"--}}
+{{--                                        href="https://maps.google.com/maps?q=4649+62+St+%233+Red+Deer,+AB+T4N+2R4"--}}
+{{--                                        target="_blank"--}}
+{{--                                    >--}}
+{{--                                        4649 62 St #3 Red Deer, AB T4N 2R4--}}
+{{--                                    </a>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </li>--}}
+
                         <li>
                             <div class="unit unit-spacing-sm">
                                 <div class="unit-left">
@@ -138,10 +142,7 @@
 
                     <ul class="list-inline navbar-modern-list-social">
                         <li><a class="icon fa fa-facebook" href="#"></a></li>
-                        <li><a class="icon fa fa-twitter" href="#"></a></li>
-                        <li><a class="icon fa fa-google-plus" href="#"></a></li>
                         <li><a class="icon fa fa-instagram" href="#"></a></li>
-                        <li><a class="icon fa fa-pinterest" href="#"></a></li>
                     </ul>
                 </div>
             </div>

@@ -26,16 +26,20 @@
                                         <div class="unit flex-row flex-lg-column">
                                             <div class="unit-left">
                                                 <div class="product-figure">
+                                                    @php
+                                                        $mainImage = $product->gallery->firstWhere('type', 'main');
+                                                    @endphp
+
                                                     <img
-                                                        src="{{ asset('images/products/' . $product->img) }}"
+                                                        src="{{ asset('images/gallery/' . $mainImage->tag . '/' . $mainImage->name) }}"
                                                         alt="{{ $product->name }}"
                                                         width="270"
                                                         height="280"
                                                     />
                                                     <div class="product-button">
                                                         <button
-                                                            class="button button-md button-white button-ujarak view-img"
-                                                            data-img="{{ asset('images/products/' . $product->img) }}"
+                                                            class="button button-md button-white button-ujarak view-product"
+                                                            data-id="{{ $product->id }}"
                                                         >
                                                             View
                                                         </button>
@@ -44,7 +48,7 @@
                                                             data-id="{{ $product->id }}"
                                                             data-name="{{ $product->name }}"
                                                             data-price="{{ $product->price }}"
-                                                            data-img="{{ asset('images/products/' . $product->img) }}"
+                                                            data-img="{{ asset('images/gallery/' . $mainImage->tag . '/' . $mainImage->name) }}"
                                                         >
                                                             Add to cart
                                                         </button>
@@ -55,21 +59,24 @@
                                                 <h6 class="product-title">
                                                     {{ $product->name }}
                                                 </h6>
+
                                                 <div class="product-price-wrap">
                                                     <div class="product-price">${{ $product->price }}</div>
                                                 </div>
+
                                                 <button
-                                                    class="button button-sm button-dark button-ujarak view-img"
-                                                    data-img="{{ asset('images/products/' . $product->img) }}"
+                                                    class="button button-sm button-dark button-ujarak view-product"
+                                                    data-id="{{ $product->id }}"
                                                 >
                                                     View
                                                 </button>
+
                                                 <button
                                                     class="button button-sm button-secondary button-ujarak add-to-cart"
                                                     data-id="{{ $product->id }}"
                                                     data-name="{{ $product->name }}"
                                                     data-price="{{ $product->price }}"
-                                                    data-img="{{ asset('images/products/' . $product->img) }}"
+                                                    data-img="{{ asset('images/gallery/' . $mainImage->tag . '/' . $mainImage->name) }}"
                                                 >
                                                     Add to cart
                                                 </button>

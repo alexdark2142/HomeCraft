@@ -97,22 +97,22 @@
                                             </div>
                                         </div>
                                     </li>
-                                    <li>
-                                        <div class="unit unit-spacing-sm">
-                                            <div class="unit-left">
-                                                <span class="icon fa fa-location-arrow"></span>
-                                            </div>
-                                            <div class="unit-body">
-                                                <a
-                                                    class="link-location"
-                                                    href="https://maps.google.com/maps?q=4649+62+St+%233+Red+Deer,+AB+T4N+2R4"
-                                                    target="_blank"
-                                                >
-                                                    4649 62 St #3 Red Deer, AB T4N 2R4
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </li>
+{{--                                    <li>--}}
+{{--                                        <div class="unit unit-spacing-sm">--}}
+{{--                                            <div class="unit-left">--}}
+{{--                                                <span class="icon fa fa-location-arrow"></span>--}}
+{{--                                            </div>--}}
+{{--                                            <div class="unit-body">--}}
+{{--                                                <a--}}
+{{--                                                    class="link-location"--}}
+{{--                                                    href="https://maps.google.com/maps?q=4649+62+St+%233+Red+Deer,+AB+T4N+2R4"--}}
+{{--                                                    target="_blank"--}}
+{{--                                                >--}}
+{{--                                                    4649 62 St #3 Red Deer, AB T4N 2R4--}}
+{{--                                                </a>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    </li>--}}
                                     <li>
                                         <div class="unit unit-spacing-sm">
                                             <div class="unit-left">

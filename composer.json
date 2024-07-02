@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "enyo/dropzone": "v5.9.3",
         "intervention/gif": "^4.1",
         "intervention/image": "^3.7",
         "jenssegers/agent": "^2.6",

@@ -10,26 +10,14 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
-    public function getProduct($id)
+    public function listOfProducts()
     {
-        $product = Product::whereId($id)
-            ->get();
-
-        return view('admin.product-info', compact('product'));
-    }
-
-    public function listProducts()
-    {
-        $products = Product::with('category')->with('subcategory')->paginate(9);
+        $products = Product::with('category')
+            ->with('subcategory')
+            ->with('gallery')
+            ->paginate(9);
 
         return view('admin.product-list', compact('products'));
-    }
-
-    public function addProduct()
-    {
-        $categories = Category::with('subcategories')->whereNull('parent_id')->get();
-
-        return view('admin.add-product', compact('categories'));
     }
 
     public function logout(Request $request)

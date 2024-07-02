@@ -3,77 +3,81 @@
         <div class="container">
             <div class="row row-40 justify-content-between">
                 <div class="col">
-                    <div class="oh-desktop">
-                        <div class="wow slideInRight" data-wow-delay="0s">
-                            <div class="footer-brand">
-                                <a href="/">
-                                    <img
-                                        src="{{asset('images/logo/logo-inverse-196x42.png')}}"
-                                        alt="logo"
-                                        width="196"
-                                        height="42"/>
-                                </a>
-                            </div>
-
-                            <ul class="footer-contacts d-md-flex justify-content-between">
-                                <li>
-                                    <div class="unit unit-spacing-xs">
-                                        <div class="unit-left">
-                                            <span class="icon fa fa-phone"></span>
-                                        </div>
-
-                                        <div class="unit-body">
-                                            <a class="link-phone" href="tel:+1 403-877-9890">+1 403-877-9890</a>
-                                        </div>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <div class="unit unit-spacing-xs">
-                                        <div class="unit-left">
-                                            <span class="icon fa fa-envelope"></span>
-                                        </div>
-
-                                        <div class="unit-body">
-                                            <a class="link-email" href="mailto:homecraft1sbdt@gmail.com">
-                                                homecraft1sbdt@gmail.com
-                                            </a>
-                                        </div>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <div class="unit unit-spacing-xs">
-                                        <div class="unit-left">
-                                            <span class="icon fa fa-location-arrow"></span>
-                                        </div>
-
-                                        <div class="unit-body">
-                                            <a
-                                                class="link-location"
-                                                href="https://maps.google.com/maps?q=4649+62+St+%233+Red+Deer,+AB+T4N+2R4"
-                                                target="_blank"
-                                            >
-                                                4649 62 St #3 Red Deer, AB T4N 2R4
-                                            </a>
-                                        </div>
-                                    </div>
-                                </li>
-
-                               {{-- <li>
-                                    <div class="unit unit-spacing-xs">
-                                        <div class="unit-left">
-                                            <span class="icon fa fa-clock-o"></span>
-                                        </div>
-
-                                        <div class="unit-body">
-                                            <p>Mon-Sat: 07:00AM - 05:00PM</p>
-                                        </div>
-                                    </div>
-                                </li>--}}
-                            </ul>
-
+                    <div class="wow slideInRight d-lg-flex justify-content-between" data-wow-delay="0s">
+                        <div class="footer-brand">
+                            <a href="/">
+                                <img
+                                    src="{{asset('images/logo/logo-inverse-196x42.png')}}"
+                                    alt="logo"
+                                    width="196"
+                                    height="42"/>
+                            </a>
                         </div>
+
+                        <ul class="footer-contacts d-lg-flex justify-content-between" style="min-width: 585px">
+                            <li>
+                                <div class="unit unit-spacing-xs">
+                                    <div class="unit-left">
+                                        <span class="icon fa fa-phone"></span>
+                                    </div>
+
+                                    <div class="unit-body">
+                                        <a class="link-phone" href="tel:+1 403-877-9890">+1 403-877-9890</a>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li>
+                                <div class="unit unit-spacing-xs">
+                                    <div class="unit-left">
+                                        <span class="icon fa fa-envelope"></span>
+                                    </div>
+
+                                    <div class="unit-body">
+                                        <a class="link-email" href="mailto:homecraft1sbdt@gmail.com">
+                                            homecraft1sbdt@gmail.com
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+
+{{--                                <li>--}}
+{{--                                    <div class="unit unit-spacing-xs">--}}
+{{--                                        <div class="unit-left">--}}
+{{--                                            <span class="icon fa fa-location-arrow"></span>--}}
+{{--                                        </div>--}}
+
+{{--                                        <div class="unit-body">--}}
+{{--                                            <a--}}
+{{--                                                class="link-location"--}}
+{{--                                                href="https://maps.google.com/maps?q=4649+62+St+%233+Red+Deer,+AB+T4N+2R4"--}}
+{{--                                                target="_blank"--}}
+{{--                                            >--}}
+{{--                                                4649 62 St #3 Red Deer, AB T4N 2R4--}}
+{{--                                            </a>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                </li>--}}
+
+                           {{-- <li>
+                                <div class="unit unit-spacing-xs">
+                                    <div class="unit-left">
+                                        <span class="icon fa fa-clock-o"></span>
+                                    </div>
+
+                                    <div class="unit-body">
+                                        <p>Mon-Sat: 07:00AM - 05:00PM</p>
+                                    </div>
+                                </div>
+                            </li>--}}
+                        </ul>
+
+                        <ul class="footer-contacts d-md-flex justify-content-between">
+                            <li>
+                                <a class="icon fa fa-facebook" href="#"></a>
+                                <a class="icon fa fa-instagram" href="#"></a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>

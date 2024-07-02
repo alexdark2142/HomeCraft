@@ -92,6 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
 
             const addButton = document.getElementById('btn');
+            const url = this.getAttribute('data-url');
             addButton.disabled = true;
             addButton.classList.add('opacity-50', 'cursor-not-allowed');
 
@@ -102,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 span.textContent = '';
             });
 
-            axios.post('/admin/create-product', formData, {
+            axios.post(url, formData, {
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                     'Content-Type': 'multipart/form-data'
@@ -110,9 +111,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }).then(response => {
                 addButton.disabled = false;
                 addButton.classList.remove('opacity-50', 'cursor-not-allowed');
-
-                alert('Product added successfully!');
-                this.reset();
+                alert(response.data.message);
+                window.location.reload();
             }).catch(error => {
                 addButton.disabled = false;
                 addButton.classList.remove('opacity-50', 'cursor-not-allowed');

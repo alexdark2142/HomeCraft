@@ -79,17 +79,15 @@ document.addEventListener('DOMContentLoaded', function () {
         updateCart();
     }
 
-    document.querySelectorAll('.view-img').forEach(button => {
+    document.querySelectorAll('.view-product').forEach(button => {
         button.addEventListener('click', function () {
-            const img = this.getAttribute('data-img');
-            const body = document.body;
-
-            // Показати попап і заблокувати прокрутку сторінки
-            document.querySelector('.popup-img').style.display = 'block';
-            document.querySelector('.popup-img img').src = img;
-            body.style.overflow = 'hidden'; // Блокування прокрутки сторінки
+            const id = this.getAttribute('data-id');
+            // Перенаправлення на сторінку продукту
+            window.location.href = `/product/${id}`;
         });
     });
+
+
 
     let popupImg = document.querySelector('.popup-img span')
     if (popupImg) {
@@ -226,7 +224,28 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('.shopping-cart-btn').classList.remove('active');
     });
 
+    const thumbnails = document.querySelectorAll('.thumbnail img');
+    const mainImage = document.querySelector('.main-image img');
 
+    thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', function () {
+            // Оновлення головного зображення
+            mainImage.src = this.src;
 
+            // Зняття класу 'selected' з усіх мініатюр
+            thumbnails.forEach(thumbnail => {
+                thumbnail.parentElement.classList.remove('selected');
+            });
 
+            // Додавання класу 'selected' до обраної мініатюри
+            this.parentElement.classList.add('selected');
+        });
+
+        // Встановлення початкового головного зображення
+        if (thumbnail.dataset.main === 'true') {
+            mainImage.src = thumbnail.src;
+            thumbnail.parentElement.classList.add('selected');
+        }
+    });
 });
+
