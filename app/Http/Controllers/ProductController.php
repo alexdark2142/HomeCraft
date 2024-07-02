@@ -107,7 +107,7 @@ class ProductController extends Controller
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $validatedData = $request->validate([
-            'name' => 'required|string|max:40',
+            'name' => 'required|string|max:100',
             'count' => 'required|integer',
             'size' => 'nullable|string|max:40',
             'material' => 'nullable|string|max:100',
@@ -193,7 +193,7 @@ class ProductController extends Controller
     {
         // Validate the incoming data
         $validatedData = $request->validate([
-            'name' => 'required|string|max:40',
+            'name' => 'required|string|max:100',
             'count' => 'required|integer',
             'size' => 'nullable|string|max:40',
             'material' => 'nullable|string|max:100',
