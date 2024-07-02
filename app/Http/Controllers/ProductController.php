@@ -109,11 +109,11 @@ class ProductController extends Controller
         $request->validate([
             'photos.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             'name' => 'required|string|max:40',
-            'size' => 'string|max:40',
-            'material' => 'string|max:100',
             'count' => 'required|integer',
-            'category' => 'required|integer|exists:categories,id',
-            'subcategory' => 'nullable|integer|exists:categories,id',
+            'size' => 'nullable|string|max:40',
+            'material' => 'nullable|string|max:100',
+            'category_id' => 'required|integer|exists:categories,id',
+            'subcategory_id' => 'nullable|integer|exists:subcategories,id',
             'price' => 'required|numeric',
         ]);
 
@@ -195,12 +195,13 @@ class ProductController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:40',
             'count' => 'required|integer',
-            'size' => 'string|max:40',
-            'material' => 'string|max:100',
+            'size' => 'nullable|string|max:40',
+            'material' => 'nullable|string|max:100',
             'category_id' => 'required|integer|exists:categories,id',
-            'subcategory_id' => 'nullable|integer|exists:categories,id',
+            'subcategory_id' => 'nullable|integer|exists:subcategories,id',
             'price' => 'required|numeric',
         ]);
+
 
         // Check if a new image was uploaded
 //        if ($request->hasFile('img')) {
