@@ -48,7 +48,9 @@
                                                             data-id="{{ $product->id }}"
                                                             data-name="{{ $product->name }}"
                                                             data-price="{{ $product->price }}"
+                                                            data-count="{{ $product->count }}"
                                                             data-img="{{ asset('images/gallery/' . $mainImage->tag . '/' . $mainImage->name) }}"
+                                                            {{ $product->count == 0 ? 'disabled' : '' }}
                                                         >
                                                             Add to cart
                                                         </button>
@@ -76,7 +78,9 @@
                                                     data-id="{{ $product->id }}"
                                                     data-name="{{ $product->name }}"
                                                     data-price="{{ $product->price }}"
+                                                    data-count="{{ $product->count }}"
                                                     data-img="{{ asset('images/gallery/' . $mainImage->tag . '/' . $mainImage->name) }}"
+                                                    {{ $product->count == 0 ? 'disabled' : '' }}
                                                 >
                                                     Add to cart
                                                 </button>

@@ -43,7 +43,18 @@
                         <p class="mb-2 d-flex"><strong class="mr-3">Subcategory:</strong> {{ $product->subcategory->name }}</p>
                     @endif
                     <p class="mb-2 d-flex"><strong class="mr-3">Price:</strong> ${{ $product->price }} </p>
-                    <button class="button button-md button-secondary button-ujarak add-to-cart">Add to Cart</button>
+
+                    <button
+                        class="button button-md button-secondary button-ujarak add-to-cart"
+                        data-id="{{ $product->id }}"
+                        data-name="{{ $product->name }}"
+                        data-price="{{ $product->price }}"
+                        data-count="{{ $product->count }}"
+                        data-img="{{ asset('images/gallery/' . $mainImage->tag . '/' . $mainImage->name) }}"
+                        {{ $product->count == 0 ? 'disabled' : '' }}
+                    >
+                        Add to Cart
+                    </button>
                 </div>
             </div>
         </div>

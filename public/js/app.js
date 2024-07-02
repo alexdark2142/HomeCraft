@@ -70,14 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    let cart = [];
 
-    // Перевірка, чи є дані в localStorage
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-        cart = JSON.parse(savedCart);
-        updateCart();
-    }
 
     document.querySelectorAll('.view-product').forEach(button => {
         button.addEventListener('click', function () {
@@ -100,23 +93,70 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
+    const thumbnails = document.querySelectorAll('.thumbnail img');
+    const mainImage = document.querySelector('.main-image img');
+
+    thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', function () {
+            // Оновлення головного зображення
+            mainImage.src = this.src;
+
+            // Зняття класу 'selected' з усіх мініатюр
+            thumbnails.forEach(thumbnail => {
+                thumbnail.parentElement.classList.remove('selected');
+            });
+
+            // Додавання класу 'selected' до обраної мініатюри
+            this.parentElement.classList.add('selected');
+        });
+
+        // Встановлення початкового головного зображення
+        if (thumbnail.dataset.main === 'true') {
+            mainImage.src = thumbnail.src;
+            thumbnail.parentElement.classList.add('selected');
+        }
+    });
+
+    /*===========================CART========================*/
+    let cart = [];
+
+// Перевірка, чи є дані в localStorage
+    const savedCart = localStorage.getItem('cart');
+
+    if (savedCart) {
+        cart = JSON.parse(savedCart);
+        updateCart();
+    }
+
     document.querySelectorAll('.add-to-cart').forEach(button => {
         button.addEventListener('click', function () {
             const id = this.getAttribute('data-id');
             const name = this.getAttribute('data-name');
-            const price = parseFloat(this.getAttribute('data-price'));
+            const price = this.getAttribute('data-price');
             const img = this.getAttribute('data-img');
-            addToCart(id, name, price, img);
+            const count = parseInt(this.getAttribute('data-count'), 10);
+
+            if (count > 0) {
+                addToCart(id, name, price, img, count);
+            } else {
+                alert('This product is out of stock and cannot be added to the cart.');
+            }
         });
     });
 
-    function addToCart(id, name, price, img) {
+    function addToCart(id, name, price, img, count) {
         const existingProductIndex = cart.findIndex(product => product.id === id);
 
         if (existingProductIndex !== -1) {
-            cart[existingProductIndex].quantity += 1;
+            if (cart[existingProductIndex].count > 0) {
+                cart[existingProductIndex].quantity += 1;
+                cart[existingProductIndex].count -= 1;
+            } else {
+                alert('This product is out of stock and cannot be added to the cart.');
+                return;
+            }
         } else {
-            cart.push({ id, name, price, img, quantity: 1 });
+            cart.push({ id, name, price, img, quantity: 1, count: count - 1, initialCount: count });
         }
 
         // Зберігання кошика в localStorage
@@ -135,30 +175,30 @@ document.addEventListener('DOMContentLoaded', function () {
         cart.forEach(product => {
             const productElement = document.createElement('div');
             productElement.innerHTML = `
-                        <div class="unit align-items-center cart-row-item">
-                            <div class="unit-left">
-                                <a class="cart-row-figure" href="#">
-                                    <img class="cart-img" src="${product.img}" alt="${product.name}" width="100" height="100" />
-                                </a>
-                            </div>
-                            <div class="unit-body">
-                                <div class="cart-item-header">
-                                    <h6 class="cart-row-name">${product.name}</h6>
-                                    <button class="btn-remove-item" data-id="${product.id}">
-                                        <i class="fa fa-trash-o"></i>
-                                    </button>
-                                </div>
-                                <div class="cart-item-body">
-                                    <h6 class="cart-row-price">$${(product.price * product.quantity).toFixed(2)}</h6>
-                                    <div class="cart-quantity-control">
-                                        <button class="quantity-control-btn minus" data-id="${product.id}">-</button>
-                                        <input type="number" class="cart-row-quantity" value="${product.quantity}" min="1" max="100" readonly>
-                                        <button class="quantity-control-btn plus" data-id="${product.id}">+</button>
-                                    </div>
-                                </div>
-                            </div>
+            <div class="unit align-items-center cart-row-item">
+                <div class="unit-left">
+                    <a class="cart-row-figure" href="#">
+                        <img class="cart-img" src="${product.img}" alt="${product.name}" width="100" height="100" />
+                    </a>
+                </div>
+                <div class="unit-body">
+                    <div class="cart-item-header">
+                        <h6 class="cart-row-name">${product.name}</h6>
+                        <button class="btn-remove-item" data-id="${product.id}">
+                            <i class="fa fa-trash-o"></i>
+                        </button>
+                    </div>
+                    <div class="cart-item-body">
+                        <h6 class="cart-row-price">$${(product.price * product.quantity).toFixed(2)}</h6>
+                        <div class="cart-quantity-control">
+                            <button class="quantity-control-btn minus" data-id="${product.id}">-</button>
+                            <input type="number" class="cart-row-quantity" value="${product.quantity}" min="1" max="100" readonly>
+                            <button class="quantity-control-btn plus" data-id="${product.id}">+</button>
                         </div>
-                    `;
+                    </div>
+                </div>
+            </div>
+        `;
 
             cartItemsContainer.appendChild(productElement);
             totalQuantity += product.quantity;
@@ -183,9 +223,16 @@ document.addEventListener('DOMContentLoaded', function () {
         const productIndex = cart.findIndex(product => product.id === productId);
         if (productIndex !== -1) {
             if (operation === 'increment') {
-                cart[productIndex].quantity += 1;
+                if (cart[productIndex].count > 0) {
+                    cart[productIndex].quantity += 1;
+                    cart[productIndex].count -= 1;
+                } else {
+                    alert('This product is out of stock and cannot be added to the cart.');
+                    return;
+                }
             } else if (operation === 'decrement' && cart[productIndex].quantity > 1) {
                 cart[productIndex].quantity -= 1;
+                cart[productIndex].count += 1;
             }
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCart();
@@ -193,6 +240,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function clearCart() {
+        // Відновлюємо значення count для всіх товарів
+        cart.forEach(product => {
+            product.count = product.initialCount;
+        });
         cart = []; // Очищаємо кошик
         localStorage.removeItem('cart'); // Видаляємо дані з localStorage
         updateCart();
@@ -203,6 +254,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const id = event.target.closest('.btn-remove-item').getAttribute('data-id');
             const productIndex = cart.findIndex(product => product.id === id);
             if (productIndex !== -1) {
+                // Відновлення значення count
+                cart[productIndex].count = cart[productIndex].initialCount;
                 cart.splice(productIndex, 1);
                 localStorage.setItem('cart', JSON.stringify(cart)); // Оновлюємо дані в localStorage
                 updateCart();
@@ -212,40 +265,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('clear-cart').addEventListener('click', clearCart);
 
-    // Відкриття кошика
+// Відкриття кошика
     document.getElementById('cartButton').addEventListener('click', function () {
         document.querySelector('.shopping-cart.navbar-modern-project').classList.add('open');
         document.querySelector('.shopping-cart-btn').classList.add('active');
     });
 
-    // Закриття кошика
+// Закриття кошика
     document.querySelector('.shopping-cart-close').addEventListener('click', function () {
         document.querySelector('.shopping-cart.navbar-modern-project').classList.remove('open');
         document.querySelector('.shopping-cart-btn').classList.remove('active');
-    });
-
-    const thumbnails = document.querySelectorAll('.thumbnail img');
-    const mainImage = document.querySelector('.main-image img');
-
-    thumbnails.forEach(thumbnail => {
-        thumbnail.addEventListener('click', function () {
-            // Оновлення головного зображення
-            mainImage.src = this.src;
-
-            // Зняття класу 'selected' з усіх мініатюр
-            thumbnails.forEach(thumbnail => {
-                thumbnail.parentElement.classList.remove('selected');
-            });
-
-            // Додавання класу 'selected' до обраної мініатюри
-            this.parentElement.classList.add('selected');
-        });
-
-        // Встановлення початкового головного зображення
-        if (thumbnail.dataset.main === 'true') {
-            mainImage.src = thumbnail.src;
-            thumbnail.parentElement.classList.add('selected');
-        }
     });
 });
 
