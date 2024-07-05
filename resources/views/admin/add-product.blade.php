@@ -50,15 +50,51 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Size</label>
-                    <input
-                        type="text"
-                        name="size"
-                        id="size"
-                        class="form-input"
-                    >
-                    <span class="error-message"></span>
+                    <label class="form-label">Size:</label>
+                    <div class="size-fields">
+                        <div class="size-field">
+                            <input
+                                type="number"
+                                name="length"
+                                id="length"
+                                class="form-input"
+                                placeholder="L"
+                            >
+                            <span class="unit">mm</span>
+                        </div>
+                        <div class="size-field">
+                            <input
+                                type="number"
+                                name="height"
+                                id="height"
+                                class="form-input"
+                                placeholder="H"
+                            >
+                            <span class="unit">mm</span>
+                        </div>
+                        <div class="size-field">
+                            <input
+                                type="number"
+                                name="width"
+                                id="width"
+                                class="form-input"
+                                placeholder="W"
+                            >
+                            <span class="unit">mm</span>
+                        </div>
+                        <div class="size-field">
+                            <input
+                                type="number"
+                                name="depth"
+                                id="depth"
+                                class="form-input"
+                                placeholder="D"
+                            >
+                            <span class="unit">mm</span>
+                        </div>
+                    </div>
                 </div>
+
 
                 <div class="form-group">
                     <label class="form-label">Material</label>

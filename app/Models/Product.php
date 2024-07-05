@@ -23,7 +23,10 @@ class Product extends Model
     protected $fillable = [
         'name',
         'count',
-        'size',
+        'length',
+        'height',
+        'width',
+        'depth',
         'material',
         'category_id',
         'subcategory_id',

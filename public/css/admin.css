@@ -219,6 +219,44 @@ body, html {
     background-color: #0056b3;
 }
 
+.size-fields {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.size-field {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.size-field .unit {
+    margin-left: 5px;
+    font-size: 14px; /* Змініть відповідно до ваших потреб */
+    color: #666; /* Змініть відповідно до ваших потреб */
+}
+
+.size-fields input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Включає padding і border в ширину */
+}
+
+@media (max-width: 768px) {
+    .size-fields {
+        flex-direction: column;
+    }
+
+    .size-field {
+        margin-bottom: 10px; /* Відступ між полями в мобільній версії */
+    }
+}
+
+
 /* Стилі для повідомлень про помилки */
 .error-message {
     color: #ff0000;

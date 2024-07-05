@@ -107,9 +107,13 @@ class ProductController extends Controller
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $validatedData = $request->validate([
+            'photos.*' => 'required|image|mimes:jpeg,png,jpg',
             'name' => 'required|string|max:100',
             'count' => 'required|integer',
-            'size' => 'nullable|string|max:40',
+            'length' => 'nullable|integer',
+            'height' => 'nullable|integer',
+            'width' => 'nullable|integer',
+            'depth' => 'nullable|integer',
             'material' => 'nullable|string|max:100',
             'category_id' => 'required|integer|exists:categories,id',
             'subcategory_id' => 'nullable|integer|exists:categories,id',
@@ -120,7 +124,10 @@ class ProductController extends Controller
         $product = Product::create([
             'name' => $request->name,
             'count' => $request->count,
-            'size' => $request->size,
+            'length' => $request->length,
+            'height' => $request->height,
+            'width' => $request->width,
+            'depth' => $request->depth,
             'material' => $request->material,
             'category_id' => $request->category_id,
             'subcategory_id' => $request->subcategory_id == '' ? 0 : $request->subcategory_id,
@@ -137,10 +144,10 @@ class ProductController extends Controller
         }
 
         foreach ($images as $image) {
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imageName = uniqid() . '_' . time() . '.webp';
 
             $manager = new ImageManager(new Driver());
-            $image = $manager->read($image->getRealPath())->scale(height: 1200);
+            $image = $manager->read($image->getRealPath())->scale(height: 720);
 
             // Зменшити розмір зображення
             $image->toWebp(60);
@@ -195,7 +202,10 @@ class ProductController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:100',
             'count' => 'required|integer',
-            'size' => 'nullable|string|max:40',
+            'length' => 'nullable|length',
+            'height' => 'nullable|integer',
+            'width' => 'nullable|integer',
+            'depth' => 'nullable|integer',
             'material' => 'nullable|string|max:100',
             'category_id' => 'required|integer|exists:categories,id',
             'subcategory_id' => 'nullable|integer|exists:categories,id',

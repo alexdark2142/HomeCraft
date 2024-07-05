@@ -34,12 +34,26 @@
                         <p class="mb-2 d-flex"><strong class="mr-3">Material:</strong> {{ $product->material }}</p>
                     @endif
 
-                    @if($product->size)
-                        <p class="mb-2 d-flex"><strong class="mr-3">Size:</strong> {{ $product->size }}</p>
-
+                    @if($product->length || $product->height || $product->width || $product->depth)
+                        <div class="mb-2 text-left">
+                            <strong class="mr-3">Size:</strong>
+                            @if($product->length)
+                                <div>Length: {{ $product->length }} mm</div>
+                            @endif
+                            @if($product->height)
+                                <div>Height: {{ $product->height }} mm</div>
+                            @endif
+                            @if($product->width)
+                                <div>Width: {{ $product->width }} mm</div>
+                            @endif
+                            @if($product->depth)
+                                <div>Depth: {{ $product->depth }} mm</div>
+                            @endif
+                        </div>
                     @endif
 
-                    @if($product->subcategory)
+
+                @if($product->subcategory)
                         <p class="mb-2 d-flex"><strong class="mr-3">Subcategory:</strong> {{ $product->subcategory->name }}</p>
                     @endif
                     <p class="mb-2 d-flex"><strong class="mr-3">Price:</strong> ${{ $product->price }} </p>

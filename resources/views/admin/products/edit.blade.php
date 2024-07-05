@@ -54,15 +54,53 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Size</label>
-                    <input
-                        type="text"
-                        name="size"
-                        id="size"
-                        class="form-input"
-                        value="{{ $product->size }}"
-                    >
-                    <span class="error-message"></span>
+                    <label class="form-label">Size:</label>
+                    <div class="size-fields">
+                        <div class="size-field">
+                            <input
+                                type="number"
+                                name="length"
+                                id="length"
+                                class="form-input"
+                                placeholder="L"
+                                value="{{ $product->length }}"
+                            >
+                            <span class="unit">mm</span>
+                        </div>
+                        <div class="size-field">
+                            <input
+                                type="number"
+                                name="height"
+                                id="height"
+                                class="form-input"
+                                placeholder="H"
+                                value="{{ $product->height }}"
+                            >
+                            <span class="unit">mm</span>
+                        </div>
+                        <div class="size-field">
+                            <input
+                                type="number"
+                                name="width"
+                                id="width"
+                                class="form-input"
+                                placeholder="W"
+                                value="{{ $product->width }}"
+                            >
+                            <span class="unit">mm</span>
+                        </div>
+                        <div class="size-field">
+                            <input
+                                type="number"
+                                name="depth"
+                                id="depth"
+                                class="form-input"
+                                placeholder="D"
+                                value="{{ $product->depth }}"
+                            >
+                            <span class="unit">mm</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">
