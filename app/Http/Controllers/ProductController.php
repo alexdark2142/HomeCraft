@@ -78,7 +78,7 @@ class ProductController extends Controller
             });
         }
 
-        $products = $productsQuery->paginate(9);
+        $products = $productsQuery->paginate(2);
         $categories = Category::with('subcategories')->whereNull('parent_id')->get();
         $selectedCategory = ucwords(str_replace('-', ' ', $category));
         $selectedSubcategory = ucwords(str_replace('-', ' ', $subcategory));
