@@ -16,8 +16,8 @@ class AdminSeeder extends Seeder
     {
         User::create([
             'name' => 'Admin',
-            'login' => 'admin',
-            'password' => \Hash::make('admin'),
+            'login' => 'Slavko',
+            'password' => \Hash::make('HomeCraft2024!'),
             'status' => 'admin',
         ]);
     }

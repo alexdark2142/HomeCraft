@@ -74,8 +74,17 @@
 
                         <ul class="footer-contacts d-md-flex justify-content-between">
                             <li>
-                                <a class="icon fa fa-facebook" href="#"></a>
-                                <a class="icon fa fa-instagram" href="#"></a>
+                                <a
+                                    class="icon fa fa-facebook"
+                                    target="_blank"
+                                    href="https://www.facebook.com/profile.php?id=61561930961959&mibextid=ZbWKwL"
+                                ></a>
+
+                                <a
+                                    class="icon fa fa-instagram"
+                                    target="_blank"
+                                    href="https://www.instagram.com/homecraftsb_dt?igsh=dHE1OHZ6ZWhhc2pz&utm_source=qr"
+                                ></a>
                             </li>
                         </ul>
                     </div>

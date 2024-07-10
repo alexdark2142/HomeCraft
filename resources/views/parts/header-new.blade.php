@@ -141,8 +141,20 @@
                     </ul>
 
                     <ul class="list-inline navbar-modern-list-social">
-                        <li><a class="icon fa fa-facebook" href="#"></a></li>
-                        <li><a class="icon fa fa-instagram" href="#"></a></li>
+                        <li>
+                            <a
+                                class="icon fa fa-facebook"
+                                target="_blank"
+                                href="https://www.facebook.com/profile.php?id=61561930961959&mibextid=ZbWKwL"
+                            ></a>
+                        </li>
+
+                        <li>
+                            <a class="icon fa fa-instagram"
+                               target="_blank"
+                               href="https://www.instagram.com/homecraftsb_dt?igsh=dHE1OHZ6ZWhhc2pz&utm_source=qr"
+                            ></a>
+                        </li>
                     </ul>
                 </div>
             </div>
