@@ -41,6 +41,19 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea
+                        rows="4"
+                        name="description"
+                        id="description"
+                        class="form-input"
+                    >
+                        {{ $product->description }}"
+                    </textarea>
+                    <span class="error-message"></span>
+                </div>
+
+                <div class="form-group">
                     <label class="form-label">Count</label>
                     <input
                         required

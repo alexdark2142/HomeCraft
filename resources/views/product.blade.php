@@ -28,8 +28,15 @@
                 <!-- Description Section -->
                 <div class="col-12 col-md-6 px-5 py-3">
                     <h3 class="text-3xl font-bold mb-4">{{ $product->name }}</h3>
+
+                    @if($product->description)
+                        <p class="mb-4">{{ $product->description }}</p>
+                    @endif
+
                     <p class="mb-2 d-flex"><strong class="mr-3">Quantity in stock:</strong> {{ $product->count }}</p>
+
                     <p class="mb-2 d-flex"><strong class="mr-3">Category:</strong> {{ $product->category->name }}</p>
+
                     @if($product->material)
                         <p class="mb-2 d-flex"><strong class="mr-3">Material:</strong> {{ $product->material }}</p>
                     @endif
@@ -53,9 +60,10 @@
                     @endif
 
 
-                @if($product->subcategory)
+                    @if($product->subcategory)
                         <p class="mb-2 d-flex"><strong class="mr-3">Subcategory:</strong> {{ $product->subcategory->name }}</p>
                     @endif
+
                     <p class="mb-2 d-flex"><strong class="mr-3">Price:</strong> ${{ $product->price }} </p>
 
                     <button

@@ -28,6 +28,7 @@ class Product extends Model
         'width',
         'depth',
         'material',
+        'description',
         'category_id',
         'subcategory_id',
         'price',
