@@ -13,8 +13,31 @@
     </div>
     <div class="header-menu" id="nav-content">
         <ul class="menu-list">
-            <li><a class="menu-link {{ request()->routeIs('admin.add-product') ? 'active' : '' }}" href="{{ route('admin.add-product') }}">Add product</a></li>
-            <li><a class="menu-link {{ request()->routeIs('admin.products') ? 'active' : '' }}" href="{{ route('admin.products') }}">Products</a></li>
+            <!-- Пункт меню "Add product" -->
+            <li>
+                <a class="menu-link {{ request()->routeIs('admin.add-product') ? 'active' : '' }}" href="{{ route('admin.add-product') }}">
+                    Add product
+                </a>
+            </li>
+
+            <li>
+                <a class="menu-link {{ request()->routeIs('admin.products') ? 'active' : '' }}" href="{{ route('admin.products') }}">
+                    Products
+                </a>
+            </li>
+
+            <li>
+                <a class="menu-link {{ request()->routeIs('sliders.index') ? 'active' : '' }}" href="{{ route('sliders.index') }}">
+                    Slider List
+                </a>
+            </li>
+
+            <li>
+                <a class="menu-link {{ request()->routeIs('sliders.create') ? 'active' : '' }}" href="{{ route('sliders.create') }}">
+                    Add Slider
+                </a>
+            </li>
+
             <li>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -22,6 +45,7 @@
                 </form>
             </li>
         </ul>
+
     </div>
 </nav>
 

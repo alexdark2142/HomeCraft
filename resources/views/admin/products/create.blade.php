@@ -44,8 +44,7 @@
                         name="description"
                         id="description"
                         class="form-input"
-                    >
-                    </textarea>
+                    ></textarea>
                     <span class="error-message"></span>
                 </div>
 

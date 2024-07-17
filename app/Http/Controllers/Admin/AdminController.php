@@ -17,7 +17,7 @@ class AdminController extends Controller
             ->with('gallery')
             ->paginate(9);
 
-        return view('admin.product-list', compact('products'));
+        return view('admin.products.list', compact('products'));
     }
 
     public function logout(Request $request)

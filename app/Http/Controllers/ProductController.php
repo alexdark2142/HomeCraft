@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Gallery;
 use App\Models\Product;
+use App\Models\Slider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManager;
@@ -65,6 +66,7 @@ class ProductController extends Controller
     public function list(string $category = null, $subcategory = null): \Illuminate\Http\Response
     {
         $productsQuery = Product::query();
+        $sliders = Slider::all();
 
         if ($category) {
             $productsQuery->whereHas('category', function ($query) use ($category) {
@@ -84,6 +86,7 @@ class ProductController extends Controller
         $selectedSubcategory = ucwords(str_replace('-', ' ', $subcategory));
 
         return response()->view($category ? 'list-of-products' : 'home', compact([
+            'sliders',
             'products',
             'categories',
             'selectedCategory',
@@ -98,7 +101,7 @@ class ProductController extends Controller
     {
         $categories = Category::with('subcategories')->whereNull('parent_id')->get();
 
-        return view('admin.add-product', compact('categories'));
+        return view('admin.products.create', compact('categories'));
     }
 
     /**

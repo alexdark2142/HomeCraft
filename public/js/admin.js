@@ -45,48 +45,52 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     let category = document.getElementById('category_id')
+    let subcategory = document.getElementById('subcategory_id')
 
     if (category) {
-        document.getElementById('category_id').addEventListener('change', function() {
-            const categoryId = this.value;
-            const subcategoryContainer = document.getElementById('subcategory-container');
+        if (subcategory) {
+            document.getElementById('category_id').addEventListener('change', function() {
+                const categoryId = this.value;
+                const subcategoryContainer = document.getElementById('subcategory-container');
 
-            // Заблокувати кнопку
-            const addButton = document.getElementById('btn');
-            addButton.disabled = true;
-            addButton.classList.add('opacity-50', 'cursor-not-allowed');
+                // Заблокувати кнопку
+                const addButton = document.getElementById('btn');
+                addButton.disabled = true;
+                addButton.classList.add('opacity-50', 'cursor-not-allowed');
 
-            if (categoryId) {
-                axios.get(`/api/subcategories/${categoryId}`).then(response => {
-                    const subcategories = response.data;
-                    const subcategorySelect = document.getElementById('subcategory_id');
-                    subcategorySelect.innerHTML = '<option value="">Choose subcategory</option>';
-                    if (subcategories.length > 0) {
-                        subcategoryContainer.style.display = 'flex';
-                        subcategories.forEach(subcategory => {
-                            const option = document.createElement('option');
-                            option.value = subcategory.id;
-                            option.textContent = subcategory.name;
-                            subcategorySelect.appendChild(option);
-                        });
+                if (categoryId) {
+                    axios.get(`/api/subcategories/${categoryId}`).then(response => {
+                        const subcategories = response.data;
+                        const subcategorySelect = document.getElementById('subcategory_id');
+                        subcategorySelect.innerHTML = '<option value="">Choose subcategory</option>';
+                        if (subcategories.length > 0) {
+                            subcategoryContainer.style.display = 'flex';
+                            subcategories.forEach(subcategory => {
+                                const option = document.createElement('option');
+                                option.value = subcategory.id;
+                                option.textContent = subcategory.name;
+                                subcategorySelect.appendChild(option);
+                            });
 
-                        // Розблокувати кнопку після отримання відповіді
-                        addButton.disabled = false;
-                        addButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                    } else {
-                        // Розблокувати кнопку після отримання відповіді
-                        addButton.disabled = false;
-                        addButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                        subcategoryContainer.style.display = 'none';
-                    }
-                });
-            } else {
-                // Розблокувати кнопку після отримання відповіді
-                addButton.disabled = false;
-                addButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                subcategoryContainer.style.display = 'none';
-            }
-        });
+                            // Розблокувати кнопку після отримання відповіді
+                            addButton.disabled = false;
+                            addButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                        } else {
+                            // Розблокувати кнопку після отримання відповіді
+                            addButton.disabled = false;
+                            addButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                            subcategoryContainer.style.display = 'none';
+                        }
+                    });
+                } else {
+                    // Розблокувати кнопку після отримання відповіді
+                    addButton.disabled = false;
+                    addButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                    subcategoryContainer.style.display = 'none';
+                }
+            });
+
+        }
 
         document.getElementById('product-form').addEventListener('submit', function(event) {
             event.preventDefault();
