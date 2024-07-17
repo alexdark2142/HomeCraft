@@ -44,6 +44,51 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    const deleteSliderButtons = document.querySelectorAll('#delete-slider-btn');
+
+    deleteSliderButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            const productId = button.closest('.product-row').dataset.productId;
+
+            // Деактивація кнопки
+            button.disabled = true;
+            button.classList.add('disabled-button');
+
+            fetch(`/admin/sliders/${productId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        const productRow = document.querySelector(`.product-row[data-product-id="${productId}"]`);
+                        productRow.remove();
+                        alert('Picture deleted successfully');
+                    } else {
+                        console.error('Error:', data.message);
+                        alert(`Error: ${data.message}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('There has been a problem with your fetch operation:', error);
+                    alert(`There has been a problem with your fetch operation: ${error.message}`);
+                })
+                .finally(() => {
+                    // Активувати кнопку назад
+                    button.disabled = false;
+                    button.classList.remove('disabled-button');
+                });
+        });
+    });
+
     let category = document.getElementById('category_id')
     let subcategory = document.getElementById('subcategory_id')
 

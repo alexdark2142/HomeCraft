@@ -12,7 +12,7 @@ class SliderController extends Controller
 {
     public function index()
     {
-        $sliders = Slider::all();
+        $sliders = Slider::with('category')->paginate(9);
 
         return view('admin.sliders.list', compact('sliders'));
     }
