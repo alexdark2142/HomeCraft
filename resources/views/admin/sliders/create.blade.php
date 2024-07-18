@@ -2,7 +2,7 @@
 
 @section('main')
     <div class="form-container">
-        <h1 class="form-title">Add a slider picture:</h1>
+        <h1 class="form-title">Add a home picture:</h1>
         <div class="form-wrapper">
             <form
                 id="product-form"

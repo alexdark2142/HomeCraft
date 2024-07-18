@@ -8,7 +8,7 @@
 
             <a href="/" class="nav__logo">
                 <img
-                    src="{{asset('images/logo/logo-default-196x47.png')}}"
+                    src="{{asset('images/logo/logo-default-196x47.webp')}}"
                     alt="logo"
                     width="196"
                     height="47"
