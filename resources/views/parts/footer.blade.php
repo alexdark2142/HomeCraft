@@ -7,10 +7,12 @@
                         <div class="footer-brand">
                             <a href="/">
                                 <img
-                                    src="{{asset('images/logo/logo-inverse-196x42.png')}}"
+                                    src="{{asset('images/logo/logo-default-196x47.webp')}}"
                                     alt="logo"
                                     width="196"
-                                    height="42"/>
+                                    height="42"
+                                    style="border-radius: 7px"
+                                />
                             </a>
                         </div>
 

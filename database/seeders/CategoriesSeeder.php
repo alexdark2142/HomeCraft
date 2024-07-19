@@ -15,7 +15,7 @@ class CategoriesSeeder extends Seeder
     {
         $namesCategories = [
             'liquor-gift-box' => 'Liquor Gift Box',
-            'icon' => 'Icon',
+            'icon-and-the-crosses' => 'Icon and the Crosses',
             'flower-pots' => 'Flower pots',
             'cat-and-dog-food-bowl-stand' => 'Cat and Dog food bowl stand',
             'entertainment' => 'Entertainment',

@@ -276,5 +276,24 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('.shopping-cart.navbar-modern-project').classList.remove('open');
         document.querySelector('.shopping-cart-btn').classList.remove('active');
     });
+
+
+    function adjustSlideHeight() {
+        const slides = document.querySelectorAll('.swiper-slide');
+        const aspectRatio = 1080 / 1920; // Співвідношення сторін 16:9
+
+        slides.forEach(slide => {
+            const width = slide.clientWidth;
+            const height = width * aspectRatio;
+            slide.style.height = `${height}px`;
+        });
+    }
+
+// Викликати функцію при завантаженні сторінки
+    window.addEventListener('load', adjustSlideHeight);
+
+// Викликати функцію при зміні розміру вікна
+    window.addEventListener('resize', adjustSlideHeight);
+
 });
 

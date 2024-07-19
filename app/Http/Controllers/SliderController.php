@@ -37,7 +37,7 @@ class SliderController extends Controller
         $imageName = uniqid() . '_' . time() . '.webp';
 
         $manager = new ImageManager(new Driver());
-        $image = $manager->read($image->getRealPath())->scale(height: 720);
+        $image = $manager->read($image->getRealPath())->scale(height: 1080);
 
         // Зменшити розмір зображення
         $image->toWebp(60);
