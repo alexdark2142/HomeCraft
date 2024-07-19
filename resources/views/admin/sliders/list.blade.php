@@ -41,7 +41,7 @@
                             </td>
 
                             <td class="text-center p-2 border price-cell">
-                                ${{ $slider->description }}
+                                {{ $slider->description }}
                             </td>
 
                             <td class="text-center p-2 border category-cell">
