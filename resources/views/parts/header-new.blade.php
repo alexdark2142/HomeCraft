@@ -145,7 +145,7 @@
                             <a
                                 class="icon fa fa-facebook"
                                 target="_blank"
-                                href="https://www.facebook.com/profile.php?id=61561930961959&mibextid=ZbWKwL"
+                                href="https://www.facebook.com/people/HomeCraft/61561930961959"
                             ></a>
                         </li>
 
