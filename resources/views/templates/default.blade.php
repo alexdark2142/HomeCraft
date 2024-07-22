@@ -7,6 +7,7 @@
           content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
+    <meta name="google-site-verification" content="wOJE027oWJ5giOYNSXA2ofrMNm9D4uzAUq6Dj5ee5h8" />
     <link rel="icon" href="{{asset('images/favicon.ico')}}" type="image/x-icon">
     <!-- Stylesheets-->
     <!--=============== REMIXICONS ===============-->

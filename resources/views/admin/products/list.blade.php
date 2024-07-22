@@ -2,7 +2,10 @@
 
 @section('main')
     <div class="w-full">
-        <h1 class="text-3xl font-medium mb-5">List Of Products: {{ $products->isEmpty() ? 'is empty!' : '' }}</h1>
+        <h1 class="text-3xl font-medium mb-5">
+            List Of Products: {{ $products->isEmpty() ? 'is empty!' : '' }}
+        </h1>
+        
         @if ($products->isEmpty())
             <p>No products available.</p>
             <div class="mt-5">

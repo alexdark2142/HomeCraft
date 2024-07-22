@@ -1,29 +1,28 @@
 <div id="app" class="container-paginate">
-    {{ $items = $products ?? $sliders }}
     <!-- Full version pagination -->
     <ul class="paginate full-version">
-        @if ($items->previousPageUrl())
+        @if ($products->previousPageUrl())
             <li class="paginate__btn">
-                <a href="{{ $items->previousPageUrl() }}">
+                <a href="{{ $products->previousPageUrl() }}">
                     &lt;
                 </a>
             </li>
         @endif
 
         @php
-            $start = max($items->currentPage() - 2, 1);
-            $end = min($start + 4, $items->lastPage());
+            $start = max($products->currentPage() - 2, 1);
+            $end = min($start + 4, $products->lastPage());
 
             // Adjust the range if we're too close to the end or the beginning
-            if ($items->currentPage() + 2 > $items->lastPage()) {
-                $start = max($items->lastPage() - 4, 1);
-                $end = $items->lastPage();
+            if ($products->currentPage() + 2 > $products->lastPage()) {
+                $start = max($products->lastPage() - 4, 1);
+                $end = $products->lastPage();
             }
         @endphp
 
         @if ($start > 1)
             <li class="paginate__numbers">
-                <a href="{{ $items->url(1) }}">1</a>
+                <a href="{{ $products->url(1) }}">1</a>
             </li>
             @if ($start > 2)
                 <li class="paginate__dots">...</li>
@@ -31,23 +30,23 @@
         @endif
 
         @for ($i = $start; $i <= $end; $i++)
-            <li class="paginate__numbers @if ($items->currentPage() == $i) active @endif">
-                <a href="{{ $items->url($i) }}">{{ $i }}</a>
+            <li class="paginate__numbers @if ($products->currentPage() == $i) active @endif">
+                <a href="{{ $products->url($i) }}">{{ $i }}</a>
             </li>
         @endfor
 
-        @if ($end < $items->lastPage())
-            @if ($end < $items->lastPage() - 1)
+        @if ($end < $products->lastPage())
+            @if ($end < $products->lastPage() - 1)
                 <li class="paginate__dots">...</li>
             @endif
             <li class="paginate__numbers">
-                <a href="{{ $items->url($items->lastPage()) }}">{{ $items->lastPage() }}</a>
+                <a href="{{ $products->url($products->lastPage()) }}">{{ $products->lastPage() }}</a>
             </li>
         @endif
 
-        @if ($items->hasMorePages())
+        @if ($products->hasMorePages())
             <li class="paginate__btn">
-                <a href="{{ $items->nextPageUrl() }}">
+                <a href="{{ $products->nextPageUrl() }}">
                     &gt;
                 </a>
             </li>
@@ -56,27 +55,27 @@
 
     <!-- Mobile version pagination -->
     <ul class="paginate mobile-version">
-        @if ($items->previousPageUrl())
+        @if ($products->previousPageUrl())
             <li class="paginate__btn">
-                <a href="{{ $items->previousPageUrl() }}">
+                <a href="{{ $products->previousPageUrl() }}">
                     &lt;
                 </a>
             </li>
         @endif
 
         @php
-            $start = max($items->currentPage() - 1, 1);
-            $end = min($start + 2, $items->lastPage());
+            $start = max($products->currentPage() - 1, 1);
+            $end = min($start + 2, $products->lastPage());
 
-            if ($items->currentPage() + 1 > $items->lastPage()) {
-                $start = max($items->lastPage() - 2, 1);
-                $end = $items->lastPage();
+            if ($products->currentPage() + 1 > $products->lastPage()) {
+                $start = max($products->lastPage() - 2, 1);
+                $end = $products->lastPage();
             }
         @endphp
 
         @if ($start > 1)
             <li class="paginate__numbers">
-                <a href="{{ $items->url(1) }}">1</a>
+                <a href="{{ $products->url(1) }}">1</a>
             </li>
             @if ($start > 2)
                 <li class="paginate__dots">...</li>
@@ -84,23 +83,23 @@
         @endif
 
         @for ($i = $start; $i <= $end; $i++)
-            <li class="paginate__numbers @if ($items->currentPage() == $i) active @endif">
-                <a href="{{ $items->url($i) }}">{{ $i }}</a>
+            <li class="paginate__numbers @if ($products->currentPage() == $i) active @endif">
+                <a href="{{ $products->url($i) }}">{{ $i }}</a>
             </li>
         @endfor
 
-        @if ($end < $items->lastPage())
-            @if ($end < $items->lastPage() - 1)
+        @if ($end < $products->lastPage())
+            @if ($end < $products->lastPage() - 1)
                 <li class="paginate__dots">...</li>
             @endif
             <li class="paginate__numbers">
-                <a href="{{ $items->url($items->lastPage()) }}">{{ $items->lastPage() }}</a>
+                <a href="{{ $products->url($products->lastPage()) }}">{{ $products->lastPage() }}</a>
             </li>
         @endif
 
-        @if ($items->hasMorePages())
+        @if ($products->hasMorePages())
             <li class="paginate__btn">
-                <a href="{{ $items->nextPageUrl() }}">
+                <a href="{{ $products->nextPageUrl() }}">
                     &gt;
                 </a>
             </li>
