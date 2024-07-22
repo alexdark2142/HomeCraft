@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
     <meta name="google-site-verification" content="wOJE027oWJ5giOYNSXA2ofrMNm9D4uzAUq6Dj5ee5h8" />
-    <link rel="icon" href="{{asset('images/favicon.ico')}}" type="image/x-icon">
+    <link rel="icon" type="image/png" href="{{asset('images/favicon.png')}}" />
     <!-- Stylesheets-->
     <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
