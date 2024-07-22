@@ -35,21 +35,21 @@
     @endif
 </head>
 <body>
-    <div class="preloader">
-        <div class="preloader-body">
-            <div class="cssload-container">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
+{{--    <div class="preloader">--}}
+{{--        <div class="preloader-body">--}}
+{{--            <div class="cssload-container">--}}
+{{--                <span></span>--}}
+{{--                <span></span>--}}
+{{--                <span></span>--}}
+{{--                <span></span>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
+    @include('parts.header-new')
+    <div class="page">
+        @yield('content')
     </div>
-        @include('parts.header-new')
-        <div class="page">
-            @yield('content')
-        </div>
-        @include('parts.footer')
+    @include('parts.footer')
     <div class="snackbars" id="form-output-global"></div>
     <script src="{{asset('js/core.min.js')}}"></script>
     <script src="{{asset('js/script.js')}}"></script>
