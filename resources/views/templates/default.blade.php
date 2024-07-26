@@ -2,37 +2,41 @@
 <html class="wide wow-animation" lang="en">
 <head>
     <title>SB&DT HomeCraft Premium Quality</title>
-    <meta name="format-detection" content="telephone=no">
-    <meta name="viewport"
-          content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="google-site-verification" content="wOJE027oWJ5giOYNSXA2ofrMNm9D4uzAUq6Dj5ee5h8" />
-    <link rel="icon" type="image/png" href="{{asset('images/favicon.png')}}" />
-    <!-- Stylesheets-->
+
+    <!-- Favicon -->
+    <link rel="icon" href="{{ asset('/favicon.png') }}" type="image/png">
+
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/apple-touch-icon.png') }}">
+
+    <!-- Icons for different sizes -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('/favicon-16x16.png') }}">
+
+    <!-- Android Manifest -->
+    <link rel="manifest" href="{{ asset('/site.webmanifest') }}">
+
+    <!-- Safari Pinned Tab -->
+    <link rel="mask-icon" href="{{ asset('/safari-pinned-tab.svg') }}" color="#5bbad5">
+
+    <!-- Microsoft Tile Icon -->
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-TileImage" content="{{ asset('/mstile-144x144.png') }}">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- Stylesheets -->
     <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Poppins:300,400,500">
-    <link rel="stylesheet" href="{{asset('css/bootstrap.css')}}">
-    <link rel="stylesheet" href="{{asset('css/fonts.css')}}">
-    <link rel="stylesheet" href="{{asset('css/style.css')}}">
-    <link rel="stylesheet" href="{{asset('css/header.css')}}">
-    @php
-        $isIElt10 = str_contains($_SERVER['HTTP_USER_AGENT'], 'MSIE')
-        && !str_contains($_SERVER['HTTP_USER_AGENT'], 'Trident/7.0')
-        && !str_contains($_SERVER['HTTP_USER_AGENT'], 'Trident/6.0');
-    @endphp
-
-    @if($isIElt10)
-        <div
-            style="background: #212121; padding: 10px 0; box-shadow: 3px 3px 5px 0 rgba(0,0,0,.3); clear: both; text-align:center; position: relative; z-index:1;">
-            <a href="https://windows.microsoft.com/en-US/internet-explorer/">
-                <img src="{{ asset('images/ie8-panel/warning_bar_0000_us.jpg') }}" border="0" height="42" width="820"
-                     alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today.">
-            </a>
-        </div>
-        <script src="{{ asset('js/html5shiv.min.js') }}"></script>
-    @endif
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500">
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
 </head>
 <body>
 {{--    <div class="preloader">--}}
@@ -45,7 +49,7 @@
 {{--            </div>--}}
 {{--        </div>--}}
 {{--    </div>--}}
-    @include('parts.header-new')
+    @include('parts.header')
     <div class="page">
         @yield('content')
     </div>
