@@ -1,15 +1,15 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const deleteButtons = document.querySelectorAll('#delete-product-btn');
+    const deleteButtons = document.querySelectorAll('#delete-btn');
 
-    deleteButtons.forEach(function(button) {
-        button.addEventListener('click', function() {
-            const productId = button.closest('.product-row').dataset.productId;
+    deleteButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            const url = button.dataset.url;
 
             // Деактивація кнопки
             button.disabled = true;
             button.classList.add('disabled-button');
 
-            fetch(`/admin/product/${productId}`, {
+            fetch(url, {
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -24,9 +24,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .then(data => {
                     if (data.status === 'success') {
-                        const productRow = document.querySelector(`.product-row[data-product-id="${productId}"]`);
+                        const productRow = button.closest('.product-row');
                         productRow.remove();
-                        alert('Product deleted successfully');
+                        alert('Item deleted successfully');
                     } else {
                         console.error('Error:', data.message);
                         alert(`Error: ${data.message}`);
@@ -44,99 +44,49 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    const deleteSliderButtons = document.querySelectorAll('#delete-slider-btn');
+    let category = document.getElementById('category_id');
+    let subcategory = document.getElementById('subcategory_id');
+    let subcategoryContainer = document.getElementById('subcategory-container');
+    let addButton = document.getElementById('btn');
 
-    deleteSliderButtons.forEach(function(button) {
-        button.addEventListener('click', function() {
-            const productId = button.closest('.product-row').dataset.productId;
-
-            // Деактивація кнопки
-            button.disabled = true;
-            button.classList.add('disabled-button');
-
-            fetch(`/admin/sliders/${productId}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.status === 'success') {
-                        const productRow = document.querySelector(`.product-row[data-product-id="${productId}"]`);
-                        productRow.remove();
-                        alert('Picture deleted successfully');
-                    } else {
-                        console.error('Error:', data.message);
-                        alert(`Error: ${data.message}`);
-                    }
-                })
-                .catch(error => {
-                    console.error('There has been a problem with your fetch operation:', error);
-                    alert(`There has been a problem with your fetch operation: ${error.message}`);
-                })
-                .finally(() => {
-                    // Активувати кнопку назад
-                    button.disabled = false;
-                    button.classList.remove('disabled-button');
-                });
-        });
-    });
-
-    let category = document.getElementById('category_id')
-    let subcategory = document.getElementById('subcategory_id')
+    // Отримання підкатегорій з даних, переданих з бекенду
+    const categoriesWithSubcategories = window.categoriesWithSubcategories;
 
     if (category) {
-        if (subcategory) {
-            document.getElementById('category_id').addEventListener('change', function() {
-                const categoryId = this.value;
-                const subcategoryContainer = document.getElementById('subcategory-container');
+        category.addEventListener('change', function() {
+            const categoryId = this.value;
+            addButton.disabled = true;
+            addButton.classList.add('opacity-50', 'cursor-not-allowed');
 
-                // Заблокувати кнопку
-                const addButton = document.getElementById('btn');
-                addButton.disabled = true;
-                addButton.classList.add('opacity-50', 'cursor-not-allowed');
-
-                if (categoryId) {
-                    axios.get(`/api/subcategories/${categoryId}`).then(response => {
-                        const subcategories = response.data;
-                        const subcategorySelect = document.getElementById('subcategory_id');
-                        subcategorySelect.innerHTML = '<option value="">Choose subcategory</option>';
-                        if (subcategories.length > 0) {
-                            subcategoryContainer.style.display = 'flex';
-                            subcategories.forEach(subcategory => {
-                                const option = document.createElement('option');
-                                option.value = subcategory.id;
-                                option.textContent = subcategory.name;
-                                subcategorySelect.appendChild(option);
-                            });
-
-                            // Розблокувати кнопку після отримання відповіді
-                            addButton.disabled = false;
-                            addButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                        } else {
-                            // Розблокувати кнопку після отримання відповіді
-                            addButton.disabled = false;
-                            addButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                            subcategoryContainer.style.display = 'none';
-                        }
+            if (categoryId) {
+                const subcategories = categoriesWithSubcategories[categoryId] || [];
+                subcategory.innerHTML = '<option value="">Choose subcategory</option>';
+                if (subcategories.length > 0) {
+                    subcategoryContainer.style.display = 'flex';
+                    subcategories.forEach(subcategoryItem => {
+                        const option = document.createElement('option');
+                        option.value = subcategoryItem.id;
+                        option.textContent = subcategoryItem.name;
+                        subcategory.appendChild(option);
                     });
+
+                    addButton.disabled = false;
+                    addButton.classList.remove('opacity-50', 'cursor-not-allowed');
                 } else {
-                    // Розблокувати кнопку після отримання відповіді
                     addButton.disabled = false;
                     addButton.classList.remove('opacity-50', 'cursor-not-allowed');
                     subcategoryContainer.style.display = 'none';
                 }
-            });
+            } else {
+                addButton.disabled = false;
+                addButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                subcategoryContainer.style.display = 'none';
+            }
+        });
+    }
 
-        }
-
+    // Логіка для сабміта форми
+    if  (document.getElementById('product-form')) {
         document.getElementById('product-form').addEventListener('submit', function(event) {
             event.preventDefault();
 
@@ -146,7 +96,6 @@ document.addEventListener('DOMContentLoaded', function() {
             addButton.classList.add('opacity-50', 'cursor-not-allowed');
 
             const formData = new FormData(this);
-            // Очистити попередні повідомлення про помилки
             document.querySelectorAll('.error-msg').forEach(function(span) {
                 span.textContent = '';
             });
@@ -174,33 +123,66 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+    }
 
-        function displayValidationErrors(errors) {
-            // Очистити попередні повідомлення про помилки
-            document.querySelectorAll('.error-msg').forEach(function(span) {
-                span.textContent = '';
-            });
+    function displayValidationErrors(errors) {
+        document.querySelectorAll('.error-msg').forEach(function(span) {
+            span.textContent = '';
+        });
 
-            for (const key in errors) {
-                if (errors.hasOwnProperty(key)) {
-                    const errorMessages = errors[key];
-                    const inputElement = document.querySelector(`[name="${key}"]`);
-                    if (inputElement) {
-                        const errorMsgElement = inputElement.parentElement.querySelector('.error-msg');
-                        if (errorMsgElement) {
-                            errorMsgElement.textContent = errorMessages.join(', ');
-                        } else {
-                            const newErrorMsgElement = document.createElement('span');
-                            newErrorMsgElement.className = 'error-msg text-red-500 text-sm';
-                            newErrorMsgElement.textContent = errorMessages.join(', ');
-                            inputElement.parentElement.appendChild(newErrorMsgElement);
-                        }
+        for (const key in errors) {
+            if (errors.hasOwnProperty(key)) {
+                const errorMessages = errors[key];
+                const inputElement = document.querySelector(`[name="${key}"]`);
+                if (inputElement) {
+                    const errorMsgElement = inputElement.parentElement.querySelector('.error-msg');
+                    if (errorMsgElement) {
+                        errorMsgElement.textContent = errorMessages.join(', ');
                     } else {
-                        console.error(`Input element not found for ${key}`);
+                        const newErrorMsgElement = document.createElement('span');
+                        newErrorMsgElement.className = 'error-msg text-red-500 text-sm';
+                        newErrorMsgElement.textContent = errorMessages.join(', ');
+                        inputElement.parentElement.appendChild(newErrorMsgElement);
                     }
+                } else {
+                    console.error(`Input element not found for ${key}`);
                 }
             }
         }
-
     }
+
+    if (document.getElementById('add-subcategory')) {
+        // Додавання підкатегорії
+        document.getElementById('add-subcategory').addEventListener('click', function() {
+            const subcategoryContainer = document.getElementById('subcategory-box');
+            const newSubcategoryGroup = document.createElement('div');
+            newSubcategoryGroup.className = 'subcategory-group';
+
+            const newSubcategoryInput = document.createElement('input');
+            newSubcategoryInput.type = 'text';
+            newSubcategoryInput.name = 'subcategories[]';
+            newSubcategoryInput.className = 'form-input';
+            newSubcategoryInput.placeholder = 'Subcategory';
+
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'remove-button';
+            removeButton.textContent = '-';
+
+            removeButton.addEventListener('click', function() {
+                newSubcategoryGroup.remove();
+            });
+
+            newSubcategoryGroup.appendChild(newSubcategoryInput);
+            newSubcategoryGroup.appendChild(removeButton);
+            subcategoryContainer.appendChild(newSubcategoryGroup);
+        });
+    }
+
+    if (document.getElementById('backButton')) {
+        document.getElementById('backButton').addEventListener('click', function() {
+            window.history.back();
+        });
+    }
+
 });

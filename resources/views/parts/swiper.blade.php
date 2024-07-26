@@ -14,26 +14,30 @@
                         <div class="row justify-content-center justify-content-xxl-start">
                             <div class="col-md-10 col-xxl-6">
                                 <div class="slider-modern-box">
-                                    <h1 class="slider-modern-title">
-                                        <span data-caption-animate="slideInDown" data-caption-delay="0">
-                                           {{ $slider->title }}
-                                        </span>
-                                    </h1>
+                                    @if($slider->title)
+                                        <h1 class="slider-modern-title">
+                                            <span data-caption-animate="slideInDown" data-caption-delay="0">
+                                               {{ $slider->title }}
+                                            </span>
+                                        </h1>
+                                    @endif
 
-                                    <p data-caption-animate="fadeInRight" data-caption-delay="400">
-                                        {{ $slider->description }}
-                                    </p>
+                                    @if($slider->description)
+                                        <p data-caption-animate="fadeInRight" data-caption-delay="400">
+                                            {{ $slider->description }}
+                                        </p>
+                                    @endif
 
-{{--                                    <div class="oh button-wrap">--}}
-{{--                                        <a--}}
-{{--                                            class="button button-primary button-ujarak"--}}
-{{--                                            href="/about-us"--}}
-{{--                                            data-caption-animate="slideInLeft"--}}
-{{--                                            data-caption-delay="400"--}}
-{{--                                        >--}}
-{{--                                            Read more--}}
-{{--                                        </a>--}}
-{{--                                    </div>--}}
+                                    <div class="oh button-wrap">
+                                        <a
+                                            class="button button-primary button-ujarak"
+                                            href="/products/{{ $slider->category->filter_name }}"
+                                            data-caption-animate="slideInLeft"
+                                            data-caption-delay="400"
+                                        >
+                                            {{ $slider->category->name }}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

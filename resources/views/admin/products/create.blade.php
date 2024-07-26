@@ -8,7 +8,7 @@
                 id="product-form"
                 class="form-space"
                 enctype="multipart/form-data"
-                data-url="{{ route('admin.create-product') }}"
+                data-url="{{ route('products.store') }}"
             >
                 @csrf
                 <div class="form-group">
@@ -133,12 +133,7 @@
 
                 <div class="form-group">
                     <label class="form-label">Category</label>
-                    <select
-                        required
-                        name="category_id"
-                        id="category_id"
-                        class="form-input"
-                    >
+                    <select required name="category_id" id="category_id" class="form-input">
                         <option value="">Choose category</option>
                         @foreach($categories as $category)
                             <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -151,13 +146,20 @@
                     <label class="form-label">Subcategory</label>
                     <select name="subcategory_id" id="subcategory_id" class="form-input">
                         <option value="">Choose subcategory</option>
-                        <!-- Subcategory options will be loaded dynamically -->
+                        <!-- Subcategory options will be populated by JS -->
                     </select>
                     <span class="error-message"></span>
                 </div>
 
-                <button id="btn" type="submit" class="form-button">Add item</button>
+                <div class="btn-group">
+                    <button id="btn" type="submit" class="form-button">Add item</button>
+                    <button id="backButton" class="form-button ">Back</button>
+                </div>
             </form>
         </div>
     </div>
+
+    <script>
+        window.categoriesWithSubcategories = @json($categoriesWithSubcategories);
+    </script>
 @endsection

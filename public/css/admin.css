@@ -191,6 +191,7 @@ body, html {
 
 /* Стилі для полів вводу та вибору */
 .form-input {
+    width: 100%;
     padding: 8px 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -400,6 +401,7 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: auto;
 }
 
 .product-image {
@@ -558,4 +560,39 @@ body, html {
 
 .dropzone .dz-main-image {
     border: 2px solid #1a202c; /* Колір підкреслення для головного зображення */
+}
+
+.add-category-btn {
+    font-size: 19px;
+    padding: 4px 12px;
+}
+.remove-button {
+    margin-left: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 19px;
+    padding: 4px 14px;
+    background-color: #f61111;
+    color: #fff;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.subcategory-group {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.remove-button:hover {
+    background-color: #810300;
+}
+
+.btn-group {
+    display: flex;
+    justify-content: space-between;
+}
+
+#backButton {
+    background: #1a202c;
 }

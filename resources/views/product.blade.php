@@ -30,8 +30,16 @@
                     <h3 class="text-3xl font-bold mb-4">{{ $product->name }}</h3>
 
                     @if($product->description)
-                        <p class="mb-4">{{ $product->description }}</p>
+                        <p class="mb-3 text-justify">{{ $product->description }}</p>
                     @endif
+
+                    <h3 class="text-3xl font-bold mb-4">Product details</h3>
+
+                    <p class="mb-2 d-flex">
+                        <i class="fa-solid fa-hand"></i>
+                        <strong class="mr-3">Handmade product</strong>
+                    </p>
+                    <p class="mb-2 d-flex"><strong class="mr-3">Made to order</strong></p>
 
                     <p class="mb-2 d-flex"><strong class="mr-3">Quantity in stock:</strong> {{ $product->count }}</p>
 

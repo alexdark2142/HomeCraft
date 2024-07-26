@@ -8,18 +8,19 @@
                 id="product-form"
                 class="form-space"
                 enctype="multipart/form-data"
-                data-url="{{ route('sliders.store') }}"
+                data-url="{{ route('sliders.update', $slider->id) }}"
             >
                 @csrf
+                @method('PUT')
                 <div class="form-group">
                     <label class="form-label">Pictures</label>
                     <input
-                        required
                         type="file"
                         name="image"
                         id="image"
                         accept=".jpg, .jpeg, .png, .webp"
                         class="form-input"
+                        disabled
                     >
                     <span class="error-message"></span>
                 </div>
@@ -31,6 +32,7 @@
                         name="title"
                         id="title"
                         class="form-input"
+                        value="{{  $slider->title }}"
                     >
                     <span class="error-message"></span>
                 </div>
@@ -42,7 +44,7 @@
                         name="description"
                         id="description"
                         class="form-input"
-                    ></textarea>
+                    >{{  $slider->description }}</textarea>
                     <span class="error-message"></span>
                 </div>
 
@@ -51,30 +53,19 @@
                     <select required name="category_id" id="category_id" class="form-input">
                         <option value="">Choose category</option>
                         @foreach($categories as $category)
-                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            <option value="{{ $category->id }}" {{ $slider->category_id == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
                         @endforeach
                     </select>
                     <span class="error-message"></span>
                 </div>
 
-                <div id="subcategory-container" class="form-group" style="display: none;">
-                    <label class="form-label">Subcategory</label>
-                    <select name="subcategory_id" id="subcategory_id" class="form-input">
-                        <option value="">Choose subcategory</option>
-                        <!-- Subcategory options will be populated by JS -->
-                    </select>
-                    <span class="error-message"></span>
-                </div>
-
                 <div class="btn-group">
-                    <button id="btn" type="submit" class="form-button">Add picture</button>
+                    <button id="btn" type="submit" class="form-button">Update home picture</button>
                     <button id="backButton" class="form-button ">Back</button>
                 </div>
             </form>
         </div>
     </div>
-
-    <script>
-        window.categoriesWithSubcategories = @json($categoriesWithSubcategories);
-    </script>
 @endsection

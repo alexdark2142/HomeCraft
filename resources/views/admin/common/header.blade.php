@@ -15,26 +15,38 @@
         <ul class="menu-list">
             <!-- Пункт меню "Add product" -->
             <li>
-                <a class="menu-link {{ request()->routeIs('admin.add-product') ? 'active' : '' }}" href="{{ route('admin.add-product') }}">
+                <a class="menu-link {{ request()->routeIs('products.create') ? 'active' : '' }}" href="{{ route('products.create') }}">
                     Add product
                 </a>
             </li>
 
             <li>
-                <a class="menu-link {{ request()->routeIs('admin.products') ? 'active' : '' }}" href="{{ route('admin.products') }}">
-                    Products
-                </a>
-            </li>
-
-            <li>
-                <a class="menu-link {{ request()->routeIs('sliders.index') ? 'active' : '' }}" href="{{ route('sliders.index') }}">
-                    Slider List
+                <a class="menu-link {{ request()->routeIs('products.index') ? 'active' : '' }}" href="{{ route('products.index') }}">
+                    List of Products
                 </a>
             </li>
 
             <li>
                 <a class="menu-link {{ request()->routeIs('sliders.create') ? 'active' : '' }}" href="{{ route('sliders.create') }}">
-                    Add Slider
+                    Add home picture
+                </a>
+            </li>
+
+            <li>
+                <a class="menu-link {{ request()->routeIs('sliders.index') ? 'active' : '' }}" href="{{ route('sliders.index') }}">
+                    List of home pictures
+                </a>
+            </li>
+
+            <li>
+                <a class="menu-link {{ request()->routeIs('categories.create') ? 'active' : '' }}" href="{{ route('categories.create') }}">
+                    Add category
+                </a>
+            </li>
+
+            <li>
+                <a class="menu-link {{ request()->routeIs('categories.index') ? 'active' : '' }}" href="{{ route('categories.index') }}">
+                    List of categories
                 </a>
             </li>
 

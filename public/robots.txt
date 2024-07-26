@@ -1,2 +1,14 @@
 User-agent: *
-Disallow:
+Disallow: /admin/
+Disallow: /admin/login
+Disallow: /admin/products
+Disallow: /admin/sliders
+Disallow: /admin/categories
+Disallow: /admin/logout
+
+User-agent: *
+Allow: /
+Allow: /products/
+Allow: /product/
+
+Sitemap: https://www.home-craft-quality.ca/sitemap.xml

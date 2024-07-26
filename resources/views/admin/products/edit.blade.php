@@ -8,7 +8,7 @@
                 id="product-form"
                 class="form-space"
                 enctype="multipart/form-data"
-                data-url="{{ route('admin.update-product', $product->id) }}"
+                data-url="{{ route('products.update', $product->id) }}"
             >
                 @csrf
                 @method('PUT')
@@ -47,9 +47,7 @@
                         name="description"
                         id="description"
                         class="form-input"
-                    >
-                        {{ $product->description }}"
-                    </textarea>
+                    >{{ $product->description }}</textarea>
                     <span class="error-message"></span>
                 </div>
 
@@ -144,15 +142,12 @@
 
                 <div class="form-group">
                     <label class="form-label">Category</label>
-                    <select
-                        required
-                        name="category_id"
-                        id="category_id"
-                        class="form-input"
-                    >
+                    <select required name="category_id" id="category_id" class="form-input">
                         <option value="">Choose category</option>
                         @foreach($categories as $category)
-                            <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                            <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
                         @endforeach
                     </select>
                     <span class="error-message"></span>
@@ -160,21 +155,26 @@
 
                 <div id="subcategory-container" class="form-group" style="{{ $product->subcategory_id ? 'display: flex;' : 'display: none;' }}">
                     <label class="form-label">Subcategory</label>
-                    <select
-                        name="subcategory_id"
-                        id="subcategory_id"
-                        class="form-input"
-                    >
-                        @foreach($subcategories as $subcategory)
-                            <option value="{{ $subcategory->id }}" {{ $product->subcategory_id == $subcategory->id ? 'selected' : '' }}>{{ $subcategory->name }}</option>
+                    <select name="subcategory_id" id="subcategory_id" class="form-input">
+                        <option value="">Choose subcategory</option>
+                        @foreach($categoriesWithSubcategories[$product->category_id] ?? [] as $subcategory)
+                            <option value="{{ $subcategory['id'] }}" {{ $product->subcategory_id == $subcategory['id'] ? 'selected' : '' }}>
+                                {{ $subcategory['name'] }}
+                            </option>
                         @endforeach
                     </select>
                     <span class="error-message"></span>
                 </div>
 
-                <button id="btn" type="submit" class="form-button">Update item</button>
+                <div class="btn-group">
+                    <button id="btn" type="submit" class="form-button">Update item</button>
+                    <button id="backButton" class="form-button ">Back</button>
+                </div>
             </form>
         </div>
     </div>
 
+    <script>
+        window.categoriesWithSubcategories = @json($categoriesWithSubcategories);
+    </script>
 @endsection

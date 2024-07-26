@@ -14,59 +14,12 @@ use Intervention\Image\Drivers\Gd\Driver;
 class ProductController extends Controller
 {
     /**
-     * Remove the specified product from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function destroy(int $id): \Illuminate\Http\JsonResponse
-    {
-        try {
-            $product = Product::findOrFail($id);
-
-            // Отримати всі записи галереї, пов'язані з продуктом
-            $galleries = Gallery::where('product_id', $id)->get();
-
-            // Видалення зображень з папки
-            foreach ($galleries as $gallery) {
-                $imagePath = public_path('images/gallery/' . $gallery->tag . '/' . $gallery->name);
-                if (file_exists($imagePath)) {
-                    unlink($imagePath);
-                }
-            }
-
-            // Видалення директорії продукту, якщо вона порожня
-            $productDirectory = public_path('images/gallery/' . $product->id);
-            if (is_dir($productDirectory) && count(scandir($productDirectory)) == 2) { // Перевірка, чи директорія порожня
-                rmdir($productDirectory);
-            }
-
-            // Видалення записів з таблиці Gallery
-            Gallery::where('product_id', $id)->delete();
-
-            // Видалення продукту з бази даних
-            $product->delete();
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Product deleted successfully',
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to delete product: ' . $e->getMessage(),
-            ], 500);
-        }
-    }
-
-
-    /**
      * Display a listing of the resource.
      */
     public function list(string $category = null, $subcategory = null): \Illuminate\Http\Response
     {
         $productsQuery = Product::query();
-        $sliders = Slider::all();
+        $sliders = Slider::with('category')->get();
 
         if ($category) {
             $productsQuery->whereHas('category', function ($query) use ($category) {
@@ -95,13 +48,32 @@ class ProductController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $products = Product::with('category')
+            ->with('subcategory')
+            ->with('gallery')
+            ->paginate(9);
+
+        return view('admin.products.list', compact('products'));
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        $categories = Category::with('subcategories')->whereNull('parent_id')->get();
+        $categories = Category::whereNull('parent_id')->get();
+        $categoriesWithSubcategories = $categories->mapWithKeys(function ($category) {
+            return [$category->id => $category->subcategories];
+        });
 
-        return view('admin.products.create', compact('categories'));
+        return view('admin.products.create', [
+            'categories' => $categories,
+            'categoriesWithSubcategories' => $categoriesWithSubcategories
+        ]);
     }
 
     /**
@@ -192,22 +164,34 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        $categories = Category::all();
-        $subcategories = Category::where('parent_id', $product->category_id)->get();
+        // Отримання всіх категорій з підкатегоріями
+        $categories = Category::with('subcategories')->whereNull('parent_id')->get();
 
-        return view('admin.products.edit', compact('product', 'categories', 'subcategories'));
+        // Збереження категорій та їх підкатегорій у форматі зручному для JavaScript
+        $categoriesWithSubcategories = $categories->mapWithKeys(function ($category) {
+            return [$category->id => $category->subcategories->map(function ($subcat) {
+                return ['id' => $subcat->id, 'name' => $subcat->name];
+            })];
+        });
+
+        return view('admin.products.edit', [
+            'product' => $product,
+            'categories' => $categories,
+            'categoriesWithSubcategories' => $categoriesWithSubcategories
+        ]);
     }
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, Product $product): \Illuminate\Http\JsonResponse
     {
         // Validate the incoming data
         $validatedData = $request->validate([
             'name' => 'required|string|max:100',
-            'count' => 'required|integer',
-            'length' => 'nullable|length',
+            'count' => 'required|integer|max:255',
+            'length' => 'nullable|integer',
             'height' => 'nullable|integer',
             'width' => 'nullable|integer',
             'depth' => 'nullable|integer',
@@ -236,6 +220,52 @@ class ProductController extends Controller
         return response()->json([
             'message' => 'Product updated successfully.'
         ]);
+    }
+
+    /**
+     * Remove the specified product from storage.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(int $id): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $product = Product::findOrFail($id);
+
+            // Отримати всі записи галереї, пов'язані з продуктом
+            $galleries = Gallery::where('product_id', $id)->get();
+
+            // Видалення зображень з папки
+            foreach ($galleries as $gallery) {
+                $imagePath = public_path('images/gallery/' . $gallery->tag . '/' . $gallery->name);
+                if (file_exists($imagePath)) {
+                    unlink($imagePath);
+                }
+            }
+
+            // Видалення директорії продукту, якщо вона порожня
+            $productDirectory = public_path('images/gallery/' . $product->id);
+            if (is_dir($productDirectory) && count(scandir($productDirectory)) == 2) { // Перевірка, чи директорія порожня
+                rmdir($productDirectory);
+            }
+
+            // Видалення записів з таблиці Gallery
+            Gallery::where('product_id', $id)->delete();
+
+            // Видалення продукту з бази даних
+            $product->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Product deleted successfully',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to delete product: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
 }

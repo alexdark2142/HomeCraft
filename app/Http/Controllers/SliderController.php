@@ -20,8 +20,14 @@ class SliderController extends Controller
     public function create()
     {
         $categories = Category::whereNull('parent_id')->get();
+        $categoriesWithSubcategories = $categories->mapWithKeys(function ($category) {
+            return [$category->id => $category->subcategories];
+        });
 
-        return view('admin.sliders.create', compact('categories'));
+        return view('admin.sliders.create', [
+            'categories' => $categories,
+            'categoriesWithSubcategories' => $categoriesWithSubcategories
+        ]);
     }
 
     public function store(Request $request): \Illuminate\Http\JsonResponse
@@ -57,27 +63,34 @@ class SliderController extends Controller
 
     public function edit(Slider $slider)
     {
-        return view('sliders.edit', compact('slider'));
+        $categories = Category::whereNull('parent_id')->get();
+
+        return view('admin.sliders.edit', [
+                'slider' => $slider,
+                'categories' => $categories,
+            ]
+        );
     }
 
     public function update(Request $request, Slider $slider)
     {
-        $request->validate([
-            'image_path' => 'nullable|image',
+        $validatedData = $request->validate([
+//            'image' => 'nullable|image',
             'title' => 'nullable|string',
+            'category_id' => 'required|integer',
             'description' => 'nullable|string',
         ]);
 
-        if ($request->hasFile('image_path')) {
-            $imagePath = $request->file('image_path')->store('sliders', 'public');
-            $slider->image_path = $imagePath;
-        }
+//        if ($request->hasFile('image_path')) {
+//            $imagePath = $request->file('image_path')->store('sliders', 'public');
+//            $slider->image_path = $imagePath;
+//        }
 
-        $slider->title = $request->title;
-        $slider->description = $request->description;
-        $slider->save();
+        $slider->update($validatedData);
 
-        return redirect()->route('sliders.index')->with('success', 'Slider image updated successfully.');
+        return response()->json([
+            'message' => 'Slider updated successfully.'
+        ]);
     }
 
     public function destroy(Slider $slider): \Illuminate\Http\JsonResponse
