@@ -92,7 +92,7 @@
                         <div class="cart-footer">
                             <div class="cart-footer_btn group-sm">
                                 <a class="button button-md button-default-outline-2 button-wapasha" href="#" id="clear-cart">Clear cart</a>
-                                <a class="button button-md button-primary button-pipaluk" href="#">Checkout</a>
+                                <a class="button button-md button-primary button-checkout" href="#">Checkout</a>
                             </div>
                         </div>
                     </div>
