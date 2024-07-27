@@ -81,7 +81,9 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        //
+        return view('admin.categories.edit', [
+            'category' => $category->load('subcategories')
+        ]);
     }
 
     /**
@@ -89,8 +91,49 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            // Додайте інші правила валідації за необхідністю
+        ]);
+
+        // Оновлюємо категорію
+        $category->update([
+            'name' => $request->name,
+            // Оновіть інші поля за необхідністю
+        ]);
+
+        // Видаляємо підкатегорії, якщо вони були вказані для видалення
+        if ($request->has('removed_subcategories')) {
+            $removedSubcategories = $request->removed_subcategories;
+            Category::whereIn('id', $removedSubcategories)->delete();
+        }
+
+        // Оновлюємо або додаємо підкатегорії
+        if ($request->has('subcategories')) {
+            foreach ($request->subcategories as $id => $name) {
+                if (is_numeric($id)) {
+                    // Оновлення існуючої підкатегорії
+                    $subcategory = Category::find($id);
+                    if ($subcategory) {
+                        $subcategory->update([
+                            'name' => $name,
+                            'filter_name' => $this->formatFilterName($request->name)
+                        ]);
+                    }
+                } else {
+                    // Додавання нової підкатегорії, уникаючи конфліктів з існуючими ID
+                    Category::create([
+                        'parent_id' => $category->id,
+                        'name' => $name,
+                        'filter_name' => $this->formatFilterName($request->name)
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -99,12 +142,12 @@ class CategoryController extends Controller
     {
         try {
             $imagePath = public_path('images/categories/' . $category->image_name);
-
-            if (file_exists($imagePath)) {
+            if (file_exists($imagePath) && $category->image_name) {
                 unlink($imagePath);
             }
 
             $subcategories = Category::where('parent_id', $category->id)->get();
+
             foreach ($subcategories as $subcategory) {
                 $subcategory->delete();
             }

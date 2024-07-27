@@ -28,16 +28,18 @@
                                         </p>
                                     @endif
 
-                                    <div class="oh button-wrap">
-                                        <a
-                                            class="button button-primary button-ujarak"
-                                            href="/products/{{ $slider->category->filter_name }}"
-                                            data-caption-animate="slideInLeft"
-                                            data-caption-delay="400"
-                                        >
-                                            {{ $slider->category->name }}
-                                        </a>
-                                    </div>
+                                    @if($slider->category)
+                                        <div class="oh button-wrap">
+                                            <a
+                                                class="button button-primary button-ujarak"
+                                                href="/products/{{ $slider->category->filter_name }}"
+                                                data-caption-animate="slideInLeft"
+                                                data-caption-delay="400"
+                                            >
+                                                {{ $slider->category->name }}
+                                            </a>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>

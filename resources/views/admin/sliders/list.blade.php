@@ -45,7 +45,7 @@
                             </td>
 
                             <td class="text-center p-2 border category-cell">
-                                {{ $slider->category->name }}
+                                {{ $slider->category ? $slider->category->name : '' }}
                             </td>
 
                             <td class="p-2 border action-cell">

@@ -56,7 +56,9 @@
                                 </td>
 
                                 <td class="text-center p-2 border category-cell">
-                                    {{ $product->category->name }}
+                                    @if($product->category)
+                                        {{ $product->category->name }}
+                                    @endif
                                 </td>
 
                                 <td class="text-center p-2 border subcategory-cell">

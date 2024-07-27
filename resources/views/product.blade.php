@@ -43,7 +43,9 @@
 
                     <p class="mb-2 d-flex"><strong class="mr-3">Quantity in stock:</strong> {{ $product->count }}</p>
 
-                    <p class="mb-2 d-flex"><strong class="mr-3">Category:</strong> {{ $product->category->name }}</p>
+                    @if($product->category)
+                        <p class="mb-2 d-flex"><strong class="mr-3">Category:</strong> {{ $product->category->name }}</p>
+                    @endif
 
                     @if($product->material)
                         <p class="mb-2 d-flex"><strong class="mr-3">Material:</strong> {{ $product->material }}</p>

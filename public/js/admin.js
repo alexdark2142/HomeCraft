@@ -153,29 +153,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (document.getElementById('add-subcategory')) {
         // Додавання підкатегорії
-        document.getElementById('add-subcategory').addEventListener('click', function() {
-            const subcategoryContainer = document.getElementById('subcategory-box');
+        document.getElementById('add-subcategory').addEventListener('click', function () {
+            const subcategoryBox = document.getElementById('subcategory-box');
             const newSubcategoryGroup = document.createElement('div');
-            newSubcategoryGroup.className = 'subcategory-group';
+            newSubcategoryGroup.classList.add('subcategory-group');
+            const tempId = 'new-' + Math.random().toString(36).substr(2, 9);
+            newSubcategoryGroup.innerHTML = `
+                    <input type="text" name="subcategories[${tempId}]" class="form-input" placeholder="Subcategory">
+                    <button type="button" class="remove-button">-</button>
+                `;
+            subcategoryBox.appendChild(newSubcategoryGroup);
 
-            const newSubcategoryInput = document.createElement('input');
-            newSubcategoryInput.type = 'text';
-            newSubcategoryInput.name = 'subcategories[]';
-            newSubcategoryInput.className = 'form-input';
-            newSubcategoryInput.placeholder = 'Subcategory';
-
-            const removeButton = document.createElement('button');
-            removeButton.type = 'button';
-            removeButton.className = 'remove-button';
-            removeButton.textContent = '-';
-
-            removeButton.addEventListener('click', function() {
-                newSubcategoryGroup.remove();
+            newSubcategoryGroup.querySelector('.remove-button').addEventListener('click', function () {
+                this.parentElement.remove();
             });
-
-            newSubcategoryGroup.appendChild(newSubcategoryInput);
-            newSubcategoryGroup.appendChild(removeButton);
-            subcategoryContainer.appendChild(newSubcategoryGroup);
         });
     }
 
