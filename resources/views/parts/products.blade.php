@@ -39,7 +39,7 @@
                                                     <div class="product-button">
                                                         <button
                                                             class="button button-md button-white button-ujarak view-product"
-                                                            data-id="{{ $product->id }}"
+                                                            data-url="{{ route('product.show', $product->id) }}"
                                                         >
                                                             View
                                                         </button>
@@ -68,7 +68,7 @@
 
                                                 <button
                                                     class="button button-sm button-dark button-ujarak view-product"
-                                                    data-id="{{ $product->id }}"
+                                                    data-url="{{ route('product.show', $product->id) }}"
                                                 >
                                                     View
                                                 </button>
@@ -98,10 +98,5 @@
 </section>
 
 @if ($products->isNotEmpty())
-    <div class="popup-img">
-        <span class="fa fa-close"></span>
-        <img src="" alt="">
-    </div>
-
     @include('parts.paginate')
 @endif

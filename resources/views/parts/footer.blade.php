@@ -16,7 +16,7 @@
                             </a>
                         </div>
 
-                        <ul class="footer-contacts d-lg-flex justify-content-between" style="min-width: 585px">
+                        <ul class="footer-contacts d-lg-flex justify-content-between">
                             <li>
                                 <div class="unit unit-spacing-xs">
                                     <div class="unit-left">

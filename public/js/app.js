@@ -70,51 +70,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-
-
     document.querySelectorAll('.view-product').forEach(button => {
         button.addEventListener('click', function () {
-            const id = this.getAttribute('data-id');
+            const url = this.getAttribute('data-url');
             // Перенаправлення на сторінку продукту
-            window.location.href = `/product/${id}`;
+            window.location.href = url;
         });
-    });
-
-
-
-    let popupImg = document.querySelector('.popup-img span')
-    if (popupImg) {
-        popupImg.onclick = () => {
-            const body = document.body;
-
-            // Сховати попап і розблокувати прокрутку сторінки
-            document.querySelector('.popup-img').style.display = 'none';
-            body.style.overflow = 'auto'; // Розблокування прокрутки сторінки
-        };
-    }
-
-    const thumbnails = document.querySelectorAll('.thumbnail img');
-    const mainImage = document.querySelector('.main-image img');
-
-    thumbnails.forEach(thumbnail => {
-        thumbnail.addEventListener('click', function () {
-            // Оновлення головного зображення
-            mainImage.src = this.src;
-
-            // Зняття класу 'selected' з усіх мініатюр
-            thumbnails.forEach(thumbnail => {
-                thumbnail.parentElement.classList.remove('selected');
-            });
-
-            // Додавання класу 'selected' до обраної мініатюри
-            this.parentElement.classList.add('selected');
-        });
-
-        // Встановлення початкового головного зображення
-        if (thumbnail.dataset.main === 'true') {
-            mainImage.src = thumbnail.src;
-            thumbnail.parentElement.classList.add('selected');
-        }
     });
 
     /*===========================CART========================*/
@@ -277,5 +238,125 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('.shopping-cart-btn').classList.remove('active');
     });
 
+
+//===================GALLERY==================//
+    const thumbnails = document.querySelectorAll('.thumbnail img');
+    const pswpElement = document.querySelector('.pswp');
+
+    const initPhotoSwipeFromDOM = function(gallerySelector) {
+        const parseThumbnailElements = function(el) {
+            const items = [];
+            el.querySelectorAll('.gallery-item').forEach(function(linkEl) {
+                const item = {
+                    src: linkEl.getAttribute('href'),
+                    w: parseInt(linkEl.getAttribute('data-pswp-width'), 10),
+                    h: parseInt(linkEl.getAttribute('data-pswp-height'), 10),
+                    msrc: linkEl.querySelector('img').getAttribute('src'),
+                    el: linkEl
+                };
+                items.push(item);
+            });
+            return items;
+        };
+
+        const openPhotoSwipe = function(index, galleryElement) {
+            if (!window.PhotoSwipe) {
+                console.error('PhotoSwipe is not loaded.');
+                return;
+            }
+
+            const items = parseThumbnailElements(galleryElement);
+            const options = {
+                galleryUID: galleryElement.getAttribute('data-pswp-uid'),
+                index: index,
+                getThumbBoundsFn: function(index) {
+                    const thumbnail = items[index].el.querySelector('img');
+                    const pageYScroll = window.pageYOffset || document.documentElement.scrollTop;
+                    const rect = thumbnail.getBoundingClientRect();
+                    return {x: rect.left, y: rect.top + pageYScroll, w: rect.width};
+                },
+                showHideOpacity: true,
+                bgOpacity: 0.8,
+                maxZoom: 2 // Додайте це для обмеження максимального масштабу
+            };
+            const gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
+            gallery.init();
+
+            gallery.listen('close', function() {
+                document.body.style.overflow = '';
+                pswpElement.classList.remove('pswp--visible');
+            });
+        };
+
+        const galleryElements = document.querySelectorAll(gallerySelector);
+        galleryElements.forEach(function(galleryEl, i) {
+            galleryEl.setAttribute('data-pswp-uid', i + 1);
+
+            galleryEl.querySelectorAll('.gallery-item').forEach(function(linkEl) {
+                linkEl.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const allItems = galleryEl.querySelectorAll('.gallery-item');
+                    const index = Array.from(allItems).findIndex(item => item === linkEl);
+                    openPhotoSwipe(index, galleryEl);
+                });
+            });
+        });
+    };
+
+    initPhotoSwipeFromDOM('.my-gallery');
+
+    const mainImageLinks = document.querySelectorAll('.main-image .gallery-item');
+    mainImageLinks.forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const allItems = Array.from(document.querySelectorAll('.main-image .gallery-item'));
+            const index = allItems.indexOf(this);
+            if (window.openPhotoSwipe) {
+                openPhotoSwipe(index, document.querySelector('.my-gallery'));
+            } else {
+                console.error('openPhotoSwipe function is not defined.');
+            }
+        });
+    });
+
+    // Обробник натискання на мініатюри
+    thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', function () {
+            const clickedSrc = this.src;
+
+            // Сховати всі великі зображення
+            mainImageLinks.forEach(link => {
+                link.style.display = 'none';
+            });
+
+            // Показати велике зображення, відповідне обраній мініатюрі
+            mainImageLinks.forEach(link => {
+                if (link.querySelector('img').src === clickedSrc) {
+                    link.style.display = 'block';
+                }
+            });
+
+            // Зняття класу 'selected' з усіх мініатюр
+            thumbnails.forEach(thumbnail => {
+                thumbnail.parentElement.classList.remove('selected');
+            });
+
+            // Додавання класу 'selected' до обраної мініатюри
+            this.parentElement.classList.add('selected');
+        });
+
+        // Встановлення початкового головного зображення
+        if (thumbnail.dataset.main === 'true') {
+            const initialSrc = thumbnail.src;
+            mainImageLinks.forEach(link => {
+                if (link.querySelector('img').src === initialSrc) {
+                    link.style.display = 'block';
+                } else {
+                    link.style.display = 'none';
+                }
+            });
+            thumbnail.parentElement.classList.add('selected');
+        }
+    });
 });
 

@@ -4,22 +4,26 @@
     <section class="section-product">
         <div class="container">
             <div class="row justify-content-center">
-                <!-- Gallery Section -->
-                <div class="col-12 col-md-6 px-5 py-3">
+                <!-- Gallery -->
+                <div class="col-12 col-md-6 px-5 py-3 my-gallery">
                     <div class="main-image mb-4">
-                        @php
-                            $mainImage = $product->gallery->firstWhere('type', 'main');
-                        @endphp
-                        @if ($mainImage)
-                            <img src="{{ asset('images/gallery/' . $product->id . '/' . $mainImage->name) }}" alt="Main Product Image" class="object-contain">
-                        @else
-                            <img src="{{ asset('images/products/default-image.jpg') }}" alt="Main Product Image" class="object-contain">
-                        @endif
+                        @foreach ($product->gallery as $index => $image)
+                            @if ($index == 0)
+                                @php $mainImage = $image @endphp
+                                <a href="{{ asset('images/gallery/' . $product->id . '/' . $image->name) }}" data-pswp-width="1600" data-pswp-height="1067" class="gallery-item">
+                                    <img src="{{ asset('images/gallery/' . $product->id . '/' . $image->name) }}" alt="Main Product Image" class="object-contain">
+                                </a>
+                            @else
+                                <a href="{{ asset('images/gallery/' . $product->id . '/' . $image->name) }}" data-pswp-width="1600" data-pswp-height="1067" class="gallery-item" style="display: none;">
+                                    <img src="{{ asset('images/gallery/' . $product->id . '/' . $image->name) }}" alt="Main Product Image" class="object-contain">
+                                </a>
+                            @endif
+                        @endforeach
                     </div>
                     <div class="thumbnails flex flex-wrap justify-center">
                         @foreach ($product->gallery as $image)
-                            <div class="thumbnail m-2 {{ $image->type == 'main' ? 'selected' : '' }}">
-                                <img src="{{ asset('images/gallery/' . $product->id . '/' . $image->name) }}" alt="Product Thumbnail" class="w-70 h-70 object-cover" data-main="{{ $image->tag === 'main' ? 'true' : 'false' }}">
+                            <div class="thumbnail m-2">
+                                <img src="{{ asset('images/gallery/' . $product->id . '/' . $image->name) }}" alt="Product Thumbnail" class="w-70 h-70 object-cover">
                             </div>
                         @endforeach
                     </div>
@@ -69,7 +73,6 @@
                         </div>
                     @endif
 
-
                     @if($product->subcategory)
                         <p class="mb-2 d-flex"><strong class="mr-3">Subcategory:</strong> {{ $product->subcategory->name }}</p>
                     @endif
@@ -91,4 +94,14 @@
             </div>
         </div>
     </section>
+
+    @include('parts.photoSwipe')
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+        });
+
+    </script>
+
 @endsection

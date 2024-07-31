@@ -8,40 +8,36 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Admin\AuthController;
 
 Route::get('/products/{category?}/{subcategory?}', [ProductController::class, 'list'])->name('products');
-Route::get('/product/{product}', [ProductController::class, 'show'])->name('products');
+Route::get('/product/{product}', [ProductController::class, 'show'])->name('product.show');
 Route::get('/', [ProductController::class, 'list'])->name('home');
 
 Route::get('/api/subcategories/{categoryId}', [\App\Http\Controllers\CategoryController::class, 'getSubcategories']);
 
 /*==============ADMIN==============*/
-Route::get('/admin/login', function () {
-    return view('admin.login');
+Route::get('/login', function () {
+    return view('login');
 })->name('admin-login');
 
-Route::post('/admin/login', [AuthController::class, 'login'])->name('login.post');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 
+// Інші загальнодоступні маршрути, такі як домашня сторінка, контактна форма, і т.д.
+
+// Маршрути адміністративної панелі
 Route::middleware(['admin'])->prefix('admin')->group(function () {
     Route::get('/', function () {
-        return view('admin.home');
+        return view('home');
     })->name('admin');
 
-    /*==============PRODUCT==============*/
-    Route::resource('products', ProductController::class);
-
-    /*==============PHOTO==============*/
-//    Route::post('/photo/upload', [UploadController::class, 'upload'])->name('upload');
-//    Route::post('/photo/destroy', [UploadController::class, 'destroy'])->name('destroy');
-
-    /*==============HOME-PICTURE==============*/
+    Route::get('products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('products/create', [ProductController::class, 'create'])->name('products.create');
+    Route::post('products', [ProductController::class, 'store'])->name('products.store');
+    Route::get('products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+    Route::put('products/{product}', [ProductController::class, 'update'])->name('products.update');
+    Route::delete('products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
     Route::resource('sliders', SliderController::class);
-
-    /*==============HOME-CATEGORIES==============*/
     Route::resource('categories', CategoryController::class);
 
-    // Route::get('/{id}/product-info', [AdminController::class, 'getUser'])->name('admin.products-info');
-
+    // Інші адміністративні маршрути
     Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
 });
-
-
 
