@@ -15,7 +15,7 @@ Route::get('/api/subcategories/{categoryId}', [\App\Http\Controllers\CategoryCon
 
 /*==============ADMIN==============*/
 Route::get('/login', function () {
-    return view('login');
+    return view('admin.login');
 })->name('admin-login');
 
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
@@ -25,7 +25,7 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 // Маршрути адміністративної панелі
 Route::middleware(['admin'])->prefix('admin')->group(function () {
     Route::get('/', function () {
-        return view('home');
+        return view('admin.home');
     })->name('admin');
 
     Route::get('products', [ProductController::class, 'index'])->name('products.index');
