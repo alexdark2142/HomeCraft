@@ -1,0 +1,113 @@
+@extends('admin.templates.base')
+
+@section('main')
+    <div class="w-full">
+        <h1 class="text-3xl font-medium mb-5">
+            List of {{ $currentStatus }} orders {{ $orders->isEmpty() ? 'is empty!' : ':' }}
+        </h1>
+
+        @if ($orders->isNotEmpty())
+            <div class="overflow-x-auto">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            @foreach ([
+                                'img' => 'Img',
+                                'name' => 'Name',
+                                'quantity' => 'Quantity',
+                                'price_per_piece' => 'Price per piece',
+                                'total_price' => 'Total price',
+                                'full_name' => 'Customer full name',
+                                'email' => 'Customer email',
+                                'full_address' => 'Customer delivery address',
+                                'select_status' => 'Select a status',
+                                'action' => 'Action'
+                            ] as $key => $value)
+                                @if(!(
+                                    $currentStatus === 'cancelled'
+                                    && in_array($key, ['full_name', 'email', 'full_address', 'select_status'])
+                                ))
+                                    <th class="text-center border px-2 header-cell">
+                                        {!! $value !!}
+                                    </th>
+                                @endif
+                            @endforeach
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    @foreach ($orders as $order)
+                        <tr class="product-row" data-product-id="{{ $order->id }}">
+                            <td class="text-center p-2 border img-cell">
+                                <div class="image-container">
+                                    @php
+                                        $mainImage = $order->product->gallery->firstWhere('type', 'main');
+                                    @endphp
+
+                                    <img
+                                        src="{{ asset('images/gallery/' . $mainImage->tag . '/' . $mainImage->name) }}"
+                                        alt="Product Image"
+                                        class="product-image"
+                                    >
+                                </div>
+                            </td>
+
+                            <td class="text-center p-2 border name-cell">
+                                {{ $order->product->name }}
+                            </td>
+
+                            <td class="text-center p-2 border count-cell">
+                                {{ $order->quantity }}
+                            </td>
+
+                            <td class="text-center p-2 border price-cell">
+                                ${{ number_format($order->price_per_piece, 2) }}
+                            </td>
+
+                            <td class="text-center p-2 border count-cell">
+                                ${{ number_format($order->quantity * $order->price_per_piece, 2) }}
+                            </td>
+
+                            @if($order->customer)
+                                <td class="text-center p-2 border subcategory-cell">
+                                    {{ $order->customer->full_name }}
+                                </td>
+
+                                <td class="text-center p-2 border subcategory-cell">
+                                    {{ $order->customer->email }}
+                                </td>
+
+                                <td class="text-center p-2 border subcategory-cell">
+                                    {{ $order->customer->full_address }}
+                                </td>
+
+                                <td class="p-2 border action-cell">
+                                    <select name="order_status" id="order_status" class="form-input">
+                                        @foreach($orderStatuses as $status)
+                                            <option value="{{ $status }}" {{ strtoupper($currentStatus) == strtoupper($status) ? 'selected' : '' }}>
+                                                {{ strtoupper($status) }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                            @endif
+
+                            <td class="p-2 border action-cell">
+                                <div class="flex justify-evenly gap-x-1">
+                                    <button id="delete-btn" data-url="{{ route('orders.destroy', $order->id) }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="32" width="28" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#e53124" d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0H284.2c12.1 0 23.2 6.8 28.6 17.7L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32h96l7.2-14.3zM32 128H416V448c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V128zm96 64c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16z"/></svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
+    </div>
+
+    @if($orders->isNotEmpty())
+        @include('parts.paginate', ['items' => $orders])
+    @endif
+@endsection

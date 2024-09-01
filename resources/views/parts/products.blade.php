@@ -43,28 +43,42 @@
                                                         >
                                                             View
                                                         </button>
-                                                        <button
-                                                            class="button button-md button-white button-ujarak add-to-cart"
-                                                            data-id="{{ $product->id }}"
-                                                            data-name="{{ $product->name }}"
-                                                            data-price="{{ $product->price }}"
-                                                            data-count="{{ $product->count }}"
-                                                            data-img="{{ asset('images/gallery/' . $mainImage->tag . '/' . $mainImage->name) }}"
-                                                            {{ $product->count == 0 ? 'disabled' : '' }}
-                                                        >
-                                                            Add to cart
-                                                        </button>
+
+                                                        @if($product->quantity)
+                                                            <button
+                                                                class="button button-md button-white button-ujarak add-to-cart"
+                                                                data-id="{{ $product->id }}"
+                                                                data-name="{{ $product->name }}"
+                                                                data-price="{{ $product->price }}"
+                                                                data-quantity="{{ $product->quantity }}"
+                                                                data-img="{{ asset('images/gallery/' . $mainImage->tag . '/' . $mainImage->name) }}"
+                                                                {{ $product->quantity == 0 ? 'disabled' : '' }}
+                                                            >
+                                                                Add to cart
+                                                            </button>
+                                                        @else
+                                                            <a class="button button-md button-secondary button-ujarak"
+                                                               href="mailto:homecraft1sbdt@gmail.com?subject=Product%20to%20order&body=Hello,%0A%0AI%20would%20like%20to%20order%20this%20product:%20https://www.home-craft-quality.ca/product/%24product-%3Eid%0A%0AThank%20you">
+                                                                Contact us to order
+                                                            </a>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="unit-body">
-                                                <h6 class="product-title">
+                                                <h6 class="product-title truncate">
                                                     {{ $product->name }}
                                                 </h6>
 
-                                                <div class="product-price-wrap">
-                                                    <div class="product-price">${{ $product->price }}</div>
-                                                </div>
+                                                @if(($product->quantity > 0 && $product->price !== null && $product->price > 0))
+                                                    <div class="product-price-wrap">
+                                                        <div class="product-price">${{ $product->price }}</div>
+                                                    </div>
+                                                @else
+                                                    <div class="product-out-of-stock truncate">
+                                                        Out of stock
+                                                    </div>
+                                                @endif
 
                                                 <button
                                                     class="button button-sm button-dark button-ujarak view-product"
@@ -73,17 +87,24 @@
                                                     View
                                                 </button>
 
-                                                <button
-                                                    class="button button-sm button-secondary button-ujarak add-to-cart"
-                                                    data-id="{{ $product->id }}"
-                                                    data-name="{{ $product->name }}"
-                                                    data-price="{{ $product->price }}"
-                                                    data-count="{{ $product->count }}"
-                                                    data-img="{{ asset('images/gallery/' . $mainImage->tag . '/' . $mainImage->name) }}"
-                                                    {{ $product->count == 0 ? 'disabled' : '' }}
-                                                >
-                                                    Add to cart
-                                                </button>
+                                                @if($product->quantity)
+                                                    <button
+                                                        class="button button-sm button-secondary button-ujarak add-to-cart"
+                                                        data-id="{{ $product->id }}"
+                                                        data-name="{{ $product->name }}"
+                                                        data-price="{{ $product->price }}"
+                                                        data-quantity="{{ $product->quantity }}"
+                                                        data-img="{{ asset('images/gallery/' . $mainImage->tag . '/' . $mainImage->name) }}"
+                                                        {{ $product->quantity == 0 ? 'disabled' : '' }}
+                                                    >
+                                                        Add to cart
+                                                    </button>
+                                                @else
+                                                    <a class="button button-sm button-secondary button-ujarak"
+                                                       href="mailto:homecraft1sbdt@gmail.com?subject=Product%20to%20order&body=Hello,%0A%0AI%20would%20like%20to%20order%20this%20product:%20https://www.home-craft-quality.ca/product/%24product-%3Eid%0A%0AThank%20you">
+                                                        Contact us to order
+                                                    </a>
+                                                @endif
                                             </div>
                                         </div>
                                     </article>
@@ -98,5 +119,5 @@
 </section>
 
 @if ($products->isNotEmpty())
-    @include('parts.paginate')
+    @include('parts.paginate', ['items' => $products])
 @endif

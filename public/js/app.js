@@ -95,29 +95,29 @@ document.addEventListener('DOMContentLoaded', function () {
             const name = this.getAttribute('data-name');
             const price = this.getAttribute('data-price');
             const img = this.getAttribute('data-img');
-            const count = parseInt(this.getAttribute('data-count'), 10);
+            const stockQuantity = parseInt(this.getAttribute('data-quantity'), 10);
 
-            if (count > 0) {
-                addToCart(id, name, price, img, count);
+            if (stockQuantity > 0) {
+                addToCart(id, name, price, img, stockQuantity);
             } else {
                 alert('This product is out of stock and cannot be added to the cart.');
             }
         });
     });
 
-    function addToCart(id, name, price, img, count) {
+    function addToCart(id, name, price, img, stockQuantity) {
         const existingProductIndex = cart.findIndex(product => product.id === id);
 
         if (existingProductIndex !== -1) {
-            if (cart[existingProductIndex].count > 0) {
-                cart[existingProductIndex].quantity += 1;
-                cart[existingProductIndex].count -= 1;
+            if (cart[existingProductIndex].stockQuantity > 0) {
+                cart[existingProductIndex].cartQuantity += 1;
+                cart[existingProductIndex].stockQuantity -= 1;
             } else {
                 alert('This product is out of stock and cannot be added to the cart.');
                 return;
             }
         } else {
-            cart.push({ id, name, price, img, quantity: 1, count: count - 1, initialCount: count });
+            cart.push({ id, name, price, img, cartQuantity: 1, stockQuantity: stockQuantity - 1, initialCount: stockQuantity });
         }
 
         // Зберігання кошика в localStorage
@@ -135,39 +135,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
         cart.forEach(product => {
             const productElement = document.createElement('div');
+
             productElement.innerHTML = `
-            <div class="unit align-items-center cart-row-item">
-                <div class="unit-left">
-                    <a class="cart-row-figure" href="#">
-                        <img class="cart-img" src="${product.img}" alt="${product.name}" width="100" height="100" />
-                    </a>
-                </div>
-                <div class="unit-body">
-                    <div class="cart-item-header">
-                        <h6 class="cart-row-name">${product.name}</h6>
-                        <button class="btn-remove-item" data-id="${product.id}">
-                            <i class="fa fa-trash-o"></i>
-                        </button>
+                <div class="unit align-items-center cart-row-item">
+                    <div class="unit-left">
+                        <a class="cart-row-figure" href="#">
+                            <img class="cart-img" src="${product.img}" alt="${product.name}" width="100" height="100" />
+                        </a>
                     </div>
-                    <div class="cart-item-body">
-                        <h6 class="cart-row-price">$${(product.price * product.quantity).toFixed(2)}</h6>
-                        <div class="cart-quantity-control">
-                            <button class="quantity-control-btn minus" data-id="${product.id}">-</button>
-                            <input type="number" class="cart-row-quantity" value="${product.quantity}" min="1" max="100" readonly>
-                            <button class="quantity-control-btn plus" data-id="${product.id}">+</button>
+                    <div class="unit-body">
+                        <div class="cart-item-header">
+                            <h6 class="cart-row-name">${product.name}</h6>
+                            <button class="btn-remove-item" data-id="${product.id}">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+                        </div>
+                        <div class="cart-item-body">
+                            <h6 class="cart-row-price">$${(product.price * product.cartQuantity).toFixed(2)}</h6>
+                            <div class="cart-quantity-control">
+                                <button class="quantity-control-btn minus" data-id="${product.id}">-</button>
+                                <input type="number" class="cart-row-quantity" value="${product.cartQuantity}" min="1" max="100" readonly>
+                                <button class="quantity-control-btn plus" data-id="${product.id}">+</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        `;
+            `;
 
             cartItemsContainer.appendChild(productElement);
-            totalQuantity += product.quantity;
-            totalPrice += product.price * product.quantity;
+            totalQuantity += product.cartQuantity;
+            totalPrice += product.price * product.cartQuantity;
         });
 
-        document.getElementById('cart-count').innerText = totalQuantity;
-        document.getElementById('cart-count-header').innerText = ` ${totalQuantity}`;
+        document.getElementById('cart-quantity').innerText = totalQuantity;
+        document.getElementById('cart-quantity-header').innerText = ` ${totalQuantity}`;
         document.getElementById('cart-total-price').innerText = ` $${totalPrice.toFixed(2)}`;
 
         // Додаємо обробники подій для кнопок + і -
@@ -178,22 +179,32 @@ document.addEventListener('DOMContentLoaded', function () {
                 updateCartItemQuantity(productId, operation);
             });
         });
+
+        if (totalQuantity === 0) {
+            console.log(0)
+            document.getElementById('paypal-button-container').style.display = 'none';
+        }
+        else {
+            console.log(1)
+
+            document.getElementById('paypal-button-container').style.display = 'block';
+        }
     }
 
     function updateCartItemQuantity(productId, operation) {
         const productIndex = cart.findIndex(product => product.id === productId);
         if (productIndex !== -1) {
             if (operation === 'increment') {
-                if (cart[productIndex].count > 0) {
-                    cart[productIndex].quantity += 1;
-                    cart[productIndex].count -= 1;
+                if (cart[productIndex].stockQuantity > 0) {
+                    cart[productIndex].cartQuantity += 1;
+                    cart[productIndex].stockQuantity -= 1;
                 } else {
                     alert('This product is out of stock and cannot be added to the cart.');
                     return;
                 }
-            } else if (operation === 'decrement' && cart[productIndex].quantity > 1) {
-                cart[productIndex].quantity -= 1;
-                cart[productIndex].count += 1;
+            } else if (operation === 'decrement' && cart[productIndex].cartQuantity > 1) {
+                cart[productIndex].cartQuantity -= 1;
+                cart[productIndex].stockQuantity += 1;
             }
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCart();
@@ -201,9 +212,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function clearCart() {
-        // Відновлюємо значення count для всіх товарів
+        // Відновлюємо значення stockQuantity для всіх товарів
         cart.forEach(product => {
-            product.count = product.initialCount;
+            product.stockQuantity = product.initialCount;
         });
         cart = []; // Очищаємо кошик
         localStorage.removeItem('cart'); // Видаляємо дані з localStorage
@@ -215,8 +226,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const id = event.target.closest('.btn-remove-item').getAttribute('data-id');
             const productIndex = cart.findIndex(product => product.id === id);
             if (productIndex !== -1) {
-                // Відновлення значення count
-                cart[productIndex].count = cart[productIndex].initialCount;
+                // Відновлення значення stockQuantity
+                cart[productIndex].stockQuantity = cart[productIndex].initialCount;
                 cart.splice(productIndex, 1);
                 localStorage.setItem('cart', JSON.stringify(cart)); // Оновлюємо дані в localStorage
                 updateCart();
@@ -237,7 +248,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('.shopping-cart.navbar-modern-project').classList.remove('open');
         document.querySelector('.shopping-cart-btn').classList.remove('active');
     });
-
 
 //===================GALLERY==================//
     const thumbnails = document.querySelectorAll('.thumbnail img');
@@ -356,6 +366,59 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
             thumbnail.parentElement.classList.add('selected');
+        }
+    });
+
+
+    /*=======================================PAYMENT=======================================*/
+    function getCartData() {
+        const cartData = localStorage.getItem('cart');
+        return cartData ? JSON.parse(cartData) : [];
+    }
+
+    document.getElementById('paypal-button').addEventListener('click', function () {
+        // Отримати дані з кошика
+        const cartData = getCartData(); // Реалізуйте цю функцію для отримання даних з кошика
+
+        // Перевірка, чи кошик порожній
+        if (cartData && cartData.length > 0) {
+            // Збережіть кошик в localStorage на випадок невдалої оплати
+            localStorage.setItem('cart_backup', JSON.stringify(cartData));
+
+            // Показати попап
+            const popup = document.getElementById('paypal-popup');
+            popup.style.display = 'flex';
+
+            // Надіслати дані на сервер для перевірки
+            fetch('/api/checkout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ cart: cartData })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Перенаправити на сторінку оплати PayPal після невеликої затримки
+                        setTimeout(function() {
+                            window.location.href = data.redirect_url;
+                        }, 2000); // Затримка 2 секунди
+                    } else {
+                        // Сховати попап, якщо перевірка не пройшла успішно
+                        popup.style.display = 'none';
+                        alert('Product verification process: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    // Сховати попап у випадку помилки
+                    popup.style.display = 'none';
+                    console.error('Error:', error);
+                });
+        } else {
+            // Вивести повідомлення, що кошик порожній
+            alert('Your cart is empty. Please add items to your cart before proceeding to checkout.');
         }
     });
 });

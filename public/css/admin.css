@@ -7,13 +7,13 @@ body, html {
     font-family: 'Arial', sans-serif;
 }
 
-/* Header styles */
+/*====================================HEADER STYLE=====================================*/
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 0 25px;
     background-color: #2d3748;
-    padding: 1rem;
     position: fixed;
     width: 100%;
     top: 0;
@@ -55,7 +55,7 @@ body, html {
     width: 100%;
     height: 3px;
     background-color: #a0aec0;
-    transition: all 0.3s;
+    transition: transform 0.3s, opacity 0.3s;
 }
 
 .toggle-button.open .toggle-bar:nth-child(1) {
@@ -70,36 +70,104 @@ body, html {
     transform: rotate(-45deg) translate(6px, -5px);
 }
 
-.header-menu {
+.nav__menu {
     display: flex;
     flex-grow: 1;
     justify-content: flex-end;
     align-items: center;
 }
 
-.menu-list {
+.nav__list {
     list-style: none;
     margin: 0;
     padding: 0;
+    display: block;
+}
+
+.nav__link {
+    color: #a0aec0;
+    text-decoration: none;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s;
+}
+
+.nav__link:hover, .nav__link.active {
+    color: #ffffff;
+}
+
+.dropdown__item {
+    cursor: pointer;
+    position: relative;
+}
+
+.dropdown__arrow {
+    font-size: 1.25rem;
+    transition: transform 0.4s;
+}
+
+.dropdown__link {
+    padding: 1rem 1.5rem;
+    color: #2b2a28;
+    background-color: var(--black-color-light);
     display: flex;
     align-items: center;
+    transition: background-color 0.3s;
+}
+
+.dropdown__link:hover {
+    background-color: #2d3748;
+    color: #fff;
+}
+
+.dropdown__menu {
+    position: absolute;
+    left: 0;
+    top: 3rem;
+    background-color: var(--black-color-light);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+    z-index: 1;
+}
+
+.dropdown__item:hover > .dropdown__menu,
+.dropdown__item:focus-within > .dropdown__menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown__add {
+    margin-left: auto;
 }
 
 .menu-link {
     color: #a0aec0;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    display: block;
 }
 
-.menu-link:hover, .menu-link.active {
-    color: #edf2f7;
+.arrow {
+    margin-right: 10px;
 }
 
-/* Responsive styles */
+.logout {
+    padding: 1.25rem 1.5rem;
+}
+
+/*=============== Responsive styles ===============*/
 @media (max-width: 768px) {
     .header {
         flex-wrap: nowrap;
+        padding: 15px;
+        left: 0;
+        background-color: #2d3748;
+        z-index: 1000;
     }
 
     .header-logo {
@@ -112,41 +180,127 @@ body, html {
         margin-left: auto;
     }
 
-    .header-menu {
-        display: none; /* Hide menu by default on smaller screens */
+    .nav__menu {
+        display: none;
         flex-direction: column;
         align-items: flex-start;
         width: 100%;
         background-color: #2d3748;
-        padding: 1rem;
         order: 3;
         position: absolute;
         top: 100%;
         left: 0;
         right: 0;
-        transition: max-height 0.3s ease-out;
+        transition: max-height 0.3s ease-out, opacity 0.3s ease;
         max-height: 0;
+        opacity: 0;
         overflow: hidden;
+        z-index: 10;
     }
 
-    .header-menu.open {
-        display: flex; /* Show menu when open */
-        max-height: 500px; /* or whatever is appropriate to show all items */
+    .nav__menu.open {
+        display: block;
+        max-height: 500px;
+        opacity: 1;
+        border-top: 1px solid #a0aec0;
     }
 
-    .menu-list {
-        flex-direction: column;
+    .dropdown__item {
+        position: relative;
+    }
+
+    .dropdown__menu {
+        display: none;
+        position: static;
+        max-height: 0;
+        opacity: 0;
+        visibility: hidden;
+        transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+        background-color: #a0aec0   ;
         width: 100%;
     }
 
-    .menu-link {
-        width: 100%;
-        text-align: left;
-        padding: 1rem 0;
+    .dropdown__item.active .dropdown__menu {
+        display: block;
+        max-height: 300px;
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .dropdown__item:hover > .dropdown__menu,
+    .dropdown__item:focus-within > .dropdown__menu {
+        background: #a0aec0;
+        top: 0;
+    }
+
+    .arrow {
+        margin-right: 0;
     }
 }
 
-/* Загальні стилі для контейнера форми */
+@media screen and (max-width: 340px) {
+    .container {
+        margin-inline: 1rem;
+    }
+
+    .nav__link {
+        padding-inline: 1rem;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .container {
+        margin-inline: auto;
+    }
+
+    .nav {
+        height: calc(var(--header-height) + 2rem);
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .nav__toggle {
+        display: none;
+    }
+
+    .nav__list {
+        height: 100%;
+        display: flex;
+        column-gap: 1rem;
+        align-items: center;
+    }
+
+    .nav__link {
+        height: 100%;
+        padding: 0;
+        justify-content: initial;
+        column-gap: 0.25rem;
+    }
+
+    .nav__link:hover {
+        background-color: transparent;
+    }
+
+    .dropdown__menu {
+        background: #e2e8f0;
+        left: 0;
+        top: 4rem;
+        width: max-content;
+        transform: translateY(8px);
+        box-shadow: 0 4px 6px hsla(220, 32%, 8%, 0.3);
+    }
+
+    .dropdown__link {
+        padding-inline: 1rem 3.5rem;
+    }
+
+    .dropdown__item {
+        height: 4rem;
+    }
+}
+
+
+/*==========================FORMAL STYLES FOR CONTAINER SHAPES==========================*/
 .form-container {
     width: 100%;
     max-width: 600px;
@@ -157,7 +311,6 @@ body, html {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Стилі заголовка */
 .form-title {
     font-size: 24px;
     font-weight: 500;
@@ -165,23 +318,19 @@ body, html {
     text-align: center;
 }
 
-/* Контейнер для форми з можливістю прокручування */
 .form-wrapper {
     overflow-x: auto;
 }
 
-/* Стилі для простору між елементами форми */
 .form-space > * + * {
     margin-top: 16px;
 }
 
-/* Стилі для груп елементів форми */
 .form-group {
     display: flex;
     flex-direction: column;
 }
 
-/* Стилі для міток */
 .form-label {
     font-size: 14px;
     font-weight: 500;
@@ -189,7 +338,6 @@ body, html {
     margin-bottom: 8px;
 }
 
-/* Стилі для полів вводу та вибору */
 .form-input {
     width: 100%;
     padding: 8px 12px;
@@ -204,7 +352,6 @@ body, html {
     outline: none;
 }
 
-/* Стилі для кнопки додавання */
 .form-button {
     background-color: #007bff;
     color: #fff;
@@ -218,6 +365,16 @@ body, html {
 
 .form-button:hover {
     background-color: #0056b3;
+}
+
+#subcategory-container {
+    display: none;
+}
+
+.subcategory-group {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
 }
 
 .size-fields {
@@ -235,8 +392,8 @@ body, html {
 
 .size-field .unit {
     margin-left: 5px;
-    font-size: 14px; /* Змініть відповідно до ваших потреб */
-    color: #666; /* Змініть відповідно до ваших потреб */
+    font-size: 14px;
+    color: #666;
 }
 
 .size-fields input {
@@ -244,7 +401,7 @@ body, html {
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box; /* Включає padding і border в ширину */
+    box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
@@ -253,25 +410,26 @@ body, html {
     }
 
     .size-field {
-        margin-bottom: 10px; /* Відступ між полями в мобільній версії */
+        margin-bottom: 10px;
+    }
+
+    .custom-table {
+        font-size: 14px;
     }
 }
 
+.no-scroll {
+    overflow: hidden;
+}
 
-/* Стилі для повідомлень про помилки */
+/*===================Error styles===================*/
 .error-message {
     color: #ff0000;
     font-size: 12px;
     margin-top: 4px;
 }
 
-/* Відображення підкатегорій */
-#subcategory-container {
-    display: none;
-}
-
-/*LOGIn*/
-
+/*======================================LOGIN======================================*/
 .container {
     display: flex;
     justify-content: center;
@@ -362,15 +520,18 @@ body, html {
     color: #c62828;
 }
 
-/*Table*/
+/*=======================================TABLE=======================================*/
+.w-full {
+    max-width: max-content;
+}
 
 .main-content {
     margin-top: 1rem; /* Adjust as necessary */
     padding: 1rem 3rem; /* Adjust padding if needed */
-    max-width: 1200px;
+    justify-content: center;
+    align-items: center;
 }
 
-/* Table styling */
 .custom-table {
     width: 100%;
     border-collapse: collapse;
@@ -411,7 +572,7 @@ body, html {
     border-radius: 5px;
 }
 
-/* Button styling */
+/*============================= Button styling =============================*/
 .button {
     display: inline-block;
     padding: 8px 16px;
@@ -434,15 +595,36 @@ body, html {
     background-color: #2779bd;
 }
 
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .custom-table {
-        font-size: 14px;
-    }
+.add-category-btn {
+    font-size: 19px;
+    padding: 4px 12px;
+}
+.remove-button {
+    margin-left: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 19px;
+    padding: 4px 14px;
+    background-color: #f61111;
+    color: #fff;
+    border-radius: 4px;
+    transition: background-color 0.3s;
 }
 
-/*----------paginate----------*/
+.remove-button:hover {
+    background-color: #810300;
+}
+
+.btn-group {
+    display: flex;
+    justify-content: space-between;
+}
+
+#backButton {
+    background: #1a202c;
+}
+
+/*================================ PAGINATE ================================*/
 
 .container-paginate {
     display: flex;
@@ -551,48 +733,13 @@ body, html {
 
 
 /* Стилі для Dropzone */
-.dropzone {
-    border: 2px dashed #ccc;
-    padding: 20px;
-    margin-top: 10px;
-    min-height: 150px;
-}
+/*.dropzone {*/
+/*    border: 2px dashed #ccc;*/
+/*    padding: 20px;*/
+/*    margin-top: 10px;*/
+/*    min-height: 150px;*/
+/*}*/
 
-.dropzone .dz-main-image {
-    border: 2px solid #1a202c; /* Колір підкреслення для головного зображення */
-}
-
-.add-category-btn {
-    font-size: 19px;
-    padding: 4px 12px;
-}
-.remove-button {
-    margin-left: 10px;
-    border: none;
-    cursor: pointer;
-    font-size: 19px;
-    padding: 4px 14px;
-    background-color: #f61111;
-    color: #fff;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-}
-
-.subcategory-group {
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
-}
-
-.remove-button:hover {
-    background-color: #810300;
-}
-
-.btn-group {
-    display: flex;
-    justify-content: space-between;
-}
-
-#backButton {
-    background: #1a202c;
-}
+/*.dropzone .dz-main-image {*/
+/*    border: 2px solid #1a202c; !* Колір підкреслення для головного зображення *!*/
+/*}*/

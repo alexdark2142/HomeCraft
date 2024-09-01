@@ -33,6 +33,7 @@ class ProductController extends Controller
             });
         }
 
+        $productsQuery->orderByRaw('CASE WHEN quantity > 0 THEN 0 ELSE 1 END, created_at DESC');
         $products = $productsQuery->paginate(9);
         $categories = Category::with('subcategories')->whereNull('parent_id')->get();
         $selectedCategory = ucwords(str_replace('-', ' ', $category));
@@ -84,7 +85,7 @@ class ProductController extends Controller
         $validatedData = $request->validate([
             'photos.*' => 'required|image|mimes:jpeg,png,jpg',
             'name' => 'required|string|max:100',
-            'count' => 'required|integer',
+            'quantity' => 'nullable|integer',
             'length' => 'nullable|integer',
             'height' => 'nullable|integer',
             'width' => 'nullable|integer',
@@ -93,13 +94,13 @@ class ProductController extends Controller
             'description' => 'nullable|string|max:1000',
             'category_id' => 'required|integer|exists:categories,id',
             'subcategory_id' => 'nullable|integer|exists:categories,id',
-            'price' => 'required|numeric',
+            'price' => 'nullable|numeric',
         ]);
 
 
         $product = Product::create([
             'name' => $request->name,
-            'count' => $request->count,
+            'quantity' => $request->quantity,
             'length' => $request->length,
             'height' => $request->height,
             'width' => $request->width,
@@ -190,7 +191,7 @@ class ProductController extends Controller
         // Validate the incoming data
         $validatedData = $request->validate([
             'name' => 'required|string|max:100',
-            'count' => 'required|integer|max:255',
+            'quantity' => 'nullable|integer|max:255',
             'length' => 'nullable|integer',
             'height' => 'nullable|integer',
             'width' => 'nullable|integer',
@@ -199,7 +200,7 @@ class ProductController extends Controller
             'description' => 'nullable|string|max:1000',
             'category_id' => 'required|integer|exists:categories,id',
             'subcategory_id' => 'nullable|integer|exists:categories,id',
-            'price' => 'required|numeric',
+            'price' => 'nullable|numeric',
         ]);
 
 
@@ -266,6 +267,11 @@ class ProductController extends Controller
                 'message' => 'Failed to delete product: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function verifyProduct(Request $request)
+    {
+        return response()->json(['success' => true]);
     }
 
 }

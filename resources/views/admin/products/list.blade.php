@@ -18,7 +18,7 @@
                 <table class="custom-table">
                     <thead>
                         <tr>
-                            @foreach (['Img','Name','Price','Count','Category','Subcategory', 'Action'] as $item)
+                            @foreach (['Img','Name','Price','Quantity','Category','Subcategory', 'Action'] as $item)
                                 <th class="text-center border px-2 header-cell">
                                     {!! $item !!}
                                 </th>
@@ -48,11 +48,11 @@
                                 </td>
 
                                 <td class="text-center p-2 border price-cell">
-                                    ${{ $product->price }}
+                                    {{ empty($product->price) ? $product->price : '$'.$product->price }}
                                 </td>
 
                                 <td class="text-center p-2 border count-cell">
-                                    {{ $product->count }}
+                                    {{ $product->quantity }}
                                 </td>
 
                                 <td class="text-center p-2 border category-cell">
@@ -85,6 +85,6 @@
     </div>
 
     @if($products->isNotEmpty())
-        @include('parts.paginate')
+        @include('parts.paginate', ['items' => $products])
     @endif
 @endsection

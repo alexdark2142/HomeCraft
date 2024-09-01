@@ -176,4 +176,41 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    document.getElementById('nav-toggle').addEventListener('click', function() {
+        this.classList.toggle('open');
+        document.getElementById('nav-menu').classList.toggle('open');
+        document.body.classList.toggle('no-scroll');
+    });
+
+    const navMenu = document.getElementById('nav-menu');
+    const dropdownItems = document.querySelectorAll('.dropdown__item');
+
+    dropdownItems.forEach(item => {
+        const toggle = item.querySelector('.dropdown-toggle');
+
+        toggle.addEventListener('click', function(event) {
+            event.preventDefault();
+            const dropdownMenu = item.querySelector('.dropdown__menu');
+
+            // Закрити всі інші відкриті меню
+            dropdownItems.forEach(i => {
+                if (i !== item) {
+                    i.classList.remove('active');
+                }
+            });
+
+            // Перемикання класу для поточного меню
+            item.classList.toggle('active');
+        });
+    });
+
+    // Закриття меню при кліку поза межами меню
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.header') && !event.target.closest('.dropdown__item')) {
+            navMenu.classList.remove('open');
+            dropdownItems.forEach(item => {
+                item.classList.remove('active');
+            });
+        }
+    });
 });

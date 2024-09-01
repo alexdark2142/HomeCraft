@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="format-detection" content="telephone=no">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="google-site-verification" content="wOJE027oWJ5giOYNSXA2ofrMNm9D4uzAUq6Dj5ee5h8" />
@@ -47,22 +48,14 @@
     @endif
 </head>
 <body>
-{{--    <div class="preloader">--}}
-{{--        <div class="preloader-body">--}}
-{{--            <div class="cssload-container">--}}
-{{--                <span></span>--}}
-{{--                <span></span>--}}
-{{--                <span></span>--}}
-{{--                <span></span>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
     @include('parts.header')
+    @include('parts.popup')
     <div class="page">
         @yield('content')
     </div>
     @include('parts.footer')
     <div class="snackbars" id="form-output-global"></div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="{{asset('js/core.min.js')}}"></script>
     <script src="{{asset('js/script.js')}}"></script>
     @if(Route::is('product.show'))
@@ -71,6 +64,5 @@
         <script src="https://unpkg.com/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js" defer></script>
     @endif
     <script src="{{ asset('js/app.js') }}" defer></script>
-
 </body>
 </html>

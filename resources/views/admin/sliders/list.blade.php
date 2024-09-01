@@ -67,6 +67,6 @@
     </div>
 
     @if($sliders->isNotEmpty())
-        @include('admin.sliders.paginate')
+        @include('parts.paginate', ['items' => $sliders])
     @endif
 @endsection

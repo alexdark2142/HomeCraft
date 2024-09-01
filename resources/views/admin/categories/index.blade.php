@@ -70,6 +70,6 @@
     </div>
 
     @if($categories->isNotEmpty())
-        @include('admin.categories.paginate')
+        @include('parts.paginate', ['items' => $categories])
     @endif
 @endsection

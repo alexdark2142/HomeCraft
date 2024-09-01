@@ -49,12 +49,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Count</label>
+                    <label class="form-label">Quantity</label>
                     <input
-                        required
+                        min="0"
                         type="number"
-                        name="count"
-                        id="count"
+                        name="quantity"
+                        id="quantity"
                         class="form-input"
                     >
                     <span class="error-message"></span>
@@ -66,6 +66,7 @@
                         <div class="size-field">
                             <input
                                 type="number"
+                                min="0"
                                 name="length"
                                 id="length"
                                 class="form-input"
@@ -76,6 +77,7 @@
                         <div class="size-field">
                             <input
                                 type="number"
+                                min="0"
                                 name="height"
                                 id="height"
                                 class="form-input"
@@ -86,6 +88,7 @@
                         <div class="size-field">
                             <input
                                 type="number"
+                                min="0"
                                 name="width"
                                 id="width"
                                 class="form-input"
@@ -96,6 +99,7 @@
                         <div class="size-field">
                             <input
                                 type="number"
+                                min="0"
                                 name="depth"
                                 id="depth"
                                 class="form-input"
@@ -121,9 +125,9 @@
                 <div class="form-group">
                     <label class="form-label">Price</label>
                     <input
-                        required
                         type="number"
                         step="0.01"
+                        min="0.00"
                         name="price"
                         id="price"
                         class="form-input"

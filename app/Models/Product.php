@@ -22,7 +22,7 @@ class Product extends Model
      */
     protected $fillable = [
         'name',
-        'count',
+        'quantity',
         'length',
         'height',
         'width',
@@ -32,6 +32,7 @@ class Product extends Model
         'category_id',
         'subcategory_id',
         'price',
+        'has_colors'
     ];
 
     /**
@@ -53,5 +54,16 @@ class Product extends Model
     public function gallery(): HasMany
     {
         return $this->hasMany(Gallery::class, 'product_id', 'id');
+    }
+
+    public function colors(): HasMany
+    {
+        return $this->hasMany(ProductColor::class);
+    }
+
+    // Перевірка наявності кольорів
+    public function hasColors(): bool
+    {
+        return $this->colors()->exists();
     }
 }
