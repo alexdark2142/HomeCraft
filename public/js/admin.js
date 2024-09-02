@@ -213,4 +213,66 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+/*============================================ UPDATE STATUS ORDER ============================================*/
+    const selects = document.querySelectorAll('.order-status-select');
+
+    selects.forEach(select => {
+        select.addEventListener('change', function () {
+            const orderId = this.id.split('-').pop(); // Отримуємо ID замовлення з ID селекта
+            const applyBtn = document.getElementById(`apply-btn-${orderId}`);
+
+            // Показуємо кнопку після зміни значення у селекті
+            applyBtn.style.display = 'inline-block';
+            applyBtn.disabled = false;
+            applyBtn.style.fill = 'green';
+        });
+    });
+
+    const applyButtons = document.querySelectorAll('.apply-btn');
+
+    applyButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const orderId = this.id.split('-').pop(); // Отримуємо ID замовлення з ID кнопки
+            const select = document.getElementById(`order-status-${orderId}`);
+            const url = this.dataset.url;
+            const status = select.value;
+
+            this.disabled = true;
+            this.style.fill = 'gray';
+
+            fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ order_status: status })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Order status updated successfully');
+                        this.style.fill = 'green';
+                        this.disabled = false;
+                        this.style.display = 'none'; // Ховаємо кнопку після успішного оновлення
+
+                        // Видалити рядок з таблиці
+                        const row = this.closest('tr');
+                        if (row) {
+                            row.remove();
+                        }
+                    } else {
+                        alert(`Failed to update order status: ${data.message}`);
+                        this.style.fill = 'red'; // Якщо щось пішло не так, робимо кнопку червоною
+                        this.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    alert('An error occurred while updating the order status.');
+                    console.error('Error:', error);
+                    this.style.fill = 'red';
+                    this.disabled = false;
+                });
+        });
+    });
 });

@@ -10,6 +10,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
@@ -128,6 +129,7 @@ class OrderController extends Controller
             }
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Error checkout order: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -197,6 +199,8 @@ class OrderController extends Controller
                 );
             }
         } catch (\Exception $e) {
+            Log::error('Error pay for order: ' . $e->getMessage());
+
             redirect()->route(
                 'paypal.response',
                 [
@@ -235,6 +239,8 @@ class OrderController extends Controller
                 DB::commit();
             } catch (\Exception $e) {
                 DB::rollBack();
+
+                Log::error('Error cancelled order: ' . $e->getMessage());
 
                 return redirect()->route(
                     'paypal.response',
@@ -344,10 +350,46 @@ class OrderController extends Controller
         return view('admin.orders.index', compact('orders', 'currentStatus', 'orderStatuses'));
     }
 
-    public function destroy(int $id)
+    public function update(Order $order, Request $request): \Illuminate\Http\JsonResponse
     {
+        try {
+            // Використовуйте fill і save для більшого контролю і можливості додати більше полів у майбутньому
+            $order->fill($request->only('order_status'))->save();
 
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Order status updated successfully',
+            ], 200);
+        } catch (\Exception $e) {
+            // Логгування включає ідентифікатор замовлення для кращої відстежуваності
+            Log::error("Error updating order status for Order ID {$order->id}: " . $e->getMessage());
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to update order status: ' . $e->getMessage(),
+            ], 500);
+        }
     }
+
+    public function destroy(Order $order): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $order->delete();
+        } catch (\Exception $e) {
+            Log::error('Error deleting order: ' . $e->getMessage());
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to delete order: ' . $e->getMessage(),
+            ], 500);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Order deleted successfully',
+        ], 200);
+    }
+
 
     private function getOrderStatuses(): array
     {
