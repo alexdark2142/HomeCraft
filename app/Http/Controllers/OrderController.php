@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\Order;
+use App\Models\ProductColor;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
@@ -11,7 +12,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 class OrderController extends Controller
@@ -42,18 +43,33 @@ class OrderController extends Controller
             // Check product availability and calculate the total amount
             foreach ($cartData as $item) {
                 $product = Product::findOrFail($item['id']);
+                $color = $item['colorId'] ? ProductColor::findOrFail($item['colorId']) : null;
 
-                if ($product->quantity < $item['cartQuantity']) {
-                    throw new \Exception("The product {$product->name} is out of stock.");
+                if ($color) {
+                    if ($color->quantity < $item['cartQuantity']) {
+                        throw new \Exception("The color variant of product {$product->name} is out of stock.");
+                    }
+
+                    if ($product->quantity < $item['cartQuantity']) {
+                        throw new \Exception("The product {$product->name} is out of stock.");
+                    }
+
+                    $color->quantity -= $item['cartQuantity'];
+                    $color->save();
+
+                } else {
+                    if ($product->quantity < $item['cartQuantity']) {
+                        throw new \Exception("The product {$product->name} is out of stock.");
+                    }
                 }
 
-                // Subtract the product quantity
                 $product->quantity -= $item['cartQuantity'];
                 $product->save();
 
-                // Calculate total amount
                 $totalAmount += $item['price'] * $item['cartQuantity'];
             }
+
+
 
             // PayPal setup
             $this->paypal->setApiCredentials(config('paypal'));
@@ -108,6 +124,7 @@ class OrderController extends Controller
                 foreach ($cartData as $item) {
                     Order::create([
                         'product_id' => $item['id'],
+                        'product_color_id' => $item['colorId'] ?? null,
                         'quantity' => $item['cartQuantity'],
                         'price_per_piece' => $item['price'],
                         'payment_status' => Order::PAYMENT_STATUS_IN_PROCESS,
@@ -228,6 +245,14 @@ class OrderController extends Controller
                     $product = Product::find($order->product_id);
 
                     if ($product) {
+                        // Перевірка, чи є кольоровий варіант
+                        $color = $order->product_color_id ? ProductColor::find($order->product_color_id) : null;
+
+                        if ($color) {
+                            $color->quantity += $order->quantity;
+                            $color->save();
+                        }
+
                         $product->quantity += $order->quantity;
                         $product->save();
                     }
@@ -235,6 +260,7 @@ class OrderController extends Controller
                     $order->payment_status = Order::PAYMENT_STATUS_CANCELLED;
                     $order->save();
                 }
+
 
                 DB::commit();
             } catch (\Exception $e) {
@@ -298,10 +324,11 @@ class OrderController extends Controller
     {
         $currentStatus = 'new';
         $orderStatuses = $this->getOrderStatuses();
-        $orders = Order::with(['customer', 'product.gallery'])
+        $orders = Order::with(['customer', 'product.gallery', 'productColor'])
             ->where('payment_status', Order::PAYMENT_STATUS_COMPLETED)
             ->where('order_status', Order::ORDER_STATUS_NEW)
             ->paginate(10);
+
 
         return view('admin.orders.index', compact('orders', 'currentStatus', 'orderStatuses'));
     }
@@ -313,7 +340,7 @@ class OrderController extends Controller
     {
         $currentStatus = 'ready to ship';
         $orderStatuses = $this->getOrderStatuses();
-        $orders = Order::with(['customer', 'product.gallery'])
+        $orders = Order::with(['customer', 'product.gallery', 'productColor'])
             ->where('payment_status', Order::PAYMENT_STATUS_COMPLETED)
             ->where('order_status', Order::ORDER_STATUS_READY_TO_SHIP)
             ->paginate(10);
@@ -328,7 +355,7 @@ class OrderController extends Controller
     {
         $currentStatus = 'shipped';
         $orderStatuses = $this->getOrderStatuses();
-        $orders = Order::with(['customer', 'product.gallery'])
+        $orders = Order::with(['customer', 'product.gallery', 'productColor'])
             ->where('payment_status', Order::PAYMENT_STATUS_COMPLETED)
             ->where('order_status', Order::ORDER_STATUS_SHIPPED)
             ->paginate(10);
@@ -343,7 +370,7 @@ class OrderController extends Controller
     {
         $currentStatus = 'cancelled';
         $orderStatuses = $this->getOrderStatuses();
-        $orders = Order::with(['customer', 'product.gallery'])
+        $orders = Order::with(['customer', 'product.gallery', 'productColor'])
             ->where('payment_status', Order::PAYMENT_STATUS_CANCELLED)
             ->paginate(10);
 
@@ -352,6 +379,25 @@ class OrderController extends Controller
 
     public function update(Order $order, Request $request): \Illuminate\Http\JsonResponse
     {
+        // Валідація запиту
+        $validator = Validator::make($request->all(), [
+            'order_status' => [
+                'required',
+                'in:' . implode(',', [
+                    Order::ORDER_STATUS_NEW,
+                    Order::ORDER_STATUS_READY_TO_SHIP,
+                    Order::ORDER_STATUS_SHIPPED
+                ]),
+            ],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error: ' . $validator->errors()->first(),
+            ], 422);
+        }
+
         try {
             // Використовуйте fill і save для більшого контролю і можливості додати більше полів у майбутньому
             $order->fill($request->only('order_status'))->save();

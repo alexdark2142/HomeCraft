@@ -49,15 +49,26 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Quantity</label>
-                    <input
-                        min="0"
-                        type="number"
-                        name="quantity"
-                        id="quantity"
-                        class="form-input"
-                    >
-                    <span class="error-message"></span>
+                    <label class="form-label">Colors and Quantities</label>
+                    <div id="color-quantity-container">
+                        <div class="color-quantity-row">
+                            <input
+                                type="text"
+                                name="colors[]"
+                                class="form-input"
+                                placeholder="Color"
+                            >
+
+                            <input
+                                type="number"
+                                name="quantities[]"
+                                class="form-input"
+                                min="0"
+                                placeholder="Quantity"
+                            >
+                        </div>
+                    </div>
+                    <button type="button" id="add-color-quantity" class="form-button">Add more</button>
                 </div>
 
                 <div class="form-group">

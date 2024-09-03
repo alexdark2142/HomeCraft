@@ -45,7 +45,7 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
     Route::get('orders/prepared', [OrderController::class, 'prepared'])->name('orders.prepared');
     Route::get('orders/shipped', [OrderController::class, 'shipped'])->name('orders.shipped');
     Route::get('orders/cancelled', [OrderController::class, 'cancelled'])->name('orders.cancelled');
-    Route::put('orders/{order}', [OrderController::class, 'update'])->name('orders.update');
+    Route::patch('orders/{order}', [OrderController::class, 'update'])->name('orders.update');
     Route::delete('orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
     Route::get('products', [ProductController::class, 'index'])->name('products.index');
     Route::get('products/create', [ProductController::class, 'create'])->name('products.create');

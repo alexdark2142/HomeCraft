@@ -15,6 +15,7 @@
                                 'img' => 'Img',
                                 'name' => 'Name',
                                 'quantity' => 'Quantity',
+                                'color' => 'Color',
                                 'price_per_piece' => 'Price per piece',
                                 'total_price' => 'Total price',
                                 'full_name' => 'Customer full name',
@@ -62,6 +63,10 @@
 
                             <td class="text-center p-2 border">
                                 {{ $order->quantity }}
+                            </td>
+
+                            <td class="text-center p-2 border">
+                                {{ $order->productColor ? $order->productColor->color : ''}}
                             </td>
 
                             <td class="text-center p-2 border">

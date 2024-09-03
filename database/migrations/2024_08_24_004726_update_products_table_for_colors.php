@@ -19,10 +19,11 @@ class UpdateProductsTableForColors extends Migration
     public function down()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('has_colors');
             $table->renameColumn('quantity', 'count');
-            $table->unsignedInteger('count')->change();
-            $table->unsignedTinyInteger('count')->nullable(false)->change();
+            $table->integer('count')->nullable()->change();
+            $table->decimal('price', 8, 2)->default(0.00)->change();
+            $table->dropColumn('has_colors');
         });
     }
+
 }

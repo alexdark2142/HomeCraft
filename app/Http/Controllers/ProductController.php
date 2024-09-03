@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Gallery;
 use App\Models\Product;
+use App\Models\ProductColor;
 use App\Models\Slider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 
@@ -85,7 +88,8 @@ class ProductController extends Controller
         $validatedData = $request->validate([
             'photos.*' => 'required|image|mimes:jpeg,png,jpg',
             'name' => 'required|string|max:100',
-            'quantity' => 'nullable|integer',
+            'quantities.*' => 'nullable|integer|min:1',
+            'colors.*' => 'nullable|string|max:50',
             'length' => 'nullable|integer',
             'height' => 'nullable|integer',
             'width' => 'nullable|integer',
@@ -97,10 +101,48 @@ class ProductController extends Controller
             'price' => 'nullable|numeric',
         ]);
 
+        $colors = $request->colors;
+        $quantities = $request->quantities;
+        $hasColors = count($colors) > 1 || (count($colors) === 1 && !is_null($colors[0]));
 
-        $product = Product::create([
+        DB::beginTransaction();
+
+        try {
+            $product = $this->createProduct($request, $quantities, $hasColors);
+
+            $this->handleImages($request->file('photos'), $product->id);
+
+            if ($hasColors) {
+                $this->handleColors($colors, $quantities, $product->id);
+            }
+
+            DB::commit();
+
+            return response()->json(['message' => 'Product added successfully.']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            // Логування помилки
+            Log::error('Error adding product: ' . $e->getMessage(), [
+                'request' => $request->all(),
+                'exception' => $e
+            ]);
+
+            return response()->json(['message' => 'Failed to add product.'], 500);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @param array $quantities
+     * @param bool $hasColors
+     * @return Product
+     */
+    protected function createProduct(Request $request, array $quantities, bool $hasColors): Product
+    {
+        return Product::create([
             'name' => $request->name,
-            'quantity' => $request->quantity,
+            'quantity' => $quantities ? array_sum($quantities) : 0,
             'length' => $request->length,
             'height' => $request->height,
             'width' => $request->width,
@@ -110,11 +152,13 @@ class ProductController extends Controller
             'category_id' => $request->category_id,
             'subcategory_id' => $request->subcategory_id == '' ? 0 : $request->subcategory_id,
             'price' => $request->price,
+            'has_colors' => $hasColors
         ]);
+    }
 
-        $product_id = $product->id;        // Обробка зображення
-        $images = $request->file('photos');
-        $directory = public_path('images/gallery') . '/' . $product_id;
+    protected function handleImages(array $images, int $productId): void
+    {
+        $directory = public_path('images/gallery') . '/' . $productId;
         $firstImage = true;
 
         if (!File::isDirectory($directory)) {
@@ -137,38 +181,53 @@ class ProductController extends Controller
             $firstImage = false;
 
             Gallery::create([
-                'product_id' => $product_id, // Збереження product_id
+                'product_id' => $productId,
                 'name' => $imageName,
                 'type' => $type,
-                'tag' => $product_id,
+                'tag' => $productId,
             ]);
         }
-
-        ;
-
-        return response()->json(['message' => 'Product added successfully.']);
     }
+
+    /**
+     * @param array $colors
+     * @param array $quantities
+     * @param int $productId
+     * @return void
+     */
+    protected function handleColors(array $colors, array $quantities, int $productId): void
+    {
+        foreach ($colors as $index => $color) {
+            if ($color && $quantities[$index]) {
+                ProductColor::create([
+                    'product_id' => $productId,
+                    'color' => $color,
+                    'quantity' => (int)$quantities[$index],
+                ]);
+            }
+        }
+    }
+
 
     /**
      * Display the specified resource.
      */
     public function show(Product $product): \Illuminate\Http\Response
     {
-        $product = $product->load('category', 'subcategory', 'gallery');
+        $product = $product->load('category', 'subcategory', 'gallery', 'colors');
         $categories = Category::with('subcategories')->whereNull('parent_id')->get();
 
         return response()->view('product', compact(['product', 'categories']));
     }
+
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Product $product)
     {
-        // Отримання всіх категорій з підкатегоріями
         $categories = Category::with('subcategories')->whereNull('parent_id')->get();
 
-        // Збереження категорій та їх підкатегорій у форматі зручному для JavaScript
         $categoriesWithSubcategories = $categories->mapWithKeys(function ($category) {
             return [$category->id => $category->subcategories->map(function ($subcat) {
                 return ['id' => $subcat->id, 'name' => $subcat->name];
@@ -191,7 +250,7 @@ class ProductController extends Controller
         // Validate the incoming data
         $validatedData = $request->validate([
             'name' => 'required|string|max:100',
-            'quantity' => 'nullable|integer|max:255',
+            'quantities.*' => 'nullable|integer|max:255',
             'length' => 'nullable|integer',
             'height' => 'nullable|integer',
             'width' => 'nullable|integer',
@@ -201,26 +260,93 @@ class ProductController extends Controller
             'category_id' => 'required|integer|exists:categories,id',
             'subcategory_id' => 'nullable|integer|exists:categories,id',
             'price' => 'nullable|numeric',
+            'colors' => 'nullable|array', // Добавлено для перевірки масиву кольорів
+            'colors.*.id' => 'nullable|integer|exists:product_colors,id', // Ідентифікатор кольору
+            'colors.*.color' => 'nullable|string|max:50', // Назва кольору
+            'colors.*.quantity' => 'nullable|integer|min:0', // Кількість кольору
         ]);
 
+        $quantities = $validatedData['quantities'];
+        $colorsIds = $request->get('colorsId');
 
-        // Check if a new image was uploaded
-//        if ($request->hasFile('img')) {
-//            // Store the new image
-//            $imagePath = $request->file('img')->store('products', 'public');
-//            // Delete the old image if it exists
-//            if ($product->img) {
-//                Storage::disk('public')->delete($product->img);
-//            }
-//            $validatedData['img'] = $imagePath;
-//        }
+        foreach ($request->get('colors') as $index => $color) {
+            $colors[$index] = [
+                'id' => $colorsIds[$index]['id'] ?? null,
+                'color' => $color['color'] ?? $color,
+                'quantity' => $quantities[$index],
+            ];
+        }
 
-        // Update the product with the validated data
-        $product->update($validatedData);
+        $validatedData['quantity'] = array_sum($quantities);
+        $hasColors = count($colors) > 1 || (count($colors) === 1 && !is_null($colors[0]));
 
-        return response()->json([
-            'message' => 'Product updated successfully.'
-        ]);
+        if ($hasColors) {
+            $validatedData['has_colors'] = true;
+        } else {
+            $validatedData['has_colors'] = false;
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $product->update($validatedData);
+
+            if ($hasColors) {
+                foreach ($colors as $index => $color) {
+                    if ($color) {
+                        $updatedColor = ProductColor::updateOrCreate(
+                            ['id' => $color['id']],
+                            [
+                                'product_id' => $product->id,
+                                'color' => $color['color'],
+                                'quantity' => $color['quantity'],
+                            ]
+                        );
+
+                        $colorIds[] = $updatedColor->id;
+                    }
+                }
+
+                ProductColor::where('product_id', $product->id)
+                    ->whereNotIn('id', $colorIds)
+                    ->delete();
+            }
+
+            // Якщо все добре, коммітимо транзакцію
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Product updated successfully.'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Failed to update product', [
+                'error' => $e->getMessage(),
+                'product_id' => $product->id,
+                'validated_data' => $validatedData,
+                'colors' => $colors,
+            ]);
+
+            DB::rollBack();
+
+            return response()->json([
+                'message' => 'Failed to update product.',
+            ], 500);
+        }
+    }
+
+    function sumQuantities(array $colors): int
+    {
+        $totalQuantity = 0;
+
+        foreach ($colors as $color) {
+            if (is_array($color) && isset($color['quantity'])) {
+                // Додаємо quantity до загальної суми
+                $totalQuantity += (int) $color['quantity'];
+            }
+        }
+
+        return $totalQuantity;
     }
 
     /**

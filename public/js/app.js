@@ -96,28 +96,40 @@ document.addEventListener('DOMContentLoaded', function () {
             const price = this.getAttribute('data-price');
             const img = this.getAttribute('data-img');
             const stockQuantity = parseInt(this.getAttribute('data-quantity'), 10);
+            const colorId = this.getAttribute('data-color-id');
+            const colorName = this.getAttribute('data-color-name');
 
             if (stockQuantity > 0) {
-                addToCart(id, name, price, img, stockQuantity);
+                addToCart(id, name, price, img, stockQuantity, colorId, colorName);
             } else {
-                alert('This product is out of stock and cannot be added to the cart.');
+                alert(`This product${colorName ? ` in color "${colorName}"` : ''} is out of stock and cannot be added to the cart.`);
             }
         });
     });
 
-    function addToCart(id, name, price, img, stockQuantity) {
-        const existingProductIndex = cart.findIndex(product => product.id === id);
+    function addToCart(id, name, price, img, stockQuantity, colorId, colorName=null) {
+        const existingProductIndex = cart.findIndex(product => product.id === id && product.colorId === colorId);
 
         if (existingProductIndex !== -1) {
             if (cart[existingProductIndex].stockQuantity > 0) {
                 cart[existingProductIndex].cartQuantity += 1;
                 cart[existingProductIndex].stockQuantity -= 1;
             } else {
-                alert('This product is out of stock and cannot be added to the cart.');
+                alert(`This product${colorName ? ` in color "${colorName}"` : ''} is out of stock and cannot be added to the cart.`);
                 return;
             }
         } else {
-            cart.push({ id, name, price, img, cartQuantity: 1, stockQuantity: stockQuantity - 1, initialCount: stockQuantity });
+            cart.push({
+                id,
+                name,
+                price,
+                img,
+                cartQuantity: 1,
+                stockQuantity: stockQuantity - 1,
+                initialCount: stockQuantity,
+                colorId,
+                colorName // Додаємо назву кольору
+            });
         }
 
         // Зберігання кошика в localStorage
@@ -137,30 +149,38 @@ document.addEventListener('DOMContentLoaded', function () {
             const productElement = document.createElement('div');
 
             productElement.innerHTML = `
-                <div class="unit align-items-center cart-row-item">
-                    <div class="unit-left">
-                        <a class="cart-row-figure" href="#">
-                            <img class="cart-img" src="${product.img}" alt="${product.name}" width="100" height="100" />
-                        </a>
-                    </div>
-                    <div class="unit-body">
-                        <div class="cart-item-header">
+            <div class="unit align-items-center cart-row-item">
+                <div class="unit-left">
+                    <a class="cart-row-figure" href="#">
+                        <img class="cart-img" src="${product.img}" alt="${product.name}" width="100" height="100" />
+                    </a>
+                </div>
+                <div class="unit-body">
+                    <div class="cart-item-header">
+                        <div class="cart-item-header-text">
                             <h6 class="cart-row-name">${product.name}</h6>
-                            <button class="btn-remove-item" data-id="${product.id}">
-                                <i class="fa fa-trash-o"></i>
-                            </button>
+                            ${product.colorName ? `<p><strong>Color: </strong>${product.colorName}</p>` : ''}
                         </div>
-                        <div class="cart-item-body">
-                            <h6 class="cart-row-price">$${(product.price * product.cartQuantity).toFixed(2)}</h6>
-                            <div class="cart-quantity-control">
-                                <button class="quantity-control-btn minus" data-id="${product.id}">-</button>
-                                <input type="number" class="cart-row-quantity" value="${product.cartQuantity}" min="1" max="100" readonly>
-                                <button class="quantity-control-btn plus" data-id="${product.id}">+</button>
-                            </div>
+                        <button class="btn-remove-item" data-id="${product.id}" data-color-id="${product.colorId}">
+                            <i class="fa fa-trash-o"></i>
+                        </button>
+                    </div>
+                    <div class="cart-item-body">
+                        <h6 class="cart-row-price">$${(product.price * product.cartQuantity).toFixed(2)}</h6>
+                        <div class="cart-quantity-control">
+                            <button class="quantity-control-btn minus" data-id="${product.id}" data-color-id="${product.colorId}">-</button>
+                            <input type="number" class="cart-row-quantity" value="${product.cartQuantity}" min="1" max="100" readonly>
+                            <button
+                                class="quantity-control-btn plus"
+                                data-id="${product.id}"
+                                data-color-id="${product.colorId}"
+                                data-color-name="${product.colorName }"
+                            >+</button>
                         </div>
                     </div>
                 </div>
-            `;
+            </div>
+        `;
 
             cartItemsContainer.appendChild(productElement);
             totalQuantity += product.cartQuantity;
@@ -171,35 +191,56 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('cart-quantity-header').innerText = ` ${totalQuantity}`;
         document.getElementById('cart-total-price').innerText = ` $${totalPrice.toFixed(2)}`;
 
-        // Додаємо обробники подій для кнопок + і -
+        // Додаємо обробники подій для кнопок +, -, і видалення товару
         document.querySelectorAll('.quantity-control-btn').forEach(button => {
             button.addEventListener('click', function () {
-                const productId = this.closest('.cart-row-item').querySelector('.btn-remove-item').getAttribute('data-id');
+                const productId = this.getAttribute('data-id');
+                const colorId = this.getAttribute('data-color-id');
+                const colorName = this.getAttribute('data-color-name');
                 const operation = this.classList.contains('plus') ? 'increment' : 'decrement';
-                updateCartItemQuantity(productId, operation);
+                updateCartItemQuantity(productId, colorId, colorName, operation);
             });
         });
 
-        if (totalQuantity === 0) {
-            console.log(0)
-            document.getElementById('paypal-button-container').style.display = 'none';
-        }
-        else {
-            console.log(1)
+        document.querySelectorAll('.btn-remove-item').forEach(button => {
+            button.addEventListener('click', function () {
+                const productId = this.getAttribute('data-id');
+                const colorId = this.getAttribute('data-color-id');
+                removeCartItem(productId, colorId);
+            });
+        });
 
+        function removeCartItem(productId, colorId) {
+            const productIndex = cart.findIndex(product => product.id === productId && product.colorId === colorId);
+            if (productIndex !== -1) {
+                // Відновлення значення stockQuantity
+                cart[productIndex].stockQuantity += cart[productIndex].cartQuantity;
+                cart.splice(productIndex, 1);
+                localStorage.setItem('cart', JSON.stringify(cart)); // Оновлюємо дані в localStorage
+                updateCart();
+            }
+        }
+
+
+        if (totalQuantity === 0) {
+            document.getElementById('paypal-button-container').style.display = 'none';
+        } else {
             document.getElementById('paypal-button-container').style.display = 'block';
         }
     }
 
-    function updateCartItemQuantity(productId, operation) {
-        const productIndex = cart.findIndex(product => product.id === productId);
+    function updateCartItemQuantity(productId, colorId, colorName, operation) {
+        const productIndex = cart.findIndex(product => product.id === productId && product.colorId === colorId);
         if (productIndex !== -1) {
             if (operation === 'increment') {
                 if (cart[productIndex].stockQuantity > 0) {
                     cart[productIndex].cartQuantity += 1;
                     cart[productIndex].stockQuantity -= 1;
                 } else {
-                    alert('This product is out of stock and cannot be added to the cart.');
+                    alert(
+                        `This product${colorName ? ` in color "${colorName}"` : ''} is out of stock and cannot be added to the cart.`
+                    );
+
                     return;
                 }
             } else if (operation === 'decrement' && cart[productIndex].cartQuantity > 1) {
@@ -220,20 +261,6 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.removeItem('cart'); // Видаляємо дані з localStorage
         updateCart();
     }
-
-    document.getElementById('cart-items').addEventListener('click', function (event) {
-        if (event.target.closest('.btn-remove-item')) {
-            const id = event.target.closest('.btn-remove-item').getAttribute('data-id');
-            const productIndex = cart.findIndex(product => product.id === id);
-            if (productIndex !== -1) {
-                // Відновлення значення stockQuantity
-                cart[productIndex].stockQuantity = cart[productIndex].initialCount;
-                cart.splice(productIndex, 1);
-                localStorage.setItem('cart', JSON.stringify(cart)); // Оновлюємо дані в localStorage
-                updateCart();
-            }
-        }
-    });
 
     document.getElementById('clear-cart').addEventListener('click', clearCart);
 

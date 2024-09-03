@@ -367,6 +367,35 @@ body, html {
     background-color: #0056b3;
 }
 
+.color-quantity-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.color-quantity-row .form-input {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.color-quantity-row .form-input:last-child {
+    margin-right: 0;
+}
+
+.remove-row-button {
+    background-color: #e3342f;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.remove-row-button:hover {
+    background-color: #cc1f1a;
+}
+
+
 #subcategory-container {
     display: none;
 }
@@ -402,6 +431,25 @@ body, html {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+}
+
+.icon-container {
+    display: flex;
+    justify-content: space-between; /* Розподіл між іконками */
+    gap: 10px; /* Відступи між іконками */
+    flex-wrap: wrap; /* Дозволити обгортання */
+}
+
+.icon-link {
+    display: flex;
+    align-items: center; /* Вирівнювання іконок по центру */
+}
+
+@media (max-width: 992px) {
+    .icon-container {
+        flex-direction: column; /* Вертикальне розташування іконок */
+        align-items: center; /* Вирівнювання іконок по центру */
+    }
 }
 
 @media (max-width: 768px) {

@@ -1,31 +1,25 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const deleteButtons = document.querySelectorAll('#delete-btn');
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    deleteButtons.forEach(function (button) {
-        button.addEventListener('click', function () {
-            const url = button.dataset.url;
-
-            // Деактивація кнопки
-            button.disabled = true;
-            button.classList.add('disabled-button');
+    /*=============================================== BUTTONS ===============================================*/
+    // Delete button
+    document.querySelectorAll('#delete-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const url = this.dataset.url;
+            this.disabled = true;
+            this.classList.add('disabled-button');
 
             fetch(url, {
                 method: 'DELETE',
                 headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'X-CSRF-TOKEN': csrfToken,
                     'Content-Type': 'application/json'
                 }
             })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        const productRow = button.closest('.product-row');
-                        productRow.remove();
+                        this.closest('.product-row').remove();
                         alert('Item deleted successfully');
                     } else {
                         console.error('Error:', data.message);
@@ -33,245 +27,258 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 })
                 .catch(error => {
-                    console.error('There has been a problem with your fetch operation:', error);
+                    console.error('Fetch error:', error);
                     alert(`There has been a problem with your fetch operation: ${error.message}`);
                 })
                 .finally(() => {
-                    // Активувати кнопку назад
-                    button.disabled = false;
-                    button.classList.remove('disabled-button');
+                    this.disabled = false;
+                    this.classList.remove('disabled-button');
                 });
         });
     });
 
-    let category = document.getElementById('category_id');
-    let subcategory = document.getElementById('subcategory_id');
-    let subcategoryContainer = document.getElementById('subcategory-container');
-    let addButton = document.getElementById('btn');
+    // Return back
+    const backButton = document.getElementById('backButton');
+    if (backButton) {
+        backButton.addEventListener('click', () => window.history.back());
+    }
 
-    // Отримання підкатегорій з даних, переданих з бекенду
-    const categoriesWithSubcategories = window.categoriesWithSubcategories;
+    // Selection of subcategories
+    const category = document.getElementById('category_id');
+    const subcategory = document.getElementById('subcategory_id');
+    const subcategoryContainer = document.getElementById('subcategory-container');
+    const addButton = document.getElementById('btn');
+
+    const updateSubcategories = (categoryId) => {
+        const subcategories = window.categoriesWithSubcategories[categoryId] || [];
+        subcategory.innerHTML = '<option value="">Choose subcategory</option>';
+
+        if (subcategories.length > 0) {
+            subcategoryContainer.style.display = 'flex';
+            subcategories.forEach(subcategoryItem => {
+                subcategory.insertAdjacentHTML('beforeend', `<option value="${subcategoryItem.id}">${subcategoryItem.name}</option>`);
+            });
+        } else {
+            subcategoryContainer.style.display = 'none';
+        }
+
+        addButton.disabled = false;
+        addButton.classList.remove('opacity-50', 'cursor-not-allowed');
+    };
 
     if (category) {
         category.addEventListener('change', function() {
-            const categoryId = this.value;
             addButton.disabled = true;
             addButton.classList.add('opacity-50', 'cursor-not-allowed');
-
-            if (categoryId) {
-                const subcategories = categoriesWithSubcategories[categoryId] || [];
-                subcategory.innerHTML = '<option value="">Choose subcategory</option>';
-                if (subcategories.length > 0) {
-                    subcategoryContainer.style.display = 'flex';
-                    subcategories.forEach(subcategoryItem => {
-                        const option = document.createElement('option');
-                        option.value = subcategoryItem.id;
-                        option.textContent = subcategoryItem.name;
-                        subcategory.appendChild(option);
-                    });
-
-                    addButton.disabled = false;
-                    addButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                } else {
-                    addButton.disabled = false;
-                    addButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                    subcategoryContainer.style.display = 'none';
-                }
-            } else {
-                addButton.disabled = false;
-                addButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                subcategoryContainer.style.display = 'none';
-            }
+            updateSubcategories(this.value);
         });
     }
 
-    // Логіка для сабміта форми
-    if  (document.getElementById('product-form')) {
-        document.getElementById('product-form').addEventListener('submit', function(event) {
-            event.preventDefault();
+    /*=============================================== CATEGORY PAGE ===============================================*/
 
-            const addButton = document.getElementById('btn');
-            const url = this.getAttribute('data-url');
+    const addSubcategoryButton = document.getElementById('add-subcategory');
+    if (addSubcategoryButton) {
+        addSubcategoryButton.addEventListener('click', function() {
+            const subcategoryBox = document.getElementById('subcategory-box');
+            const tempId = 'new-' + Math.random().toString(36).substr(2, 9);
+
+            const newSubcategoryGroup = document.createElement('div');
+            newSubcategoryGroup.classList.add('subcategory-group');
+            newSubcategoryGroup.innerHTML = `
+                <input type="text" name="subcategories[${tempId}]" class="form-input" placeholder="Subcategory">
+                <button type="button" class="remove-button">-</button>
+            `;
+
+            subcategoryBox.appendChild(newSubcategoryGroup);
+            newSubcategoryGroup.querySelector('.remove-button').addEventListener('click', function() {
+                newSubcategoryGroup.remove();
+            });
+        });
+    }
+
+    /*=================================================== HEADER ===================================================*/
+    // Menu switch
+    const navToggle = document.getElementById('nav-toggle');
+    const navMenu = document.getElementById('nav-menu');
+    if (navToggle && navMenu) {
+        navToggle.addEventListener('click', function() {
+            this.classList.toggle('open');
+            navMenu.classList.toggle('open');
+            document.body.classList.toggle('no-scroll');
+        });
+    }
+
+    // Dropdown меню
+    const dropdownItems = document.querySelectorAll('.dropdown__item');
+    dropdownItems.forEach(item => {
+        const toggle = item.querySelector('.dropdown-toggle');
+        if (toggle) {
+            toggle.addEventListener('click', function(event) {
+                event.preventDefault();
+                dropdownItems.forEach(i => i.classList.remove('active'));
+                item.classList.toggle('active');
+            });
+        }
+    });
+
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.header') && !event.target.closest('.dropdown__item')) {
+            navMenu.classList.remove('open');
+            dropdownItems.forEach(item => item.classList.remove('active'));
+        }
+    });
+
+    /*============================================ PRODUCT PAGE ============================================*/
+
+    // Submission of product form
+    const productForm = document.getElementById('product-form');
+    if (productForm) {
+        productForm.addEventListener('submit', function(event) {
+            event.preventDefault();
             addButton.disabled = true;
             addButton.classList.add('opacity-50', 'cursor-not-allowed');
 
             const formData = new FormData(this);
-            document.querySelectorAll('.error-msg').forEach(function(span) {
-                span.textContent = '';
-            });
 
-            axios.post(url, formData, {
+            axios.post(this.getAttribute('data-url'), formData, {
                 headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'X-CSRF-TOKEN': csrfToken,
                     'Content-Type': 'multipart/form-data'
                 }
-            }).then(response => {
-                addButton.disabled = false;
-                addButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                alert(response.data.message);
-                window.location.reload();
-            }).catch(error => {
-                addButton.disabled = false;
-                addButton.classList.remove('opacity-50', 'cursor-not-allowed');
-
-                if (error.response && error.response.status === 422) {
-                    const errors = error.response.data.errors;
-                    displayValidationErrors(errors);
-                } else {
-                    alert('Error occurred while adding the product.');
-                    console.error('Error:', error);
-                }
-            });
+            })
+                .then(response => {
+                    alert(response.data.message);
+                    window.location.reload();
+                })
+                .catch(error => {
+                    if (error.response && error.response.status === 422) {
+                        displayValidationErrors(error.response.data.errors);
+                    } else {
+                        alert('Error occurred while adding the product.');
+                        console.error('Error:', error);
+                    }
+                })
+                .finally(() => {
+                    addButton.disabled = false;
+                    addButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                });
         });
     }
 
-    function displayValidationErrors(errors) {
-        document.querySelectorAll('.error-msg').forEach(function(span) {
-            span.textContent = '';
-        });
-
+    const displayValidationErrors = (errors) => {
+        document.querySelectorAll('.error-msg').forEach(span => span.textContent = '');
         for (const key in errors) {
-            if (errors.hasOwnProperty(key)) {
-                const errorMessages = errors[key];
-                const inputElement = document.querySelector(`[name="${key}"]`);
-                if (inputElement) {
-                    const errorMsgElement = inputElement.parentElement.querySelector('.error-msg');
-                    if (errorMsgElement) {
-                        errorMsgElement.textContent = errorMessages.join(', ');
-                    } else {
-                        const newErrorMsgElement = document.createElement('span');
-                        newErrorMsgElement.className = 'error-msg text-red-500 text-sm';
-                        newErrorMsgElement.textContent = errorMessages.join(', ');
-                        inputElement.parentElement.appendChild(newErrorMsgElement);
-                    }
+            const inputElement = document.querySelector(`[name="${key}"]`);
+            if (inputElement) {
+                const errorMsgElement = inputElement.parentElement.querySelector('.error-msg');
+                if (errorMsgElement) {
+                    errorMsgElement.textContent = errors[key].join(', ');
                 } else {
-                    console.error(`Input element not found for ${key}`);
+                    inputElement.insertAdjacentHTML('afterend', `<span class="error-msg text-red-500 text-sm">${errors[key].join(', ')}</span>`);
                 }
+            } else {
+                console.error(`Input element not found for ${key}`);
             }
         }
-    }
+    };
 
-    if (document.getElementById('add-subcategory')) {
-        // Додавання підкатегорії
-        document.getElementById('add-subcategory').addEventListener('click', function () {
-            const subcategoryBox = document.getElementById('subcategory-box');
-            const newSubcategoryGroup = document.createElement('div');
-            newSubcategoryGroup.classList.add('subcategory-group');
-            const tempId = 'new-' + Math.random().toString(36).substr(2, 9);
-            newSubcategoryGroup.innerHTML = `
-                    <input type="text" name="subcategories[${tempId}]" class="form-input" placeholder="Subcategory">
-                    <button type="button" class="remove-button">-</button>
-                `;
-            subcategoryBox.appendChild(newSubcategoryGroup);
+    // Adding rows of color and quantity
+    const addColorQuantityButton = document.getElementById('add-color-quantity');
+    const colorQuantityContainer = document.getElementById('color-quantity-container');
 
-            newSubcategoryGroup.querySelector('.remove-button').addEventListener('click', function () {
-                this.parentElement.remove();
-            });
+    // Function for updating the mandatory fields
+    function updateFieldRequirements() {
+        const rows = document.querySelectorAll('.color-quantity-row');
+        const inputs = document.querySelectorAll('input[name="colors[]"], input[name="quantities[]"]');
+        const allRowsRemoved = rows.length === 1;
+
+        inputs.forEach(input => {
+            input.required = !allRowsRemoved;
         });
     }
 
-    if (document.getElementById('backButton')) {
-        document.getElementById('backButton').addEventListener('click', function() {
-            window.history.back();
+    // Add a new line
+    if (addColorQuantityButton) {
+        addColorQuantityButton.addEventListener('click', function() {
+            const newRow = document.createElement('div');
+            newRow.className = 'color-quantity-row';
+            newRow.innerHTML = `
+            <input type="text" name="colors[]" class="form-input" placeholder="Color" required>
+            <input type="number" name="quantities[]" class="form-input" min="0" placeholder="Quantity" required>
+            <button type="button" class="remove-row-button">Remove</button>
+        `;
+            colorQuantityContainer.appendChild(newRow);
+
+            // Додати слухач події для кнопки видалення нового рядка
+            newRow.querySelector('.remove-row-button').addEventListener('click', function() {
+                newRow.remove();
+                updateFieldRequirements();
+            });
+
+            updateFieldRequirements();
         });
+
+        // Додати слухач події для вже існуючих кнопок видалення
+        document.querySelectorAll('.remove-row-button').forEach(button => {
+            button.addEventListener('click', function() {
+                this.closest('.color-quantity-row').remove();
+                updateFieldRequirements();
+            });
+        });
+
+        updateFieldRequirements();
     }
 
-    document.getElementById('nav-toggle').addEventListener('click', function() {
-        this.classList.toggle('open');
-        document.getElementById('nav-menu').classList.toggle('open');
-        document.body.classList.toggle('no-scroll');
-    });
-
-    const navMenu = document.getElementById('nav-menu');
-    const dropdownItems = document.querySelectorAll('.dropdown__item');
-
-    dropdownItems.forEach(item => {
-        const toggle = item.querySelector('.dropdown-toggle');
-
-        toggle.addEventListener('click', function(event) {
-            event.preventDefault();
-            const dropdownMenu = item.querySelector('.dropdown__menu');
-
-            // Закрити всі інші відкриті меню
-            dropdownItems.forEach(i => {
-                if (i !== item) {
-                    i.classList.remove('active');
-                }
-            });
-
-            // Перемикання класу для поточного меню
-            item.classList.toggle('active');
-        });
-    });
-
-    // Закриття меню при кліку поза межами меню
-    document.addEventListener('click', function(event) {
-        if (!event.target.closest('.header') && !event.target.closest('.dropdown__item')) {
-            navMenu.classList.remove('open');
-            dropdownItems.forEach(item => {
-                item.classList.remove('active');
-            });
-        }
-    });
-/*============================================ UPDATE STATUS ORDER ============================================*/
-    const selects = document.querySelectorAll('.order-status-select');
-
-    selects.forEach(select => {
-        select.addEventListener('change', function () {
-            const orderId = this.id.split('-').pop(); // Отримуємо ID замовлення з ID селекта
+    /*============================================ UPDATE STATUS ORDER ============================================*/
+    document.querySelectorAll('.order-status-select').forEach(select => {
+        select.addEventListener('change', function() {
+            const orderId = this.id.split('-').pop();
             const applyBtn = document.getElementById(`apply-btn-${orderId}`);
 
-            // Показуємо кнопку після зміни значення у селекті
             applyBtn.style.display = 'inline-block';
             applyBtn.disabled = false;
             applyBtn.style.fill = 'green';
         });
     });
 
-    const applyButtons = document.querySelectorAll('.apply-btn');
-
-    applyButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            const orderId = this.id.split('-').pop(); // Отримуємо ID замовлення з ID кнопки
+    document.querySelectorAll('.apply-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const orderId = this.id.split('-').pop();
             const select = document.getElementById(`order-status-${orderId}`);
-            const url = this.dataset.url;
             const status = select.value;
+            const url = this.dataset.url;
 
             this.disabled = true;
             this.style.fill = 'gray';
 
             fetch(url, {
-                method: 'PUT',
+                method: 'PATCH',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ order_status: status })
+                body: JSON.stringify({ order_status: status }) // We use order_status as expected on the server
             })
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
                         alert('Order status updated successfully');
-                        this.style.fill = 'green';
-                        this.disabled = false;
-                        this.style.display = 'none'; // Ховаємо кнопку після успішного оновлення
+                        this.style.display = 'none';
 
-                        // Видалити рядок з таблиці
                         const row = this.closest('tr');
                         if (row) {
                             row.remove();
                         }
                     } else {
-                        alert(`Failed to update order status: ${data.message}`);
-                        this.style.fill = 'red'; // Якщо щось пішло не так, робимо кнопку червоною
-                        this.disabled = false;
+                        console.error('Error:', data.message);
+                        this.style.display = 'none';
+                        alert(`Error: ${data.message}`);
                     }
                 })
                 .catch(error => {
-                    alert('An error occurred while updating the order status.');
-                    console.error('Error:', error);
-                    this.style.fill = 'red';
-                    this.disabled = false;
+                    console.error('Fetch error:', error);
+                    this.style.display = 'none';
+                    alert(`There has been a problem with your fetch operation: ${error.message}`);
                 });
         });
     });

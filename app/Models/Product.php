@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * @method static findOrFail(mixed $get)
  * @method static find(mixed $get)
+ * @method static create(array $array)
  */
 class Product extends Model
 {

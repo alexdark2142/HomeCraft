@@ -52,16 +52,67 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Quantity</label>
-                    <input
-                        min="0"
-                        type="number"
-                        name="quantity"
-                        id="quantity"
-                        class="form-input"
-                        value="{{ $product->quantity }}"
-                    >
-                    <span class="error-message"></span>
+                    <label class="form-label">Colors and Quantities</label>
+                    <div id="color-quantity-container">
+                        @if($product->has_colors)
+                            @php
+                                $colors = $product->colors;
+                            @endphp
+
+                            @foreach($product->colors as $index => $color)
+                                <div class="color-quantity-row">
+                                    <!-- Hidden input for color ID -->
+                                    <input
+                                        type="hidden"
+                                        name="colorsId[][id]"
+                                        value="{{ $color->id }}"
+                                    >
+
+                                    <input
+                                        type="text"
+                                        name="colors[][color]"
+                                        class="form-input"
+                                        placeholder="Color"
+                                        value="{{ $color->color }}"
+                                        {{ count($colors) > 1 ? "required" : '' }}
+                                    >
+
+                                    <input
+                                        type="number"
+                                        name="quantities[]"
+                                        class="form-input"
+                                        min="0"
+                                        placeholder="Quantity"
+                                        value="{{ $color->quantity }}"
+                                        {{ count($colors) > 1 ? "required" : '' }}
+                                    >
+
+                                    @if($index !== 0)
+                                        <button type="button" class="remove-row-button">Remove</button>
+                                    @endif
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="color-quantity-row">
+                                <input
+                                    type="text"
+                                    name="colors[]"
+                                    class="form-input"
+                                    placeholder="Color"
+                                >
+
+                                <input
+                                    type="number"
+                                    name="quantities[]"
+                                    class="form-input"
+                                    min="0"
+                                    placeholder="Quantity"
+                                    value="{{ $product->quantity }}"
+                                >
+                            </div>
+                        @endif
+                    </div>
+                    <button type="button" id="add-color-quantity" class="form-button">Add more</button>
                 </div>
 
                 <div class="form-group">

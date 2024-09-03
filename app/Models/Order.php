@@ -24,6 +24,7 @@ class Order extends Model
 
     protected $fillable = [
         'product_id',
+        'product_color_id',
         'customer_id',
         'quantity',
         'price_per_piece',
@@ -46,6 +47,10 @@ class Order extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+    public function productColor(): BelongsTo
+    {
+        return $this->belongsTo(ProductColor::class);
     }
 
     /**
