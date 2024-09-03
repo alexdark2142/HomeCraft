@@ -82,9 +82,9 @@
                                 @endforeach
                             </div>
                         </div>
-
                     @else
-                        <p class="mb-2 d-flex"><strong class="mr-3">Quantity in stock:</strong>
+                        <p id="without-color-quantity" data-quantity="{{ $product->quantity }}" class="mb-2 d-flex">
+                            <strong class="mr-3">Quantity in stock:</strong>
                             {{ $product->quantity ?? 'The product is out of stock' }}
                         </p>
                     @endif
@@ -123,23 +123,6 @@
                         <p class="mb-2 d-flex"><strong class="mr-3">Price:</strong> ${{ $product->price }} </p>
                     @endif
 
-                    @php
-                        if(count($product->colors)){
-                            if($product->colors->first()->quantity){
-                                $addBtn = 'show';
-                                $contactBtn = 'hidden';
-                            } else {
-                                $addBtn = 'hidden';
-                                $contactBtn = 'show';
-                            }
-                        } elseif($product->quantity){
-                                $addBtn = 'show';
-                                $contactBtn = 'hidden';
-                        } else {
-                                $addBtn = 'hidden';
-                                $contactBtn = 'show';
-                        }
-                    @endphp
                     <button
                         id="btn-add-product"
                         class="button button-md button-secondary button-ujarak add-to-cart"
@@ -178,6 +161,7 @@
             const quantityElement = document.getElementById('quantity');
             const btnAddProduct = document.getElementById('btn-add-product');
             const btnContactUs = document.getElementById('btn-contact-us');
+            const productQuantity = document.getElementById('without-color-quantity');
 
             // Функція для оновлення видимості кнопок
             function updateButtonVisibility() {
@@ -197,6 +181,16 @@
                         btnContactUs.style.display = 'none'; // Сховати кнопку "Contact us to order"
                     } else {
                         quantityElement.textContent = 'Out of stock';
+                        btnAddProduct.style.display = 'none'; // Сховати кнопку "Add to Cart"
+                        btnContactUs.style.display = 'block'; // Показати кнопку "Contact us to order"
+                    }
+                } else if (productQuantity){
+                    const quantity = productQuantity.getAttribute('data-quantity');
+
+                    if (quantity > 0) {
+                        btnAddProduct.style.display = 'block'; // Показуємо кнопку "Add to Cart"
+                        btnContactUs.style.display = 'none'; // Сховати кнопку "Contact us to order"
+                    } else {
                         btnAddProduct.style.display = 'none'; // Сховати кнопку "Add to Cart"
                         btnContactUs.style.display = 'block'; // Показати кнопку "Contact us to order"
                     }
