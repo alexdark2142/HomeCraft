@@ -70,7 +70,7 @@
 
                                     <input
                                         type="text"
-                                        name="colors[][color]"
+                                        name="colors[]"
                                         class="form-input"
                                         placeholder="Color"
                                         value="{{ $color->color }}"

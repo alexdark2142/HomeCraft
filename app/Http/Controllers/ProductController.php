@@ -88,7 +88,7 @@ class ProductController extends Controller
         $validatedData = $request->validate([
             'photos.*' => 'required|image|mimes:jpeg,png,jpg',
             'name' => 'required|string|max:100',
-            'quantities.*' => 'nullable|integer|min:1',
+            'quantities.*' => 'nullable|integer|min:0',
             'colors.*' => 'nullable|string|max:50',
             'length' => 'nullable|integer',
             'height' => 'nullable|integer',
@@ -261,24 +261,20 @@ class ProductController extends Controller
             'subcategory_id' => 'nullable|integer|exists:categories,id',
             'price' => 'nullable|numeric',
             'colors' => 'nullable|array', // Добавлено для перевірки масиву кольорів
-            'colors.*.id' => 'nullable|integer|exists:product_colors,id', // Ідентифікатор кольору
-            'colors.*.color' => 'nullable|string|max:50', // Назва кольору
-            'colors.*.quantity' => 'nullable|integer|min:0', // Кількість кольору
+            'colors.*' => 'nullable|string|max:50', // Назва кольору
         ]);
 
         $quantities = $validatedData['quantities'];
         $colorsIds = $request->get('colorsId');
-
         foreach ($request->get('colors') as $index => $color) {
             $colors[$index] = [
                 'id' => $colorsIds[$index]['id'] ?? null,
-                'color' => $color['color'] ?? $color,
+                'color' => $color,
                 'quantity' => $quantities[$index],
             ];
         }
-
         $validatedData['quantity'] = array_sum($quantities);
-        $hasColors = count($colors) > 1 || (count($colors) === 1 && !is_null($colors[0]));
+        $hasColors = !empty($colors[0]['color']);
 
         if ($hasColors) {
             $validatedData['has_colors'] = true;
@@ -290,26 +286,25 @@ class ProductController extends Controller
 
         try {
             $product->update($validatedData);
-
             if ($hasColors) {
-                foreach ($colors as $index => $color) {
-                    if ($color) {
-                        $updatedColor = ProductColor::updateOrCreate(
-                            ['id' => $color['id']],
-                            [
-                                'product_id' => $product->id,
-                                'color' => $color['color'],
-                                'quantity' => $color['quantity'],
-                            ]
-                        );
+                foreach ($colors as $color) {
+                    $updatedColor = ProductColor::updateOrCreate(
+                        ['id' => $color['id']],
+                        [
+                            'product_id' => $product->id,
+                            'color' => $color['color'],
+                            'quantity' => $color['quantity'],
+                        ]
+                    );
 
-                        $colorIds[] = $updatedColor->id;
-                    }
+                    $colorIds[] = $updatedColor->id;
                 }
 
-                ProductColor::where('product_id', $product->id)
-                    ->whereNotIn('id', $colorIds)
-                    ->delete();
+                if (!empty($colorIds)) {
+                    ProductColor::where('product_id', $product->id)
+                        ->whereNotIn('id', $colorIds)
+                        ->delete();
+                }
             }
 
             // Якщо все добре, коммітимо транзакцію
