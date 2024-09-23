@@ -15,6 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
+
+        // Налаштування CSRF токенів
+        $middleware->validateCsrfTokens(
+            except: ['stripe/*'] // Ісключення для маршрутів Stripe
+        );
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
