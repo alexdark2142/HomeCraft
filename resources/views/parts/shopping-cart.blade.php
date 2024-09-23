@@ -62,6 +62,19 @@
                         </div>
                     </div>
                 </li>
+
+                <li>
+                    <div class="unit unit-spacing-sm">
+                        <div class="unit-left">
+                            <span class="icon fa fa-globe"></span>
+                        </div>
+                        <div class="unit-body">
+                            <a class="link-location disabled-link" href="#">
+                                Red Deer - Alberta - Canada
+                            </a>
+                        </div>
+                    </div>
+                </li>
             </ul>
 
             <ul class="list-inline navbar-modern-list-social">

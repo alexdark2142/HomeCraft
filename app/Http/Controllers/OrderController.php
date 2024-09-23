@@ -320,6 +320,22 @@ class OrderController extends Controller
     /**
      * @return Factory|View|Application
      */
+    public function paymentІnProgress(): Factory|View|Application
+    {
+        $currentStatus = 'payment in progress';
+        $orderStatuses = $this->getOrderStatuses();
+        $orders = Order::with(['customer', 'product.gallery', 'productColor'])
+            ->where('payment_status', Order::PAYMENT_STATUS_IN_PROCESS)
+            ->where('order_status', Order::ORDER_STATUS_NEW)
+            ->paginate(10);
+
+
+        return view('admin.orders.index', compact('orders', 'currentStatus', 'orderStatuses'));
+    }
+
+    /**
+     * @return Factory|View|Application
+     */
     public function new(): Factory|View|Application
     {
         $currentStatus = 'new';

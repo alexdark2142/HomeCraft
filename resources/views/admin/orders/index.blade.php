@@ -21,12 +21,12 @@
                                 'full_name' => 'Customer full name',
                                 'email' => 'Customer email',
                                 'full_address' => 'Customer delivery address',
-                                'select_status' => 'Select a status',
+                                'select_status' => 'Status',
                                 'action' => 'Action'
                             ] as $key => $value)
                                 @if(!(
-                                    $currentStatus === 'cancelled'
-                                    && in_array($key, ['full_name', 'email', 'full_address', 'select_status'])
+                                    ($currentStatus === 'cancelled' || $currentStatus === 'payment in progress')
+                                    && in_array($key, ['full_name', 'email', 'full_address'])
                                 ))
                                     @php
                                         $style = $key === 'select_status' ? 'min-width: 100px;' : '';
@@ -102,6 +102,10 @@
                                             </option>
                                         @endforeach
                                     </select>
+                                </td>
+                            @else
+                                <td class="text-center p-2 border">
+                                    {{ ucfirst($currentStatus) }}
                                 </td>
                             @endif
 

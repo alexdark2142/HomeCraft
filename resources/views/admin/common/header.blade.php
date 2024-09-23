@@ -22,6 +22,7 @@
                 </div>
 
                 <ul class="dropdown__menu">
+                    <li><a class="dropdown__link" href="{{ route('orders.payment-in-progress') }}">Payment in progress</a></li>
                     <li><a class="dropdown__link" href="{{ route('orders.new') }}">New</a></li>
                     <li><a class="dropdown__link" href="{{ route('orders.prepared') }}">Ready to ship</a></li>
                     <li><a class="dropdown__link" href="{{ route('orders.shipped') }}">Shipped</a></li>
