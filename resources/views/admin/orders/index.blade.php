@@ -46,19 +46,23 @@
                             <td class="text-center p-2 border">
                                 <div class="image-container">
                                     @php
-                                        $mainImage = $order->product->gallery->firstWhere('type', 'main');
+                                        $product = $order->product;
+
+                                        $mainImage = $product ? $product->gallery->firstWhere('type', 'main') : '';
                                     @endphp
 
-                                    <img
-                                        src="{{ asset('images/gallery/' . $mainImage->tag . '/' . $mainImage->name) }}"
-                                        alt="Product Image"
-                                        class="product-image"
-                                    >
+                                    @if($mainImage)
+                                        <img
+                                            src="{{ asset('images/gallery/' . $mainImage->tag . '/' . $mainImage->name) }}"
+                                            alt="Product Image"
+                                            class="product-image"
+                                        >
+                                    @endif
                                 </div>
                             </td>
 
                             <td class="text-center p-2 border">
-                                {{ $order->product->name }}
+                                {{ $product ? $product->name : 'This product has been removed'}}
                             </td>
 
                             <td class="text-center p-2 border">

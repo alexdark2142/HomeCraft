@@ -69,8 +69,6 @@ class OrderController extends Controller
                 $totalAmount += $item['price'] * $item['cartQuantity'];
             }
 
-
-
             // PayPal setup
             $this->paypal->setApiCredentials(config('paypal'));
             $this->paypal->setAccessToken($this->paypal->getAccessToken());
@@ -118,6 +116,8 @@ class OrderController extends Controller
             ];
 
             $response = $this->paypal->createOrder($orderData);
+            Log::info($response); // Подивіться відповідь від PayPal
+
 
             if (isset($response['id'])) {
                 // Now, create the order in the database with the received PayPal token

@@ -17,7 +17,7 @@
                         </div>
 
                         <ul class="footer-contacts d-lg-flex justify-content-between">
-                            <li>
+                            <li class="contact">
                                 <div class="unit unit-spacing-xs">
                                     <div class="unit-left">
                                         <span class="icon fa fa-phone"></span>
@@ -29,7 +29,7 @@
                                 </div>
                             </li>
 
-                            <li>
+                            <li class="contact">
                                 <div class="unit unit-spacing-xs">
                                     <div class="unit-left">
                                         <span class="icon fa fa-envelope"></span>
@@ -43,23 +43,23 @@
                                 </div>
                             </li>
 
-{{--                                <li>--}}
-{{--                                    <div class="unit unit-spacing-xs">--}}
-{{--                                        <div class="unit-left">--}}
-{{--                                            <span class="icon fa fa-location-arrow"></span>--}}
-{{--                                        </div>--}}
+                            <li class="contact">
+                                <div class="unit unit-spacing-xs">
+                                    <div class="unit-left">
+                                        <span class="icon fa fa-location-arrow"></span>
+                                    </div>
 
-{{--                                        <div class="unit-body">--}}
-{{--                                            <a--}}
-{{--                                                class="link-location"--}}
-{{--                                                href="https://maps.google.com/maps?q=4649+62+St+%233+Red+Deer,+AB+T4N+2R4"--}}
-{{--                                                target="_blank"--}}
-{{--                                            >--}}
-{{--                                                4649 62 St #3 Red Deer, AB T4N 2R4--}}
-{{--                                            </a>--}}
-{{--                                        </div>--}}
-{{--                                    </div>--}}
-{{--                                </li>--}}
+                                    <div class="unit-body">
+                                        <a
+                                            class="link-location disabled-link"
+                                            href="#"
+                                            disabled
+                                        >
+                                            Red Deer - Alberta - Canada
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
 
                            {{-- <li>
                                 <div class="unit unit-spacing-xs">
@@ -75,7 +75,7 @@
                         </ul>
 
                         <ul class="footer-contacts d-md-flex justify-content-between">
-                            <li>
+                            <li style="display: flex">
                                 <a
                                     class="icon fa fa-facebook"
                                     target="_blank"
