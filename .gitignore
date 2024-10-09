@@ -5,6 +5,7 @@
 /public/videos
 /public/hot
 /public/storage
+/public/sitemap.xml
 /storage/*.key
 /vendor
 .env
@@ -21,3 +22,5 @@ yarn-error.log
 /.vscode
 docker-compose.yml
 .htaccess
+composer.lock
+
