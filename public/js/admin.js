@@ -1,3 +1,9 @@
+import { Uppy } from "https://releases.transloadit.com/uppy/v4.4.0/uppy.min.mjs";
+import { Dashboard } from "https://releases.transloadit.com/uppy/v4.4.0/uppy.min.mjs";
+import { Webcam } from "https://releases.transloadit.com/uppy/v4.4.0/uppy.min.mjs";
+import { ImageEditor } from "https://releases.transloadit.com/uppy/v4.4.0/uppy.min.mjs";
+import { XHRUpload } from "https://releases.transloadit.com/uppy/v4.4.0/uppy.min.mjs";
+
 document.addEventListener('DOMContentLoaded', function() {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -128,10 +134,45 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    /*=============================================== Uppy ===============================================*/
+    let uppy = null;
+
+    if (document.getElementById('uppy')) {
+        uppy = new Uppy({
+            autoProceed: false,
+            restrictions: {
+                maxFileSize: 50000000, // Максимальний розмір файлу 50MB
+                maxNumberOfFiles: 10, // Max 10 files
+                allowedFileTypes: ['image/*', 'video/*']
+            }
+        })
+            .use(Dashboard, {
+                inline: true,
+                target: '#uppy',
+                height: 340,
+                showProgressDetails: false,
+                proudlyDisplayPoweredByUppy: false
+            })
+            .use(Webcam, {
+                target: Dashboard
+            })
+            .use(ImageEditor, {
+                target: Dashboard
+            })
+            .use(XHRUpload, {
+                endpoint: document.getElementById('product-form').getAttribute('data-url'), // URL для завантаження файлів
+                fieldName: 'files[]',
+                formData: true,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // CSRF токен
+                }
+            });
+    }
+
     /*============================================ PRODUCT PAGE ============================================*/
 
-    // Submission of product form
     const productForm = document.getElementById('product-form');
+
     if (productForm) {
         productForm.addEventListener('submit', function(event) {
             event.preventDefault();
@@ -140,9 +181,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const formData = new FormData(this);
 
+            if (document.getElementById('uppy')) {
+                uppy.getFiles().forEach(file => {
+                    formData.append('files[]', file.data, file.name); // Додаємо фото до FormData
+                });
+            }
+
+            // Відправка даних на сервер
             axios.post(this.getAttribute('data-url'), formData, {
                 headers: {
-                    'X-CSRF-TOKEN': csrfToken,
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'), // CSRF токен
                     'Content-Type': 'multipart/form-data'
                 }
             })
@@ -164,6 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
         });
     }
+
 
     const displayValidationErrors = (errors) => {
         document.querySelectorAll('.error-msg').forEach(span => span.textContent = '');

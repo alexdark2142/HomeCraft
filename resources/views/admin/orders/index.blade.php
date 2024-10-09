@@ -48,7 +48,7 @@
                                     @php
                                         $product = $order->product;
 
-                                        $mainImage = $product ? $product->gallery->firstWhere('type', 'main') : '';
+                                        $mainImage = $product ? $product->gallery->firstWhere('type', 'image') : '';
                                     @endphp
 
                                     @if($mainImage)

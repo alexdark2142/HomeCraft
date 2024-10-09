@@ -27,15 +27,18 @@
                                             <div class="unit-left">
                                                 <div class="product-figure">
                                                     @php
-                                                        $mainImage = $product->gallery->firstWhere('type', 'main');
+                                                        $mainImage = $product->gallery->firstWhere('type', 'image');
                                                     @endphp
 
-                                                    <img
-                                                        src="{{ asset('images/gallery/' . $mainImage->tag . '/' . $mainImage->name) }}"
-                                                        alt="{{ $product->name }}"
-                                                        width="270"
-                                                        height="280"
-                                                    />
+                                                    @if($mainImage)
+                                                        <img
+                                                            src="{{ asset('images/gallery/' . $mainImage->tag . '/' . $mainImage->name) }}"
+                                                            alt="{{ $product->name }}"
+                                                            width="270"
+                                                            height="280"
+                                                        />
+                                                    @endif
+
                                                     <div class="product-button">
                                                         <button
                                                             class="button button-md button-white button-ujarak view-product"

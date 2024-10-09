@@ -7,23 +7,78 @@
                 <!-- Gallery -->
                 <div class="col-12 col-md-6 px-5 py-3 my-gallery">
                     <div class="main-image mb-4">
-                        @foreach ($product->gallery as $index => $image)
-                            @if ($index == 0)
-                                @php $mainImage = $image @endphp
-                                <a href="{{ asset('images/gallery/' . $product->id . '/' . $image->name) }}" data-pswp-width="1600" data-pswp-height="1067" class="gallery-item">
-                                    <img src="{{ asset('images/gallery/' . $product->id . '/' . $image->name) }}" alt="Main Product Image" class="object-contain">
+                        @foreach ($product->gallery as $index => $media)
+                            @if ($media->type === 'image')
+                                <a
+                                    href="{{ asset('images/gallery/' . $product->id . '/' . $media->name) }}"
+                                    data-pswp-width="1600"
+                                    data-pswp-height="1067"
+                                    class="gallery-item"
+                                    style="{{ $index == 0 ? '' : 'display: none;' }}"
+                                >
+                                    <img
+                                        src="{{ asset('images/gallery/' . $product->id . '/' . $media->name) }}"
+                                        alt="Main Product Image"
+                                        class="object-contain"
+                                    >
                                 </a>
-                            @else
-                                <a href="{{ asset('images/gallery/' . $product->id . '/' . $image->name) }}" data-pswp-width="1600" data-pswp-height="1067" class="gallery-item" style="display: none;">
-                                    <img src="{{ asset('images/gallery/' . $product->id . '/' . $image->name) }}" alt="Main Product Image" class="object-contain">
+                            @elseif ($media->type === 'video')
+                                <a
+                                    href="{{ asset('videos/gallery/' . $product->id . '/' . $media->name) }}"
+                                    data-pswp-width="1920"
+                                    data-pswp-height="1080"
+                                    class="gallery-item video-item"
+                                    style="
+                                        {{ $index == 0 ? '' : 'display: none;' }}
+                                        position: relative;
+                                    "
+                                >
+                                    <!-- Постер для відео -->
+                                    <img
+                                        src="{{ asset('videos/gallery/' . $product->id . '/' . pathinfo($media->name, PATHINFO_FILENAME) . '.webp') }}"
+                                        alt="Video preview"
+                                    >
+
+                                    <!-- Відео приховане через opacity -->
+                                    <video
+                                        width="600"
+                                        height="400"
+                                        style="opacity: 0; position: absolute; top: 0; left: 0;"
+                                        controls
+                                        poster="{{ asset('videos/gallery/' . $product->id . '/' . pathinfo($media->name, PATHINFO_FILENAME) . '.webp') }}"
+                                    >
+                                        <source
+                                            src="{{ asset('videos/gallery/' . $product->id . '/' . $media->name) }}"
+                                            type="video/mp4"
+                                        >
+                                        Your browser does not support the video tag.
+                                    </video>
+
+                                    <!-- Іконка "play" -->
+                                    <div class="video-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                                        <i class="fa fa-play-circle" aria-hidden="true" style="font-size: 48px; color: white;"></i>
+                                    </div>
                                 </a>
                             @endif
                         @endforeach
                     </div>
+
                     <div class="thumbnails flex flex-wrap justify-center">
-                        @foreach ($product->gallery as $image)
+                        @foreach ($product->gallery as $media)
                             <div class="thumbnail m-2">
-                                <img src="{{ asset('images/gallery/' . $product->id . '/' . $image->name) }}" alt="Product Thumbnail" class="w-70 h-70 object-cover">
+                                @if ($media->type === 'image')
+                                    <img
+                                        class="w-70 h-70 object-cover thumbnail-image"
+                                        src="{{ asset('images/gallery/' . $product->id . '/' . $media->name) }}"
+                                        alt="Product Thumbnail"
+                                    >
+                                @elseif ($media->type === 'video')
+                                    <img
+                                        class="w-70 h-70 object-cover thumbnail-video"
+                                        src="{{ asset('videos/gallery/' . $product->id . '/' . pathinfo($media->name, PATHINFO_FILENAME) . '.webp') }}"
+                                        alt="Video Thumbnail"
+                                    >
+                                @endif
                             </div>
                         @endforeach
                     </div>
@@ -77,7 +132,10 @@
                                             data-color="{{ $color->color }}"
                                             {{ $loop->first ? 'checked' : '' }}
                                         >
-                                        <label for="color-{{ $color->id }}" style="background-color: {{ $color->color }};"></label>
+                                        <label
+                                            for="color-{{ $color->id }}"
+                                            style="background-color: {{ $color->color }};"
+                                        ></label>
                                     </div>
                                 @endforeach
                             </div>
@@ -90,11 +148,17 @@
                     @endif
 
                     @if($product->category)
-                        <p class="mb-2 d-flex"><strong class="mr-3">Category:</strong> {{ $product->category->name }}</p>
+                        <p class="mb-2 d-flex">
+                            <strong class="mr-3">Category: </strong>
+                            {{ $product->category->name }}
+                        </p>
                     @endif
 
                     @if($product->material)
-                        <p class="mb-2 d-flex"><strong class="mr-3">Material:</strong> {{ $product->material }}</p>
+                        <p class="mb-2 d-flex">
+                            <strong class="mr-3">Material: </strong>
+                            {{ $product->material }}
+                        </p>
                     @endif
 
                     @if($product->length || $product->height || $product->width || $product->depth)
@@ -116,12 +180,22 @@
                     @endif
 
                     @if($product->subcategory)
-                        <p class="mb-2 d-flex"><strong class="mr-3">Subcategory:</strong> {{ $product->subcategory->name }}</p>
+                        <p class="mb-2 d-flex">
+                            <strong class="mr-3">Subcategory: </strong>
+                            {{ $product->subcategory->name }}
+                        </p>
                     @endif
 
                     @if($product->price)
-                        <p class="mb-2 d-flex"><strong class="mr-3">Price:</strong> ${{ $product->price }} </p>
+                        <p class="mb-2 d-flex">
+                            <strong class="mr-3">Price: </strong>
+                            ${{ $product->price }}
+                        </p>
                     @endif
+
+                    @php
+                        $mainImage = $product->gallery->firstWhere('type', 'image') ?? '';
+                    @endphp
 
                     <button
                         id="btn-add-product"
@@ -132,7 +206,7 @@
                         data-quantity="{{ $product->colors->first()->quantity ?? $product->quantity }}"
                         data-color-id="{{ $product->colors->first()->id ?? null }}"
                         data-color-name="{{ $product->colors->first()->color ?? null }}"
-                        data-img="{{ asset('images/gallery/' . $mainImage->tag . '/' . $mainImage->name) }}"
+                        data-img="{{ $mainImage ? asset('images/gallery/' . $mainImage->tag . '/' . $mainImage->name) : '' }}"
                         {{ $product->quantity == 0 ? 'disabled' : '' }}
                     >
                         Add to Cart
@@ -151,11 +225,21 @@
         </div>
     </section>
 
+    <!-- Modal window for video -->
+    <div id="videoModal" class="modal">
+        <div class="modal-content">
+            <div class="close fa fa-window-close" aria-hidden="true"></div>
+            <video controls id="modalVideo" style="width: 100%;">
+                <source src="" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
     @include('parts.photoSwipe')
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Отримуємо елементи кнопок та кольорові варіанти
+            // Get button elements and color variants
             const colorInputs = document.querySelectorAll('.color-option input[type="radio"]');
             const selectedColorElement = document.getElementById('selected-color');
             const quantityElement = document.getElementById('quantity');
@@ -163,7 +247,7 @@
             const btnContactUs = document.getElementById('btn-contact-us');
             const productQuantity = document.getElementById('without-color-quantity');
 
-            // Функція для оновлення видимості кнопок
+            // Function to update the visibility of the buttons
             function updateButtonVisibility() {
                 const selectedColorInput = document.querySelector('.color-option input[type="radio"]:checked');
 
@@ -177,39 +261,37 @@
 
                     if (quantity > 0) {
                         quantityElement.textContent = quantity;
-                        btnAddProduct.style.display = 'block'; // Показуємо кнопку "Add to Cart"
-                        btnContactUs.style.display = 'none'; // Сховати кнопку "Contact us to order"
+                        btnAddProduct.style.display = 'block'; // Show the "Add to Cart" button
+                        btnContactUs.style.display = 'none'; // Hide the "Contact us to order" button
                     } else {
                         quantityElement.textContent = 'Out of stock';
-                        btnAddProduct.style.display = 'none'; // Сховати кнопку "Add to Cart"
-                        btnContactUs.style.display = 'block'; // Показати кнопку "Contact us to order"
+                        btnAddProduct.style.display = 'none'; // Hide the "Add to Cart" button
+                        btnContactUs.style.display = 'block'; // Show the "Contact us to order" button
                     }
                 } else if (productQuantity){
                     const quantity = productQuantity.getAttribute('data-quantity');
 
                     if (quantity > 0) {
-                        btnAddProduct.style.display = 'block'; // Показуємо кнопку "Add to Cart"
-                        btnContactUs.style.display = 'none'; // Сховати кнопку "Contact us to order"
+                        btnAddProduct.style.display = 'block'; // Show the "Add to Cart" button
+                        btnContactUs.style.display = 'none'; // Hide the "Contact us to order" button
                     } else {
-                        btnAddProduct.style.display = 'none'; // Сховати кнопку "Add to Cart"
-                        btnContactUs.style.display = 'block'; // Показати кнопку "Contact us to order"
+                        btnAddProduct.style.display = 'none'; // Hide the "Add to Cart" button
+                        btnContactUs.style.display = 'block'; // Show the "Contact us to order" button
                     }
                 } else {
-                    // Якщо кольори не вибрані, показуємо кнопку "Contact us to order"
+                    // If the colors are not selected, we show the "Contact us to order" button
                     btnAddProduct.style.display = 'none';
                     btnContactUs.style.display = 'block';
                 }
             }
 
-            // Додаємо обробник подій для кожного кольорового варіанту
+            // Add an event handler for each color option
             colorInputs.forEach(input => {
                 input.addEventListener('change', updateButtonVisibility);
             });
 
-            // Ініціалізуємо видимість кнопок при завантаженні сторінки
+            // Initialize the visibility of the buttons when the page is loaded
             updateButtonVisibility();
         });
-
     </script>
-
 @endsection

@@ -280,18 +280,39 @@ document.addEventListener('DOMContentLoaded', function () {
     const thumbnails = document.querySelectorAll('.thumbnail img');
     const pswpElement = document.querySelector('.pswp');
 
+// Модальне вікно для відео
+    const videoModal = document.getElementById("videoModal");
+    const modalVideo = document.getElementById("modalVideo");
+    const closeModal = document.getElementsByClassName("close")[0];
+
+    closeModal.onclick = function() {
+        videoModal.style.display = "none";
+        modalVideo.pause();
+        modalVideo.removeAttribute("src");
+    };
+
+    window.onclick = function(event) {
+        if (event.target == videoModal) {
+            videoModal.style.display = "none";
+            modalVideo.pause();
+            modalVideo.removeAttribute("src");
+        }
+    };
+
     const initPhotoSwipeFromDOM = function(gallerySelector) {
         const parseThumbnailElements = function(el) {
             const items = [];
             el.querySelectorAll('.gallery-item').forEach(function(linkEl) {
-                const item = {
-                    src: linkEl.getAttribute('href'),
-                    w: parseInt(linkEl.getAttribute('data-pswp-width'), 10),
-                    h: parseInt(linkEl.getAttribute('data-pswp-height'), 10),
-                    msrc: linkEl.querySelector('img').getAttribute('src'),
-                    el: linkEl
-                };
-                items.push(item);
+                if (!linkEl.classList.contains('video-item')) {
+                    const item = {
+                        src: linkEl.getAttribute('href'),
+                        w: parseInt(linkEl.getAttribute('data-pswp-width'), 10),
+                        h: parseInt(linkEl.getAttribute('data-pswp-height'), 10),
+                        msrc: linkEl.querySelector('img') ? linkEl.querySelector('img').getAttribute('src') : null,
+                        el: linkEl
+                    };
+                    items.push(item);
+                }
             });
             return items;
         };
@@ -313,16 +334,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     return {x: rect.left, y: rect.top + pageYScroll, w: rect.width};
                 },
                 showHideOpacity: true,
-                bgOpacity: 0.8,
-                maxZoom: 2 // Додайте це для обмеження максимального масштабу
+                bgOpacity: 0.8
             };
+
             const gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
             gallery.init();
-
-            gallery.listen('close', function() {
-                document.body.style.overflow = '';
-                pswpElement.classList.remove('pswp--visible');
-            });
         };
 
         const galleryElements = document.querySelectorAll(gallerySelector);
@@ -330,19 +346,30 @@ document.addEventListener('DOMContentLoaded', function () {
             galleryEl.setAttribute('data-pswp-uid', i + 1);
 
             galleryEl.querySelectorAll('.gallery-item').forEach(function(linkEl) {
-                linkEl.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const allItems = galleryEl.querySelectorAll('.gallery-item');
-                    const index = Array.from(allItems).findIndex(item => item === linkEl);
-                    openPhotoSwipe(index, galleryEl);
-                });
+                if (!linkEl.classList.contains('video-item')) {
+                    linkEl.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const allItems = galleryEl.querySelectorAll('.gallery-item');
+                        const index = Array.from(allItems).findIndex(item => item === linkEl);
+                        openPhotoSwipe(index, galleryEl);
+                    });
+                } else {
+                    // Для відео відкриваємо модальне вікно
+                    linkEl.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const videoSrc = linkEl.getAttribute('href');
+                        modalVideo.setAttribute('src', videoSrc);
+                        videoModal.style.display = "flex";
+                    });
+                }
             });
         });
     };
 
     initPhotoSwipeFromDOM('.my-gallery');
 
-    const mainImageLinks = document.querySelectorAll('.main-image .gallery-item');
+
+    const mainImageLinks = document.querySelectorAll('.gallery-item');
     mainImageLinks.forEach(link => {
         link.addEventListener('click', function (e) {
             e.preventDefault();
@@ -356,20 +383,30 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Обробник натискання на мініатюри
+// Обробник натискання на мініатюри
     thumbnails.forEach(thumbnail => {
         thumbnail.addEventListener('click', function () {
             const clickedSrc = this.src;
 
-            // Сховати всі великі зображення
+            // Сховати всі великі зображення і відео
             mainImageLinks.forEach(link => {
-                link.style.display = 'none';
+                link.style.display = 'none'; // Приховати всі блоки <a>
             });
 
-            // Показати велике зображення, відповідне обраній мініатюрі
+            // Показати велике зображення або відео, відповідне обраній мініатюрі
             mainImageLinks.forEach(link => {
-                if (link.querySelector('img').src === clickedSrc) {
-                    link.style.display = 'block';
+                const mediaElement = link.querySelector('img') || link.querySelector('video');
+                if (mediaElement) {
+                    // Перевіряємо, чи це відео
+                    if (mediaElement.tagName.toLowerCase() === 'video') {
+                        const videoPoster = mediaElement.getAttribute('poster'); // отримуємо постер відео
+                        if (videoPoster === clickedSrc) {
+                            link.style.display = 'block'; // Показати блок <a>
+                            // Не показуємо відео, залишаємо його прихованим
+                        }
+                    } else if (mediaElement.src === clickedSrc) {
+                        link.style.display = 'block'; // Показати блок <a> для зображення
+                    }
                 }
             });
 
@@ -386,15 +423,26 @@ document.addEventListener('DOMContentLoaded', function () {
         if (thumbnail.dataset.main === 'true') {
             const initialSrc = thumbnail.src;
             mainImageLinks.forEach(link => {
-                if (link.querySelector('img').src === initialSrc) {
-                    link.style.display = 'block';
-                } else {
-                    link.style.display = 'none';
+                const mediaElement = link.querySelector('img') || link.querySelector('video');
+                if (mediaElement) {
+                    // Перевірка для відео
+                    if (mediaElement.tagName.toLowerCase() === 'video') {
+                        const videoPoster = mediaElement.getAttribute('poster');
+                        if (videoPoster === initialSrc) {
+                            link.style.display = 'block'; // Показати блок <a>
+                            // Не показуємо відео, залишаємо його прихованим
+                        }
+                    } else if (mediaElement.src === initialSrc) {
+                        link.style.display = 'block'; // Показати блок <a> для зображення
+                    } else {
+                        link.style.display = 'none';
+                    }
                 }
             });
             thumbnail.parentElement.classList.add('selected');
         }
     });
+
 
 
     /*=======================================PAYMENT=======================================*/

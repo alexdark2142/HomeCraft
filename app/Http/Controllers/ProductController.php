@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use FFMpeg\FFMpeg;
+use App\Models\Slider;
 use App\Models\Gallery;
 use App\Models\Product;
+use App\Models\Category;
 use App\Models\ProductColor;
-use App\Models\Slider;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use FFMpeg\Format\Video\WebM;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManager;
+use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
 
 class ProductController extends Controller
@@ -61,6 +65,8 @@ class ProductController extends Controller
             ->with('gallery')
             ->paginate(9);
 
+        Gallery::whereIn('type', ['main', 'additional'])->update(['type' => 'image']);
+
         return view('admin.products.list', compact('products'));
     }
 
@@ -86,7 +92,8 @@ class ProductController extends Controller
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $validatedData = $request->validate([
-            'photos.*' => 'required|image|mimes:jpeg,png,jpg',
+            'files.*' => 'required',
+            'files' => 'max:10',
             'name' => 'required|string|max:100',
             'quantities.*' => 'nullable|integer|min:0',
             'colors.*' => 'nullable|string|max:50',
@@ -101,6 +108,7 @@ class ProductController extends Controller
             'price' => 'nullable|numeric',
         ]);
 
+
         $colors = $request->colors;
         $quantities = $request->quantities;
         $hasColors = count($colors) > 1 || (count($colors) === 1 && !is_null($colors[0]));
@@ -110,7 +118,7 @@ class ProductController extends Controller
         try {
             $product = $this->createProduct($request, $quantities, $hasColors);
 
-            $this->handleImages($request->file('photos'), $product->id);
+            $this->handleFiles($request->file('files'), $product->id);
 
             if ($hasColors) {
                 $this->handleColors($colors, $quantities, $product->id);
@@ -156,38 +164,79 @@ class ProductController extends Controller
         ]);
     }
 
-    protected function handleImages(array $images, int $productId): void
+    protected function handleFiles(array $files, int $productId): void
     {
-        $directory = public_path('images/gallery') . '/' . $productId;
-        $firstImage = true;
+        $directoryImages = public_path('images/gallery') . '/' . $productId;
+        $directoryVideos = public_path('videos/gallery') . '/' . $productId;
 
-        if (!File::isDirectory($directory)) {
-            File::makeDirectory($directory, 0755, true);
+        // Створюємо директорії для зображень та відео, якщо їх не існує
+        if (!File::isDirectory($directoryImages)) {
+            File::makeDirectory($directoryImages, 0755, true);
         }
 
-        foreach ($images as $image) {
-            $imageName = uniqid() . '_' . time() . '.webp';
+        if (!File::isDirectory($directoryVideos)) {
+            File::makeDirectory($directoryVideos, 0755, true);
+        }
 
-            $manager = new ImageManager(new Driver());
-            $image = $manager->read($image->getRealPath())->scale(height: 720);
+        foreach ($files as $file) {
+            $mimeType = $file->getMimeType();
+            $fileName = null;
+            $type = null;
 
-            // Зменшити розмір зображення
-            $image->toWebp(60);
+            if (str_starts_with($mimeType, 'image/')) {
+                $fileName = uniqid() . '_' . time() . '.webp';
+                $type = 'image';
 
-            // Зберегти зображення у форматі WebP з оптимізованою якістю
-            $image->save($directory . '/' . $imageName, 90, 'webp');
+                // Створення зображення з оптимізацією
+                $manager = new ImageManager(new Driver());
+                $image = $manager->read($file->getRealPath())->scale(height: 720);
+                $image->toWebp(60);
 
-            $type = $firstImage ? 'main' : 'additional';
-            $firstImage = false;
+                // Зберігання зображення у WebP форматі з оптимізованою якістю
+                $image->save($directoryImages . '/' . $fileName, 90, 'webp');
+            } elseif (str_starts_with($mimeType, 'video/')) {
+                $fileName = uniqid() . '_' . time() . '.webm';
+                $type = 'video';
 
+                // Зберігаємо оригінальне відео
+                $path = $file->store('videos/original', 'public');
+                $ffmpeg = FFMpeg::create();
+
+                // Завантажуємо відео для конвертації
+                $videoFile = $ffmpeg->open(Storage::disk('public')->path($path));
+
+                // Вказуємо шлях для збереження нового відео у форматі webm
+                $convertedPath = $directoryVideos . '/' . pathinfo($fileName, PATHINFO_FILENAME) . '.webm';
+
+                // Конвертуємо відео у формат webm
+                $format = new WebM();
+                $format->setKiloBitrate(1000); // Якість відео, за потреби можна змінити
+                $videoFile->save($format, $convertedPath); // Зберігаємо за вказаним шляхом
+
+                // Створення зображення-прев'ю з відео
+                $thumbnailPath = $directoryVideos . '/' . pathinfo($fileName, PATHINFO_FILENAME) . '.webp'; // Шлях для збереження зображення-прев'ю
+
+                // Отримання кадру з відео
+                $duration = $videoFile->getFormat()->get('duration'); // Отримуємо тривалість відео
+                $timeСode = \FFMpeg\Coordinate\TimeCode::fromSeconds($duration / 2); // Встановлюємо час кадру в середині відео
+                $frame = $videoFile->frame($timeСode); // Отримуємо кадр
+                $frame->save($thumbnailPath); // Зберігаємо в webp форматі
+
+                // Видаляємо оригінальний файл (за бажанням)
+                Storage::disk('public')->delete($path);
+            }
+
+
+            // Додаємо запис до таблиці галереї
             Gallery::create([
                 'product_id' => $productId,
-                'name' => $imageName,
+                'name' => $fileName,
                 'type' => $type,
                 'tag' => $productId,
             ]);
         }
     }
+
 
     /**
      * @param array $colors
@@ -330,52 +379,19 @@ class ProductController extends Controller
         }
     }
 
-    function sumQuantities(array $colors): int
-    {
-        $totalQuantity = 0;
-
-        foreach ($colors as $color) {
-            if (is_array($color) && isset($color['quantity'])) {
-                // Додаємо quantity до загальної суми
-                $totalQuantity += (int) $color['quantity'];
-            }
-        }
-
-        return $totalQuantity;
-    }
-
     /**
      * Remove the specified product from storage.
      *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @param Product $product
+     * @return JsonResponse
      */
-    public function destroy(int $id): \Illuminate\Http\JsonResponse
+    public function destroy(Product $product): JsonResponse
     {
         try {
-            $product = Product::findOrFail($id);
+            File::deleteDirectory(public_path('images/gallery/' . $product->id));
+            File::deleteDirectory(public_path('videos/gallery/' . $product->id));
 
-            // Отримати всі записи галереї, пов'язані з продуктом
-            $galleries = Gallery::where('product_id', $id)->get();
-
-            // Видалення зображень з папки
-            foreach ($galleries as $gallery) {
-                $imagePath = public_path('images/gallery/' . $gallery->tag . '/' . $gallery->name);
-                if (file_exists($imagePath)) {
-                    unlink($imagePath);
-                }
-            }
-
-            // Видалення директорії продукту, якщо вона порожня
-            $productDirectory = public_path('images/gallery/' . $product->id);
-            if (is_dir($productDirectory) && count(scandir($productDirectory)) == 2) { // Перевірка, чи директорія порожня
-                rmdir($productDirectory);
-            }
-
-            // Видалення записів з таблиці Gallery
-            Gallery::where('product_id', $id)->delete();
-
-            // Видалення продукту з бази даних
+            $product->gallery()->delete();
             $product->delete();
 
             return response()->json([
@@ -389,10 +405,4 @@ class ProductController extends Controller
             ], 500);
         }
     }
-
-    public function verifyProduct(Request $request)
-    {
-        return response()->json(['success' => true]);
-    }
-
 }

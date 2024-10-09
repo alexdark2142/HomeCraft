@@ -41,14 +41,16 @@
                                 <td class="text-center p-2 border">
                                     <div class="image-container">
                                         @php
-                                            $mainImage = $product->gallery->firstWhere('type', 'main');
+                                            $mainImage = $product->gallery->firstWhere('type', 'image');
                                         @endphp
 
-                                        <img
-                                            src="{{ asset('images/gallery/' . $mainImage->tag . '/' . $mainImage->name) }}"
-                                            alt="Product Image"
-                                            class="product-image"
-                                        >
+                                        @if($mainImage)
+                                            <img
+                                                src="{{ asset('images/gallery/' . $mainImage->tag . '/' . $mainImage->name) }}"
+                                                alt="Product Image"
+                                                class="product-image"
+                                            >
+                                        @endif
                                     </div>
                                 </td>
 

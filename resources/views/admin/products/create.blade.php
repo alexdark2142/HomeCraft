@@ -11,17 +11,11 @@
                 data-url="{{ route('products.store') }}"
             >
                 @csrf
+
+                <!-- Uppy контейнер для вибору фото -->
                 <div class="form-group">
                     <label class="form-label">Pictures</label>
-                    <input
-                        required
-                        type="file"
-                        name="photos[]"
-                        id="img"
-                        accept=".jpg, .jpeg, .png, .webp"
-                        class="form-input"
-                        multiple
-                    >
+                    <div id="uppy"></div>
                     <span class="error-message"></span>
                 </div>
 
@@ -174,7 +168,7 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
         window.categoriesWithSubcategories = @json($categoriesWithSubcategories);
     </script>
 @endsection
