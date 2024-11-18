@@ -13,17 +13,8 @@
                 @csrf
                 @method('PUT')
                 <div class="form-group">
-                    <label class="form-label">Pictures
-                        <span style="color: red">(This field does not work in edit mode. Will be provided later)</span>
-                    </label>
-                    <input
-                        type="file"
-                        name="img"
-                        id="img"
-                        accept=".jpg, .jpeg, .png, .webp"
-                        class="form-input"
-                        disabled
-                    >
+                    <label class="form-label">Pictures</label>
+                    <div id="uppy"></div>
                     <span class="error-message"></span>
                 </div>
 
@@ -231,5 +222,8 @@
 
     <script>
         window.categoriesWithSubcategories = @json($categoriesWithSubcategories);
+        window.galleryImages = @json($gallery);
+        // Преобразуйте галерею в JSON
+        window.baseUrl = "{{ url('/') }}";
     </script>
 @endsection

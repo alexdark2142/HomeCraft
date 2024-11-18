@@ -137,7 +137,6 @@ document.addEventListener('DOMContentLoaded', function() {
     /*=============================================== Uppy ===============================================*/
     let uppy = null;
 
-    if (document.getElementById('uppy')) {
         uppy = new Uppy({
             autoProceed: false,
             restrictions: {
@@ -151,7 +150,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 target: '#uppy',
                 height: 340,
                 showProgressDetails: false,
-                proudlyDisplayPoweredByUppy: false
+                proudlyDisplayPoweredByUppy: false,
+                metaFields: [
+                    { id: 'name', name: 'Name', placeholder: 'file name' }
+                ]
             })
             .use(Webcam, {
                 target: Dashboard
@@ -167,7 +169,29 @@ document.addEventListener('DOMContentLoaded', function() {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // CSRF токен
                 }
             });
-    }
+
+    // Базовий URL вашого сайту
+        const  gallery = window.galleryImages || [];
+
+        if (gallery) {
+            gallery.forEach(image => {
+                const imageUrl = `${window.baseUrl}/${image.type}s/gallery/${image.product_id}/${image.name}`;
+                console.log(imageUrl)
+                fetch(imageUrl)  // Завантажуємо зображення за повним URL
+                    .then(response => response.blob())  // Перетворюємо у Blob
+                    .then(blob => {
+                        uppy.addFile({
+                            name: image.name,   // Ім'я файлу
+                            type: blob.type,    // Тип файлу (отримуємо з Blob)
+                            data: blob,         // Дані (Blob)
+                            meta: { id: image.id } // Додаткова інформація (наприклад, ID зображення)
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error loading image:', error);
+                    });
+            });
+        }
 
     /*============================================ PRODUCT PAGE ============================================*/
 

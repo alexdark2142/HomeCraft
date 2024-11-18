@@ -93,7 +93,7 @@ class ProductController extends Controller
     {
         $validatedData = $request->validate([
             'files.*' => 'required',
-            'files' => 'max:10',
+            'files' => 'max:15',
             'name' => 'required|string|max:100',
             'quantities.*' => 'nullable|integer|min:0',
             'colors.*' => 'nullable|string|max:50',
@@ -169,74 +169,85 @@ class ProductController extends Controller
         $directoryImages = public_path('images/gallery') . '/' . $productId;
         $directoryVideos = public_path('videos/gallery') . '/' . $productId;
 
-        // Створюємо директорії для зображень та відео, якщо їх не існує
-        if (!File::isDirectory($directoryImages)) {
-            File::makeDirectory($directoryImages, 0755, true);
-        }
+        // Створюємо директорії, якщо вони не існують
+        File::ensureDirectoryExists($directoryImages, 0755);
+        File::ensureDirectoryExists($directoryVideos, 0755);
 
-        if (!File::isDirectory($directoryVideos)) {
-            File::makeDirectory($directoryVideos, 0755, true);
-        }
+        // Збираємо оброблені файли
+        $processedFiles = [];
 
         foreach ($files as $file) {
+            $fileName = $file->getClientOriginalName();
             $mimeType = $file->getMimeType();
-            $fileName = null;
             $type = null;
 
-            if (str_starts_with($mimeType, 'image/')) {
-                $fileName = uniqid() . '_' . time() . '.webp';
-                $type = 'image';
+            // Перевіряємо, чи файл уже є в базі
+            $existingFile = Gallery::where('name', $fileName)->where('product_id', $productId)->first();
 
-                // Створення зображення з оптимізацією
-                $manager = new ImageManager(new Driver());
-                $image = $manager->read($file->getRealPath())->scale(height: 720);
-                $image->toWebp(60);
+            if (!$existingFile) {
+                // Це новий файл
+                if (str_starts_with($mimeType, 'image/')) {
+                    $type = 'image';
+                    $savedFileName = uniqid() . '_' . time() . '.webp';
 
-                // Зберігання зображення у WebP форматі з оптимізованою якістю
-                $image->save($directoryImages . '/' . $fileName, 90, 'webp');
-            } elseif (str_starts_with($mimeType, 'video/')) {
-                $fileName = uniqid() . '_' . time() . '.webm';
-                $type = 'video';
+                    // Оптимізація зображення
+                    $manager = new ImageManager(new Driver());
+                    $image = $manager->read($file->getRealPath())->scale(height: 720);
+                    $image->toWebp(60);
+                    $image->save($directoryImages . '/' . $savedFileName, 90, 'webp');
+                } elseif (str_starts_with($mimeType, 'video/')) {
+                    $type = 'video';
+                    $savedFileName = uniqid() . '_' . time() . '.webm';
 
-                // Зберігаємо оригінальне відео
-                $path = $file->store('videos/original', 'public');
-                $ffmpeg = FFMpeg::create();
+                    // Конвертація відео у webm
+                    $path = $file->store('videos/original', 'public');
+                    $ffmpeg = FFMpeg::create();
+                    $videoFile = $ffmpeg->open(Storage::disk('public')->path($path));
+                    $convertedPath = $directoryVideos . '/' . pathinfo($savedFileName, PATHINFO_FILENAME) . '.webm';
 
-                // Завантажуємо відео для конвертації
-                $videoFile = $ffmpeg->open(Storage::disk('public')->path($path));
+                    $format = new WebM();
+                    $format->setKiloBitrate(1000);
+                    $videoFile->save($format, $convertedPath);
 
-                // Вказуємо шлях для збереження нового відео у форматі webm
-                $convertedPath = $directoryVideos . '/' . pathinfo($fileName, PATHINFO_FILENAME) . '.webm';
+                    // Прев'ю для відео
+                    $thumbnailPath = $directoryVideos . '/' . pathinfo($savedFileName, PATHINFO_FILENAME) . '.webp';
+                    $frame = $videoFile->frame(\FFMpeg\Coordinate\TimeCode::fromSeconds($videoFile->getFormat()->get('duration') / 2));
+                    $frame->save($thumbnailPath);
 
-                // Конвертуємо відео у формат webm
-                $format = new WebM();
-                $format->setKiloBitrate(1000); // Якість відео, за потреби можна змінити
-                $videoFile->save($format, $convertedPath); // Зберігаємо за вказаним шляхом
+                    // Видаляємо оригінал
+                    Storage::disk('public')->delete($path);
+                }
 
-                // Створення зображення-прев'ю з відео
-                $thumbnailPath = $directoryVideos . '/' . pathinfo($fileName, PATHINFO_FILENAME) . '.webp'; // Шлях для збереження зображення-прев'ю
+                // Додаємо новий запис до бази
+                Gallery::create([
+                    'product_id' => $productId,
+                    'name' => $savedFileName,
+                    'type' => $type,
+                    'tag' => $productId,
+                ]);
 
-                // Отримання кадру з відео
-                $duration = $videoFile->getFormat()->get('duration'); // Отримуємо тривалість відео
-                $timeСode = \FFMpeg\Coordinate\TimeCode::fromSeconds($duration / 2); // Встановлюємо час кадру в середині відео
-                $frame = $videoFile->frame($timeСode); // Отримуємо кадр
-                $frame->save($thumbnailPath); // Зберігаємо в webp форматі
-
-                // Видаляємо оригінальний файл (за бажанням)
-                Storage::disk('public')->delete($path);
+                $processedFiles[] = $savedFileName;
+            } else {
+                // Файл уже існує, додаємо до списку оброблених
+                $processedFiles[] = $existingFile->name;
             }
+        }
 
+        // Видалення непотрібних файлів
+        $filesToDelete = Gallery::where('product_id', $productId)
+            ->whereNotIn('name', $processedFiles)
+            ->get();
 
-            // Додаємо запис до таблиці галереї
-            Gallery::create([
-                'product_id' => $productId,
-                'name' => $fileName,
-                'type' => $type,
-                'tag' => $productId,
-            ]);
+        foreach ($filesToDelete as $file) {
+            if ($file->type === 'image') {
+                File::delete($directoryImages . '/' . $file->name);
+            } elseif ($file->type === 'video') {
+                File::delete($directoryVideos . '/' . $file->name);
+                File::delete($directoryVideos . '/' . pathinfo($file->name, PATHINFO_FILENAME) . '.webp'); // Прев'ю
+            }
+            $file->delete();
         }
     }
-
 
     /**
      * @param array $colors
@@ -283,9 +294,12 @@ class ProductController extends Controller
             })];
         });
 
+        $gallery = $product->gallery()->get();
+
         return view('admin.products.edit', [
             'product' => $product,
             'categories' => $categories,
+            'gallery' => $gallery,
             'categoriesWithSubcategories' => $categoriesWithSubcategories
         ]);
     }
@@ -298,6 +312,8 @@ class ProductController extends Controller
     {
         // Validate the incoming data
         $validatedData = $request->validate([
+            'files.*' => 'required',
+            'files' => 'max:15',
             'name' => 'required|string|max:100',
             'quantities.*' => 'nullable|integer|max:255',
             'length' => 'nullable|integer',
@@ -315,6 +331,7 @@ class ProductController extends Controller
 
         $quantities = $validatedData['quantities'];
         $colorsIds = $request->get('colorsId');
+
         foreach ($request->get('colors') as $index => $color) {
             $colors[$index] = [
                 'id' => $colorsIds[$index]['id'] ?? null,
@@ -322,6 +339,7 @@ class ProductController extends Controller
                 'quantity' => $quantities[$index],
             ];
         }
+
         $validatedData['quantity'] = array_sum($quantities);
         $hasColors = !empty($colors[0]['color']);
 
@@ -335,6 +353,9 @@ class ProductController extends Controller
 
         try {
             $product->update($validatedData);
+
+            $this->handleFiles($request->file('files'), $product->id);
+
             if ($hasColors) {
                 foreach ($colors as $color) {
                     $updatedColor = ProductColor::updateOrCreate(
